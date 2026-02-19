@@ -1,0 +1,408 @@
+# SSH Keys & Management – Practical Beginner’s Guide
+
+SSH keys are the standard, secure way to authenticate to remote systems without passwords. Properly used, they are **more secure**, **automatable**, and **safer** than passwords.
+
+This guide focuses on:
+
+* How SSH keys work
+* Creating keys correctly
+* Deploying keys safely
+* Managing multiple keys
+* Security best practices
+* Troubleshooting common failures
+
+All examples assume a Linux environment (RHEL/RHEL-compatible).
+
+---
+
+## 1. What SSH Keys Actually Are
+
+SSH authentication uses **asymmetric cryptography**:
+
+| Component       | Purpose                                  | Location              |
+| --------------- | ---------------------------------------- | --------------------- |
+| **Private Key** | Secret credential used to prove identity | **Your machine only** |
+| **Public Key**  | Non-secret identity verifier             | Remote server         |
+
+**Key rule:**
+
+> Never copy or share your private key.
+
+---
+
+## 2. Default SSH Key Locations (Linux)
+
+Keys live in:
+
+```
+~/.ssh/
+```
+
+Common files:
+
+| File              | Meaning                  |
+| ----------------- | ------------------------ |
+| `id_ed25519`      | Private key              |
+| `id_ed25519.pub`  | Public key               |
+| `authorized_keys` | Server-side allowed keys |
+| `config`          | Client configuration     |
+| `known_hosts`     | Host verification cache  |
+
+Correct permissions are critical:
+
+```bash
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/*
+```
+
+---
+
+## 3. Recommended Key Type (Modern Standard)
+
+Use **ED25519** unless you have a legacy constraint.
+
+Advantages:
+
+* Smaller
+* Faster
+* Strong security
+* Widely supported
+
+Avoid generating new RSA keys unless required.
+
+---
+
+## 4. Generating Your First Key (Correctly)
+
+Basic command:
+
+```bash
+ssh-keygen -t ed25519 -C "your_email_or_label"
+```
+
+Better practice with explicit filename:
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_work -C "work-laptop"
+```
+
+You will be prompted for:
+
+* **Passphrase** → Always use one (important)
+
+Why passphrases matter:
+
+* Protects stolen key files
+* Prevents silent misuse
+
+---
+
+## 5. Understanding Generated Files
+
+Example:
+
+```
+id_ed25519_work        ← PRIVATE KEY (secret)
+id_ed25519_work.pub    ← PUBLIC KEY (safe)
+```
+
+View public key:
+
+```bash
+cat ~/.ssh/id_ed25519_work.pub
+```
+
+Looks like:
+
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB... work-laptop
+```
+
+---
+
+## 6. Installing Your Public Key on a Server
+
+### Option A – Easiest (If Password Login Works)
+
+```bash
+ssh-copy-id -i ~/.ssh/id_ed25519_work user@server
+```
+
+---
+
+### Option B – Manual Method
+
+Append your public key to:
+
+```
+~/.ssh/authorized_keys
+```
+
+On server:
+
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+vi ~/.ssh/authorized_keys
+```
+
+Paste key → Save → Fix permissions:
+
+```bash
+chmod 600 ~/.ssh/authorized_keys
+```
+
+---
+
+## 7. Connecting Using a Specific Key
+
+```bash
+ssh -i ~/.ssh/id_ed25519_work user@server
+```
+
+Without specifying, SSH tries defaults.
+
+---
+
+## 8. Managing Multiple Keys (Very Common)
+
+Use SSH config file:
+
+```bash
+vi ~/.ssh/config
+```
+
+Example:
+
+```ini
+Host work-server
+    HostName 192.168.10.50
+    User jaco
+    IdentityFile ~/.ssh/id_ed25519_work
+
+Host github
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_github
+```
+
+Now connect cleanly:
+
+```bash
+ssh work-server
+ssh github
+```
+
+---
+
+## 9. SSH Agent (Avoid Re-typing Passphrases)
+
+Start agent:
+
+```bash
+eval "$(ssh-agent -s)"
+```
+
+Add key:
+
+```bash
+ssh-add ~/.ssh/id_ed25519_work
+```
+
+Check loaded keys:
+
+```bash
+ssh-add -l
+```
+
+**Gotcha:**
+Agent resets on reboot unless integrated into session manager.
+
+---
+
+## 10. Key Security Best Practices
+
+### ✔ Always Use Passphrases
+
+Unprotected keys = high risk.
+
+---
+
+### ✔ Never Reuse Keys Across Roles
+
+Bad:
+
+* Same key for GitHub + servers + clients
+
+Good:
+
+* Separate keys per environment
+
+Example naming:
+
+```
+id_ed25519_personal
+id_ed25519_work
+id_ed25519_servers
+```
+
+---
+
+### ✔ Protect Permissions
+
+SSH refuses insecure keys.
+
+Correct:
+
+```bash
+chmod 600 ~/.ssh/id_ed25519*
+```
+
+---
+
+### ✔ Disable Password Authentication (Servers)
+
+In `/etc/ssh/sshd_config`:
+
+```ini
+PasswordAuthentication no
+PubkeyAuthentication yes
+```
+
+Reload:
+
+```bash
+sudo systemctl reload sshd
+```
+
+**Warning:**
+Ensure keys work before disabling passwords.
+
+---
+
+## 11. Revoking / Removing Access
+
+Simply delete the key line from:
+
+```
+~/.ssh/authorized_keys
+```
+
+No restart required.
+
+---
+
+## 12. Verifying Which Key Is Used
+
+Verbose mode:
+
+```bash
+ssh -v user@server
+```
+
+Look for:
+
+```
+Offering public key: ~/.ssh/id_ed25519_work
+```
+
+---
+
+## 13. Common Problems & Fixes
+
+---
+
+### ❌ Permission Denied (Publickey)
+
+Check:
+
+```bash
+ls -ld ~/.ssh
+ls -l ~/.ssh
+```
+
+Must be:
+
+* `.ssh` → 700
+* `authorized_keys` → 600
+
+---
+
+### ❌ Wrong Key Used
+
+Force key:
+
+```bash
+ssh -i ~/.ssh/id_ed25519_work user@server
+```
+
+Or fix config.
+
+---
+
+### ❌ Server Ignores Key
+
+On server:
+
+```bash
+sudo grep PubkeyAuthentication /etc/ssh/sshd_config
+```
+
+Must be:
+
+```
+PubkeyAuthentication yes
+```
+
+---
+
+### ❌ SELinux Issues (RHEL Specific)
+
+Restore contexts:
+
+```bash
+restorecon -Rv ~/.ssh
+```
+
+Very common on RHEL systems.
+
+---
+
+## 14. Backing Up SSH Keys (Important)
+
+You **must** keep secure backups of private keys.
+
+Safe approach:
+
+* Encrypted storage
+* Offline backup
+* Never cloud-sync unencrypted keys
+
+To copy keys:
+
+```bash
+cp -a ~/.ssh /secure/location/
+```
+
+---
+
+## 15. When To Generate New Keys
+
+Generate new keys if:
+
+* Device lost/stolen
+* Private key exposed
+* Role separation needed
+* Periodic rotation policy
+
+---
+
+## 16. Good Operational Habits
+
+✔ Use descriptive filenames
+✔ Separate keys by trust boundary
+✔ Keep config clean
+✔ Remove unused keys
+✔ Use passphrases always
+
+
