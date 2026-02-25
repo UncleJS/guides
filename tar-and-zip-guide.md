@@ -2,31 +2,29 @@
 
 A practical introduction to archiving and compressing files on the command line.
 
----
 
 ## Table of Contents
 
-1. [What Are Archives and Compression?](#what-are-archives-and-compression)
-2. [tar](#tar)
-   - [Basic Syntax](#tar-basic-syntax)
-   - [Creating Archives](#creating-tar-archives)
-   - [Extracting Archives](#extracting-tar-archives)
-   - [Listing Archive Contents](#listing-tar-contents)
-   - [Compression with tar](#compression-with-tar)
-   - [Common tar Examples](#common-tar-examples)
-   - [tar Flags Cheat Sheet](#tar-flags-cheat-sheet)
-3. [zip](#zip)
-   - [Basic Syntax](#zip-basic-syntax)
-   - [Creating Archives](#creating-zip-archives)
-   - [Extracting Archives](#extracting-zip-archives)
-   - [Listing Archive Contents](#listing-zip-contents)
-   - [Common zip Examples](#common-zip-examples)
-   - [zip Flags Cheat Sheet](#zip-flags-cheat-sheet)
-4. [tar vs. zip — When to Use Which](#tar-vs-zip)
-5. [Tips, Tricks, and Gotchas](#tips-tricks-and-gotchas)
+- [What Are Archives and Compression?](#what-are-archives-and-compression)
+- [tar](#tar)
+  - [tar Basic Syntax](#tar-basic-syntax)
+  - [Creating tar Archives](#creating-tar-archives)
+  - [Extracting tar Archives](#extracting-tar-archives)
+  - [Listing tar Contents](#listing-tar-contents)
+  - [Compression with tar](#compression-with-tar)
+  - [Common tar Examples](#common-tar-examples)
+  - [tar Flags Cheat Sheet](#tar-flags-cheat-sheet)
+- [zip](#zip)
+  - [zip Basic Syntax](#zip-basic-syntax)
+  - [Creating zip Archives](#creating-zip-archives)
+  - [Extracting zip Archives](#extracting-zip-archives)
+  - [Listing zip Contents](#listing-zip-contents)
+  - [Common zip Examples](#common-zip-examples)
+  - [zip Flags Cheat Sheet](#zip-flags-cheat-sheet)
+- [tar vs. zip](#tar-vs-zip)
+- [Tips, Tricks, and Gotchas](#tips-tricks-and-gotchas)
 
 ---
-
 ## What Are Archives and Compression?
 
 Before diving in, it helps to understand two distinct concepts that often get bundled together:
@@ -39,9 +37,15 @@ Before diving in, it helps to understand two distinct concepts that often get bu
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## tar
 
 `tar` stands for **T**ape **AR**chive. Despite the old-fashioned name, it remains the standard archiving tool on Linux and macOS. Files it creates are called **tarballs** and typically end in `.tar`, `.tar.gz` (or `.tgz`), `.tar.bz2`, or `.tar.xz`.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### tar Basic Syntax
 
@@ -63,6 +67,9 @@ These are always combined with `-f`, which tells tar the name of the archive fil
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Creating tar Archives
 
 **Create a basic (uncompressed) archive:**
@@ -82,6 +89,9 @@ tar -cvf archive.tar folder/
 The `-v` flag prints each filename as it's processed — useful for confirming things look right.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Extracting tar Archives
 
@@ -109,6 +119,9 @@ You need to specify the exact path as it appears inside the archive (check with 
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Listing tar Contents
 
 **See what's inside an archive without extracting:**
@@ -124,6 +137,9 @@ tar -tvf archive.tar
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Compression with tar
 
@@ -165,6 +181,9 @@ You can also pass the compression flag explicitly (`-xzf`, `-xjf`, `-xJf`), but 
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Common tar Examples
 
 **Back up your home directory:**
@@ -205,6 +224,9 @@ Using `-f -` sends output to stdout instead of a file.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### tar Flags Cheat Sheet
 
 | Flag | Meaning |
@@ -225,9 +247,15 @@ Using `-f -` sends output to stdout instead of a file.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## zip
 
 `zip` is the format most commonly associated with Windows, but it works on all platforms. Unlike `tar`, zip compresses each file individually before bundling, which means you can extract a single file from a zip without decompressing the whole thing. It's also natively supported by every major operating system with no extra software needed.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### zip Basic Syntax
 
@@ -242,6 +270,9 @@ unzip [OPTIONS] ARCHIVE_NAME
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Creating zip Archives
 
@@ -288,6 +319,9 @@ zip -r archive.zip folder/ --exclude "*.log"
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Extracting zip Archives
 
 **Extract to the current directory:**
@@ -329,6 +363,9 @@ unzip -P mypassword archive.zip
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Listing zip Contents
 
 **List files in the archive:**
@@ -350,6 +387,9 @@ unzip -t archive.zip
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Common zip Examples
 
@@ -378,6 +418,9 @@ zip -r -s 100m archive.zip large_folder/
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### zip Flags Cheat Sheet
 
@@ -409,6 +452,9 @@ zip -r -s 100m archive.zip large_folder/
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## tar vs. zip
 
 | Feature | tar (+ gzip/xz) | zip |
@@ -427,6 +473,9 @@ zip -r -s 100m archive.zip large_folder/
 **Use `zip`** when sharing files with Windows users, when you need password protection for casual use, or when recipients need to extract individual files easily.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Tips, Tricks, and Gotchas
 
@@ -462,3 +511,9 @@ tar -czf - large_folder/ | pv > archive.tar.gz
 ---
 
 *Happy archiving!*
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

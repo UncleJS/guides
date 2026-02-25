@@ -13,6 +13,25 @@ Welcome to this comprehensive beginner's guide to Linux permissions! Linux is a 
 
 By the end, you'll understand how to view, modify, and manage permissions effectively. Let's dive in!
 
+
+## Table of Contents
+
+- [1. What Are Linux Permissions?](#1-what-are-linux-permissions)
+- [2. File Types in Linux](#2-file-types-in-linux)
+- [3. Viewing Permissions](#3-viewing-permissions)
+- [4. Understanding Permission Symbols](#4-understanding-permission-symbols)
+- [5. Owners and Groups](#5-owners-and-groups)
+- [6. Changing Permissions with `chmod`](#6-changing-permissions-with-chmod)
+  - [Symbolic Mode](#symbolic-mode)
+  - [Numeric (Octal) Mode](#numeric-octal-mode)
+- [7. Changing Ownership with `chown` and `chgrp`](#7-changing-ownership-with-chown-and-chgrp)
+- [8. Special Permissions](#8-special-permissions)
+- [9. Umask: Default Permissions](#9-umask-default-permissions)
+- [10. Access Control Lists (ACLs)](#10-access-control-lists-acls)
+- [11. Common Scenarios and Best Practices](#11-common-scenarios-and-best-practices)
+- [12. Tips for Beginners](#12-tips-for-beginners)
+
+---
 ## 1. What Are Linux Permissions?
 
 In Linux, every file and directory has associated permissions that define:
@@ -25,6 +44,9 @@ Permissions prevent unauthorized access, ensuring system stability and security.
 
 Permissions are stored in the file's metadata and can be viewed or changed using commands.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 2. File Types in Linux
 
 Before permissions, note that Linux treats everything as a file, but there are types indicated by the first character in listings:
@@ -36,6 +58,9 @@ Before permissions, note that Linux treats everything as a file, but there are t
 - `p`: Named pipe (for data streaming).
 
 You'll see this when using the `ls -l` command.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 3. Viewing Permissions
 
@@ -63,6 +88,9 @@ Breakdown:
 
 To view hidden files too, use `ls -la`.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 4. Understanding Permission Symbols
 
 Permissions are represented as three sets of `rwx` (read, write, execute) for:
@@ -84,6 +112,9 @@ In the example `-rw-r--r--`:
 
 For directories, `x` allows traversal (entering the directory), even if you can't list contents without `r`.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 5. Owners and Groups
 
 - **Owner**: The user who created the file (or last changed ownership). Defaults to your username.
@@ -93,9 +124,15 @@ View your groups: `groups` or `id`.
 
 Why groups? They allow shared access without giving everyone full rights. For example, a "developers" group can edit project files.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 6. Changing Permissions with `chmod`
 
 The `chmod` (change mode) command modifies permissions. It has two modes: symbolic and numeric (octal).
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Symbolic Mode
 Use letters like `u`, `g`, `o`, `a` with `+` (add), `-` (remove), `=` (set exactly).
@@ -107,6 +144,9 @@ Examples:
 - Make directory readable/executable by everyone: `chmod a+rx mydirectory`
 
 Apply recursively (for directories and contents): `chmod -R a+rx mydirectory`
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Numeric (Octal) Mode
 Permissions as numbers (base 8):
@@ -122,6 +162,9 @@ Examples:
 
 Octal is efficient for setting all at once.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 7. Changing Ownership with `chown` and `chgrp`
 
 - `chown` (change owner): Change owner and optionally group.
@@ -133,6 +176,9 @@ Octal is efficient for setting all at once.
   - Example: `chgrp developers projectfile.txt`
 
 These often require `sudo` if you're not root or the current owner.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 8. Special Permissions
 
@@ -148,6 +194,9 @@ In listings:
 
 Set with octal: Add 4 (setuid), 2 (setgid), 1 (sticky) as a fourth digit (e.g., `chmod 4755` for setuid + 755).
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 9. Umask: Default Permissions
 
 Umask sets default permissions for new files/directories by subtracting from 666 (files) or 777 (directories).
@@ -157,6 +206,9 @@ View umask: `umask` (e.g., 0022 means subtract 022, so files default to 644).
 Change: `umask 0027` (stricter defaults).
 
 It's per-session; edit ~/.bashrc for permanence.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 10. Access Control Lists (ACLs)
 
@@ -168,6 +220,9 @@ Basic permissions are limited to user/group/others. ACLs provide finer control, 
 - Remove: `setfacl -x u:alice file`
 
 ACLs are advanced but useful for shared environments. Install `acl` package if needed (e.g., `sudo apt install acl` on Ubuntu).
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 11. Common Scenarios and Best Practices
 
@@ -181,6 +236,9 @@ ACLs are advanced but useful for shared environments. Install `acl` package if n
 - **Troubleshooting**: "Permission denied"? Check with `ls -l` and adjust.
 - **Inheritance**: New files in directories inherit group if setgid is on.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 12. Tips for Beginners
 
 - Practice in a safe directory: `mkdir testdir; cd testdir; touch file1 file2`
@@ -190,3 +248,8 @@ ACLs are advanced but useful for shared environments. Install `acl` package if n
 - Experiment: Create users/groups with `useradd`/`groupadd` to test.
 
 If you encounter errors, search for them (e.g., "chmod permission denied"). This guide covers the essentials—happy Linuxing! If you have questions, feel free to ask.
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

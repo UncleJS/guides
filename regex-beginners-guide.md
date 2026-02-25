@@ -2,28 +2,60 @@
 
 Regular expressions (regex or regexp) are patterns used to search, match, and manipulate text. Once you understand them, they're one of the most powerful tools in any programmer's toolkit. This guide will take you from zero to functional in a logical, step-by-step way.
 
----
 
 ## Table of Contents
 
-1. [What Is a Regular Expression?](#what-is-a-regular-expression)
-2. [How to Read This Guide](#how-to-read-this-guide)
-3. [Literal Characters — The Basics](#literal-characters)
-4. [Special Characters (Metacharacters)](#metacharacters)
-5. [Character Classes](#character-classes)
-6. [Shorthand Character Classes](#shorthand-character-classes)
-7. [Anchors](#anchors)
-8. [Quantifiers](#quantifiers)
-9. [Grouping and Capturing](#grouping-and-capturing)
-10. [Alternation](#alternation)
-11. [Lookahead and Lookbehind](#lookahead-and-lookbehind)
-12. [Flags / Modifiers](#flags)
-13. [Common Patterns You Can Use Today](#common-patterns)
-14. [Putting It All Together](#putting-it-all-together)
-15. [Quick Reference Cheat Sheet](#cheat-sheet)
+- [1. What Is a Regular Expression? {#what-is-a-regular-expression}](#1-what-is-a-regular-expression-what-is-a-regular-expression)
+  - [A Simple Example](#a-simple-example)
+- [2. How to Read This Guide {#how-to-read-this-guide}](#2-how-to-read-this-guide-how-to-read-this-guide)
+- [3. Literal Characters {#literal-characters}](#3-literal-characters-literal-characters)
+- [4. Special Characters (Metacharacters) {#metacharacters}](#4-special-characters-metacharacters-metacharacters)
+  - [The Dot `.`](#the-dot)
+- [5. Character Classes {#character-classes}](#5-character-classes-character-classes)
+  - [Basic Character Classes](#basic-character-classes)
+  - [Ranges](#ranges)
+  - [Negated Character Classes](#negated-character-classes)
+- [6. Shorthand Character Classes {#shorthand-character-classes}](#6-shorthand-character-classes-shorthand-character-classes)
+- [7. Anchors {#anchors}](#7-anchors-anchors)
+  - [Start and End Anchors](#start-and-end-anchors)
+  - [Word Boundaries](#word-boundaries)
+- [8. Quantifiers {#quantifiers}](#8-quantifiers-quantifiers)
+  - [Examples](#examples)
+  - [Greedy vs. Lazy](#greedy-vs-lazy)
+- [9. Grouping and Capturing {#grouping-and-capturing}](#9-grouping-and-capturing-grouping-and-capturing)
+  - [Grouping](#grouping)
+  - [Capturing](#capturing)
+  - [Non-Capturing Groups](#non-capturing-groups)
+- [10. Alternation {#alternation}](#10-alternation-alternation)
+- [11. Lookahead and Lookbehind {#lookahead-and-lookbehind}](#11-lookahead-and-lookbehind-lookahead-and-lookbehind)
+  - [Positive Lookahead `(?=...)`](#positive-lookahead)
+  - [Negative Lookahead `(?!...)`](#negative-lookahead)
+  - [Positive Lookbehind `(?<=...)`](#positive-lookbehind)
+  - [Negative Lookbehind `(?<!...)`](#negative-lookbehind)
+- [12. Flags / Modifiers {#flags}](#12-flags-modifiers-flags)
+  - [Examples](#examples)
+- [13. Common Patterns You Can Use Today {#common-patterns}](#13-common-patterns-you-can-use-today-common-patterns)
+  - [Email Address (simple)](#email-address-simple)
+  - [URL](#url)
+  - [Phone Number (US format)](#phone-number-us-format)
+  - [Date (YYYY-MM-DD)](#date-yyyy-mm-dd)
+  - [IPv4 Address](#ipv4-address)
+  - [Hex Color Code](#hex-color-code)
+  - [ZIP Code (US)](#zip-code-us)
+  - [Strong Password (8+ chars, upper, lower, digit, special char)](#strong-password-8-chars-upper-lower-digit-special-char)
+  - [Whitespace-only lines](#whitespace-only-lines)
+  - [Trim leading/trailing whitespace](#trim-leadingtrailing-whitespace)
+- [14. Putting It All Together {#putting-it-all-together}](#14-putting-it-all-together-putting-it-all-together)
+- [15. Quick Reference Cheat Sheet {#cheat-sheet}](#15-quick-reference-cheat-sheet-cheat-sheet)
+  - [Characters](#characters)
+  - [Character Classes](#character-classes)
+  - [Anchors](#anchors)
+  - [Quantifiers](#quantifiers)
+  - [Groups](#groups)
+  - [Common Flags](#common-flags)
+- [Next Steps](#next-steps)
 
 ---
-
 ## 1. What Is a Regular Expression? {#what-is-a-regular-expression}
 
 A regular expression is a **sequence of characters that defines a search pattern**. You can use it to:
@@ -34,6 +66,9 @@ A regular expression is a **sequence of characters that defines a search pattern
 - **Validate** input (e.g., check that a password meets complexity rules)
 
 Regex is supported in almost every programming language (Python, JavaScript, Java, Ruby, Go, etc.) and in many text editors (VS Code, Sublime Text, Notepad++).
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### A Simple Example
 
@@ -46,6 +81,9 @@ The cat sat on the mat.
 The regex `cat` matches the word "cat" in that string. Simple enough. But regex really shines when you need patterns, not just fixed words. The regex `[cm]at` matches both "cat" and "mat" — because `[cm]` means "either c or m."
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 2. How to Read This Guide {#how-to-read-this-guide}
 
@@ -64,6 +102,9 @@ You can test all examples interactively at **regex101.com** — paste in a patte
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 3. Literal Characters {#literal-characters}
 
 The simplest regex is just a sequence of literal characters. The pattern matches exactly those characters, in that order.
@@ -77,6 +118,9 @@ The simplest regex is just a sequence of literal characters. The pattern matches
 **Key point:** By default, regex is **case-sensitive**. `/Love/` would *not* match "love". (We'll cover how to change this with flags later.)
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 4. Special Characters (Metacharacters) {#metacharacters}
 
@@ -95,6 +139,9 @@ If you want to match one of these characters *literally*, you must **escape** it
 | A literal parenthesis `(` | `\(` |
 | A literal backslash `\` | `\\` |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### The Dot `.`
 
 The dot `.` is the wildcard character. It matches **any single character** except a newline.
@@ -109,9 +156,15 @@ The dot does **not** match "ct" (no character between c and t) or "coat" (two ch
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 5. Character Classes {#character-classes}
 
 A **character class** is a set of characters inside square brackets `[ ]`. It matches **one character** from the set.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Basic Character Classes
 
@@ -127,6 +180,9 @@ Input:    The cat sat on the mat.
 Matches:  The [cat] sat on the [mat].
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Ranges
 
 Inside a character class, you can use a **hyphen `-`** to specify a range of characters:
@@ -138,6 +194,9 @@ Inside a character class, you can use a **hyphen `-`** to specify a range of cha
 | `[0-9]` | Any digit |
 | `[a-zA-Z]` | Any letter, upper or lower |
 | `[a-zA-Z0-9]` | Any letter or digit |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Negated Character Classes
 
@@ -159,6 +218,9 @@ Matches:  [h]e[ll][o]  →  h, l, l are matched
 > - Outside `[ ]`: means "start of line" (covered in Anchors)
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 6. Shorthand Character Classes {#shorthand-character-classes}
 
@@ -182,6 +244,9 @@ Matches:  My ZIP code is [902]10.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 7. Anchors {#anchors}
 
 Anchors don't match characters — they match **positions** in the string.
@@ -192,6 +257,9 @@ Anchors don't match characters — they match **positions** in the string.
 | `$` | At the **end** of the string (or line) |
 | `\b` | At a **word boundary** (transition between `\w` and `\W`) |
 | `\B` | At a **non-word boundary** |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Start and End Anchors
 
@@ -211,6 +279,9 @@ Input:    Hello, world!
 Match:    Hello, [world!]    ✅ matches (world! is at end)
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Word Boundaries
 
 `\b` is incredibly useful for matching whole words rather than partial matches:
@@ -229,6 +300,9 @@ Matches:  The [cat] scattered across the catfish.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 8. Quantifiers {#quantifiers}
 
 Quantifiers specify **how many times** the preceding element must appear.
@@ -241,6 +315,9 @@ Quantifiers specify **how many times** the preceding element must appear.
 | `{n}` | Exactly n times |
 | `{n,}` | At least n times |
 | `{n,m}` | Between n and m times (inclusive) |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Examples
 
@@ -265,6 +342,9 @@ Pattern:  /\d{2,4}/
 Matches:  "12", "123", "1234"
 (between 2 and 4 digits)
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Greedy vs. Lazy
 
@@ -295,9 +375,15 @@ Match:    [<div>]Hello[</div>]
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 9. Grouping and Capturing {#grouping-and-capturing}
 
 Parentheses `( )` serve two purposes: **grouping** and **capturing**.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Grouping
 
@@ -311,6 +397,9 @@ Matches:  "ab", "abab", "ababab"
 Pattern:  /gr(a|e)y/
 Matches:  "gray" and "grey"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Capturing
 
@@ -337,6 +426,9 @@ Matches:  This [is is] a [test test].
 (\1 matches whatever group 1 captured)
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Non-Capturing Groups
 
 If you just want to group without capturing, use `(?:...)`:
@@ -349,6 +441,9 @@ Pattern:  /(?:ab)+/
 This is slightly more efficient and keeps your group numbering clean.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 10. Alternation {#alternation}
 
@@ -369,9 +464,15 @@ Matches:  "I have a cat" or "I have a dog"
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 11. Lookahead and Lookbehind {#lookahead-and-lookbehind}
 
 **Lookarounds** let you match something only if it is (or isn't) preceded or followed by something else — without including that something else in the match. They are **zero-width** assertions (they don't consume characters).
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Positive Lookahead `(?=...)`
 
@@ -384,6 +485,9 @@ Match:    I have [50] dollars and 30 euros.
 (matches "50" only because it's followed by " dollars")
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Negative Lookahead `(?!...)`
 
 Match X only if NOT followed by Y:
@@ -395,6 +499,9 @@ Match:    I have 50 dollars and [30] euros.
 (matches "30" because it is NOT followed by " dollars")
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Positive Lookbehind `(?<=...)`
 
 Match X only if preceded by Y:
@@ -405,6 +512,9 @@ Input:    The price is $42.
 Match:    The price is $[42].
 (matches "42" only because it's preceded by "$")
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Negative Lookbehind `(?<!...)`
 
@@ -421,6 +531,9 @@ Match:    I have $100 and [50] apples.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 12. Flags / Modifiers {#flags}
 
 Flags change how the entire pattern behaves. They're placed after the closing `/` in languages that use slash delimiters.
@@ -432,6 +545,9 @@ Flags change how the entire pattern behaves. They're placed after the closing `/
 | `m` | Multiline | `^` and `$` match start/end of each **line**, not just the whole string |
 | `s` | Dotall | Makes `.` match **newlines** too |
 | `x` | Extended / Verbose | Allows whitespace and comments in pattern (for readability) |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Examples
 
@@ -449,19 +565,31 @@ re.findall(r"cat", "CAT cat Cat", re.IGNORECASE)  # ['CAT', 'cat', 'Cat']
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 13. Common Patterns You Can Use Today {#common-patterns}
 
 Here are battle-tested regex patterns for everyday use. Don't worry about understanding every detail — you can learn from them over time.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Email Address (simple)
 ```
 /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### URL
 ```
 /https?:\/\/[^\s/$.?#].[^\s]*/
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Phone Number (US format)
 ```
@@ -469,15 +597,24 @@ Here are battle-tested regex patterns for everyday use. Don't worry about unders
 ```
 Matches: (555) 123-4567, 555.123.4567, 5551234567
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Date (YYYY-MM-DD)
 ```
 /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### IPv4 Address
 ```
 /^(\d{1,3}\.){3}\d{1,3}$/
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Hex Color Code
 ```
@@ -485,20 +622,32 @@ Matches: (555) 123-4567, 555.123.4567, 5551234567
 ```
 Matches: #FF5733, #fff
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### ZIP Code (US)
 ```
 /^\d{5}(-\d{4})?$/
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Strong Password (8+ chars, upper, lower, digit, special char)
 ```
 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Whitespace-only lines
 ```
 /^\s*$/
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Trim leading/trailing whitespace
 ```
@@ -507,6 +656,9 @@ Replace with:    (empty string)
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 14. Putting It All Together {#putting-it-all-together}
 
@@ -547,7 +699,13 @@ Matches:  [#sunset], [#travel], [#photography2024]
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 15. Quick Reference Cheat Sheet {#cheat-sheet}
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Characters
 
@@ -558,6 +716,9 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `\.` | A literal dot |
 | `\n` | Newline |
 | `\t` | Tab |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Character Classes
 
@@ -575,6 +736,9 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `\s` | Whitespace |
 | `\S` | Non-whitespace |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Anchors
 
 | Pattern | Position |
@@ -583,6 +747,9 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `$` | End of string/line |
 | `\b` | Word boundary |
 | `\B` | Non-word boundary |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Quantifiers
 
@@ -596,6 +763,9 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `{n,m}` | Between n and m |
 | `*?` `+?` | Lazy versions |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Groups
 
 | Pattern | Meaning |
@@ -608,6 +778,9 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `(?<=abc)` | Positive lookbehind |
 | `(?<!abc)` | Negative lookbehind |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Common Flags
 
 | Flag | Meaning |
@@ -618,6 +791,9 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `s` | Dotall (`.` matches newline) |
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Next Steps
 
@@ -630,3 +806,9 @@ Now that you have the fundamentals, here's how to keep improving:
 5. **Don't memorize everything** — keep this cheat sheet handy and look things up. Even experienced developers do.
 
 The biggest leap in regex mastery comes from reading other people's patterns and understanding *why* they're written the way they are. Good luck!
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

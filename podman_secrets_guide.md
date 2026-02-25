@@ -4,11 +4,48 @@
 
 ---
 
+
+## Table of Contents
+
+- [1. Overview](#1-overview)
+- [2. Architecture](#2-architecture)
+- [3. Basic Secret Operations](#3-basic-secret-operations)
+  - [3.1 Create Secrets](#31-create-secrets)
+  - [3.2 List Secrets](#32-list-secrets)
+  - [3.3 Inspect Secrets](#33-inspect-secrets)
+  - [3.4 Remove Secrets](#34-remove-secrets)
+- [4. Using Secrets in Containers](#4-using-secrets-in-containers)
+  - [4.1 Basic Mount](#41-basic-mount)
+  - [4.2 Custom Target Path](#42-custom-target-path)
+  - [4.3 Custom UID/GID](#43-custom-uidgid)
+  - [4.4 Custom Permissions](#44-custom-permissions)
+  - [4.5 Environment Variable Type](#45-environment-variable-type)
+- [5. Secrets in Pods](#5-secrets-in-pods)
+- [6. Kubernetes YAML Integration](#6-kubernetes-yaml-integration)
+- [7. Systemd Integration](#7-systemd-integration)
+  - [7.1 Container Unit File](#71-container-unit-file)
+  - [7.2 Activation](#72-activation)
+- [8. Security Best Practices](#8-security-best-practices)
+- [9. Advanced Patterns](#9-advanced-patterns)
+  - [9.1 Multi-Secret Application](#91-multi-secret-application)
+  - [9.2 Secret Rotation Script](#92-secret-rotation-script)
+  - [9.3 External Secret Manager Integration](#93-external-secret-manager-integration)
+- [10. Troubleshooting](#10-troubleshooting)
+- [11. Performance Considerations](#11-performance-considerations)
+- [12. CLI Reference](#12-cli-reference)
+- [13. Secrets vs Alternatives](#13-secrets-vs-alternatives)
+- [14. RHEL 10 Specific Features](#14-rhel-10-specific-features)
+- [15. References](#15-references)
+
+---
 ## 1. Overview
 
 Podman secrets provide secure storage and management of sensitive data (passwords, keys, tokens) for containers. Unlike environment variables or bind mounts, secrets are stored encrypted and accessed via tmpfs, never written to disk in plaintext.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 2. Architecture
 
@@ -19,7 +56,13 @@ Podman secrets provide secure storage and management of sensitive data (password
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 3. Basic Secret Operations
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 3.1 Create Secrets
 
@@ -38,12 +81,18 @@ podman secret create tls_cert /path/to/cert.pem
 echo "$API_KEY" | podman secret create api_key -
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 3.2 List Secrets
 
 ```bash
 podman secret ls
 podman secret ls --format json
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 3.3 Inspect Secrets
 
@@ -52,6 +101,9 @@ podman secret inspect db_password
 ```
 
 **Note:** Cannot retrieve secret value after creation (security feature)
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 3.4 Remove Secrets
 
@@ -62,7 +114,13 @@ podman secret rm secret1 secret2  # multiple
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 4. Using Secrets in Containers
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 4.1 Basic Mount
 
@@ -72,11 +130,17 @@ podman run --secret db_password nginx
 
 Secret accessible at: `/run/secrets/db_password`
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 4.2 Custom Target Path
 
 ```bash
 podman run --secret db_password,target=/app/password nginx
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 4.3 Custom UID/GID
 
@@ -84,11 +148,17 @@ podman run --secret db_password,target=/app/password nginx
 podman run --secret db_password,uid=1000,gid=1000 nginx
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 4.4 Custom Permissions
 
 ```bash
 podman run --secret db_password,mode=0440 nginx
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 4.5 Environment Variable Type
 
@@ -99,6 +169,9 @@ podman run --secret db_password,type=env,target=DB_PASS nginx
 Injects as environment variable `DB_PASS` instead of file
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 5. Secrets in Pods
 
@@ -113,6 +186,9 @@ podman run -d --pod mypod --name app2 redis
 Both containers access `/run/secrets/db_password`
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 6. Kubernetes YAML Integration
 
@@ -152,7 +228,13 @@ podman play kube deployment.yaml
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 7. Systemd Integration
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 7.1 Container Unit File
 
@@ -174,6 +256,9 @@ Restart=always
 WantedBy=default.target
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 7.2 Activation
 
 ```bash
@@ -182,6 +267,9 @@ systemctl --user enable --now webapp.container
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 8. Security Best Practices
 
@@ -196,7 +284,13 @@ systemctl --user enable --now webapp.container
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 9. Advanced Patterns
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 9.1 Multi-Secret Application
 
@@ -210,6 +304,9 @@ podman run -d \
   --secret tls_key,target=/etc/ssl/private/app.key,mode=0400 \
   myapp:latest
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 9.2 Secret Rotation Script
 
@@ -225,6 +322,9 @@ podman secret rm db_password_new
 podman run -d --name webapp --secret db_password myapp:latest
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 9.3 External Secret Manager Integration
 
 **Vault integration example:**
@@ -235,6 +335,9 @@ vault kv get -field=password secret/db | \
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 10. Troubleshooting
 
@@ -248,6 +351,9 @@ vault kv get -field=password secret/db | \
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 11. Performance Considerations
 
 - **Tmpfs overhead:** Minimal, mounted in-memory per container
@@ -256,6 +362,9 @@ vault kv get -field=password secret/db | \
 - **Startup time:** Negligible impact (<10ms per secret)
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## 12. CLI Reference
 
@@ -273,6 +382,9 @@ vault kv get -field=password secret/db | \
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 13. Secrets vs Alternatives
 
 | Method | Security | Persistence | Use Case |
@@ -284,6 +396,9 @@ vault kv get -field=password secret/db | \
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 14. RHEL 10 Specific Features
 
 - **Podman 5.x:** Enhanced secret driver support, improved passthrough security
@@ -294,9 +409,18 @@ vault kv get -field=password secret/db | \
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## 15. References
 
 - Official docs: `podman-secret(1)`, `podman-run(1)`, `podman-pod-create(1)`
 - RHEL 10 Security Guide: containers.podman.io/security
 - SELinux policy: selinux-policy-devel, container_secrets.te
 - Quadlet spec: docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

@@ -1,5 +1,38 @@
 # A Beginner's Guide to SSH
 
+
+## Table of Contents
+
+- [What is SSH?](#what-is-ssh)
+- [How SSH Works (The Short Version)](#how-ssh-works-the-short-version)
+- [Installing SSH](#installing-ssh)
+  - [Linux](#linux)
+  - [macOS](#macos)
+  - [Windows](#windows)
+- [Connecting to a Remote Server](#connecting-to-a-remote-server)
+- [Generating SSH Keys](#generating-ssh-keys)
+  - [What happens next](#what-happens-next)
+- [Copying Your Public Key to a Server](#copying-your-public-key-to-a-server)
+  - [The easy way](#the-easy-way)
+  - [The manual way](#the-manual-way)
+- [The SSH Config File](#the-ssh-config-file)
+  - [Common config options](#common-config-options)
+- [Common SSH Commands](#common-ssh-commands)
+  - [Run a single command remotely](#run-a-single-command-remotely)
+  - [Copy files with SCP (Secure Copy)](#copy-files-with-scp-secure-copy)
+  - [Transfer files with SFTP](#transfer-files-with-sftp)
+  - [Rsync over SSH (for syncing directories)](#rsync-over-ssh-for-syncing-directories)
+- [SSH Tunneling](#ssh-tunneling)
+  - [Local Port Forwarding](#local-port-forwarding)
+  - [Remote Port Forwarding](#remote-port-forwarding)
+  - [Dynamic Port Forwarding (SOCKS Proxy)](#dynamic-port-forwarding-socks-proxy)
+- [SSH Agent](#ssh-agent)
+- [Securing Your SSH Server](#securing-your-ssh-server)
+- [Troubleshooting](#troubleshooting)
+- [Quick Reference](#quick-reference)
+- [Next Steps](#next-steps)
+
+---
 ## What is SSH?
 
 SSH (Secure Shell) is a cryptographic network protocol that lets you securely connect to and control remote computers over an unsecured network. Think of it as a secure, encrypted tunnel between your computer and another machine — anything you type or receive travels through that tunnel, invisible to anyone who might be watching.
@@ -7,6 +40,9 @@ SSH (Secure Shell) is a cryptographic network protocol that lets you securely co
 SSH replaced older, insecure protocols like Telnet and rsh, and is now the standard way to manage remote servers, transfer files, and even tunnel other traffic.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## How SSH Works (The Short Version)
 
@@ -21,7 +57,13 @@ You can also authenticate with a **password**, though key-based authentication i
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Installing SSH
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Linux
 Most Linux distributions ship with OpenSSH pre-installed. If not:
@@ -45,8 +87,14 @@ sudo dnf install openssh-server
 sudo systemctl enable --now sshd
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### macOS
 SSH comes pre-installed. Just open Terminal and you're ready.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Windows
 Windows 10/11 includes a built-in OpenSSH client. Enable it via:
@@ -55,6 +103,9 @@ Windows 10/11 includes a built-in OpenSSH client. Enable it via:
 Alternatively, use [PuTTY](https://www.putty.org/) or [Windows Terminal](https://aka.ms/terminal) with WSL.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Connecting to a Remote Server
 
@@ -92,6 +143,9 @@ Type `yes` to accept and save the server's fingerprint to `~/.ssh/known_hosts`. 
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Generating SSH Keys
 
 Using SSH keys is more secure than passwords. Here's how to generate a key pair:
@@ -108,6 +162,9 @@ You can also use RSA if Ed25519 isn't supported by your target system:
 ```bash
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### What happens next
 
@@ -126,9 +183,15 @@ This creates two files:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Copying Your Public Key to a Server
 
 To enable key-based login, your public key must be added to `~/.ssh/authorized_keys` on the remote server.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### The easy way
 
@@ -137,6 +200,9 @@ ssh-copy-id username@hostname
 ```
 
 This automatically appends your public key to the server's `authorized_keys` file.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### The manual way
 
@@ -154,6 +220,9 @@ chmod 600 ~/.ssh/authorized_keys
 > **Note:** File permissions matter. SSH will refuse to use keys if the permissions are too open.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## The SSH Config File
 
@@ -179,6 +248,9 @@ ssh myserver
 ssh work
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Common config options
 
 | Option | Description |
@@ -192,13 +264,22 @@ ssh work
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common SSH Commands
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Run a single command remotely
 
 ```bash
 ssh alice@example.com "ls -la /var/www"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Copy files with SCP (Secure Copy)
 
@@ -213,6 +294,9 @@ scp alice@example.com:/home/alice/file.txt ./
 scp -r my_folder/ alice@example.com:/home/alice/
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Transfer files with SFTP
 
 ```bash
@@ -220,6 +304,9 @@ sftp alice@example.com
 ```
 
 Inside SFTP, you can use commands like `ls`, `cd`, `get`, `put`, `mkdir`, and `exit`.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Rsync over SSH (for syncing directories)
 
@@ -229,9 +316,15 @@ rsync -avz -e ssh my_folder/ alice@example.com:/home/alice/my_folder/
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## SSH Tunneling
 
 SSH can forward ports and create encrypted tunnels — useful for accessing services that aren't publicly exposed.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Local Port Forwarding
 
@@ -243,6 +336,9 @@ ssh -L 8080:localhost:80 alice@example.com
 
 Now visiting `http://localhost:8080` on your machine connects to port 80 on the remote server.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Remote Port Forwarding
 
 Expose a local port on the remote server:
@@ -252,6 +348,9 @@ ssh -R 9090:localhost:3000 alice@example.com
 ```
 
 Now port 9090 on the remote server connects back to port 3000 on your machine.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Dynamic Port Forwarding (SOCKS Proxy)
 
@@ -264,6 +363,9 @@ ssh -D 1080 alice@example.com
 Then configure your browser to use `SOCKS5 localhost:1080` as a proxy.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## SSH Agent
 
@@ -283,6 +385,9 @@ ssh-add -l
 On macOS, keys added with `ssh-add --apple-use-keychain` persist across reboots via Keychain.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Securing Your SSH Server
 
@@ -318,6 +423,9 @@ sudo systemctl restart sshd
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Troubleshooting
 
 **"Permission denied (publickey)"**
@@ -348,6 +456,9 @@ ssh -vvv alice@example.com
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Quick Reference
 
 | Command | Description |
@@ -365,6 +476,9 @@ ssh -vvv alice@example.com
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Next Steps
 
 Now that you have the basics down, here are some things to explore:
@@ -376,3 +490,9 @@ Now that you have the basics down, here are some things to explore:
 - **Mosh** — a more resilient alternative to SSH for unstable connections
 
 SSH is one of the most powerful tools in a developer's or sysadmin's toolkit. With these fundamentals, you're well on your way to managing remote systems confidently and securely.
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

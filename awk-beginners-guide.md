@@ -2,29 +2,75 @@
 
 AWK is a powerful text-processing language that has been a staple of Unix systems since the 1970s. Named after its creators — **A**ho, **W**einberger, and **K**ernighan — it excels at processing structured text, extracting fields, and generating reports. If you work with log files, CSVs, or any columnar data, AWK will change your life.
 
----
 
 ## Table of Contents
 
-1. [What is AWK?](#what-is-awk)
-2. [Basic Syntax](#basic-syntax)
-3. [Running AWK](#running-awk)
-4. [Records and Fields](#records-and-fields)
-5. [Built-in Variables](#built-in-variables)
-6. [Patterns](#patterns)
-7. [Actions](#actions)
-8. [Arithmetic and String Operations](#arithmetic-and-string-operations)
-9. [Built-in Functions](#built-in-functions)
-10. [Control Flow](#control-flow)
-11. [Arrays](#arrays)
-12. [BEGIN and END Blocks](#begin-and-end-blocks)
-13. [Multiple Input Files](#multiple-input-files)
-14. [AWK Scripts](#awk-scripts)
-15. [Common Real-World Examples](#common-real-world-examples)
-16. [Tips and Gotchas](#tips-and-gotchas)
+- [What is AWK?](#what-is-awk)
+- [Basic Syntax](#basic-syntax)
+- [Running AWK](#running-awk)
+  - [Inline (one-liner)](#inline-one-liner)
+  - [Piped input](#piped-input)
+  - [From a script file](#from-a-script-file)
+  - [Passing variables with -v](#passing-variables-with-v)
+- [Records and Fields](#records-and-fields)
+  - [Records](#records)
+  - [Fields](#fields)
+  - [Changing the field separator](#changing-the-field-separator)
+  - [Modifying fields](#modifying-fields)
+- [Built-in Variables](#built-in-variables)
+  - [OFS and ORS examples](#ofs-and-ors-examples)
+  - [NR and FNR](#nr-and-fnr)
+- [Patterns](#patterns)
+  - [No pattern](#no-pattern)
+  - [Regular expression pattern](#regular-expression-pattern)
+  - [Comparison pattern](#comparison-pattern)
+  - [Range pattern](#range-pattern)
+  - [Compound patterns](#compound-patterns)
+- [Actions](#actions)
+  - [print vs printf](#print-vs-printf)
+  - [Redirecting output](#redirecting-output)
+- [Arithmetic and String Operations](#arithmetic-and-string-operations)
+  - [Arithmetic](#arithmetic)
+  - [String concatenation](#string-concatenation)
+  - [Comparison operators](#comparison-operators)
+  - [String matching operators](#string-matching-operators)
+- [Built-in Functions](#built-in-functions)
+  - [String functions](#string-functions)
+  - [Numeric functions](#numeric-functions)
+- [Control Flow](#control-flow)
+  - [if / else](#if-else)
+  - [while loop](#while-loop)
+  - [for loop](#for-loop)
+  - [do-while loop](#do-while-loop)
+  - [next and exit](#next-and-exit)
+- [Arrays](#arrays)
+  - [Checking if a key exists](#checking-if-a-key-exists)
+  - [Deleting elements](#deleting-elements)
+  - [Multi-dimensional arrays](#multi-dimensional-arrays)
+- [BEGIN and END Blocks](#begin-and-end-blocks)
+- [Multiple Input Files](#multiple-input-files)
+- [AWK Scripts](#awk-scripts)
+- [Common Real-World Examples](#common-real-world-examples)
+  - [Print specific columns](#print-specific-columns)
+  - [Print line numbers](#print-line-numbers)
+  - [Sum a column](#sum-a-column)
+  - [Calculate average](#calculate-average)
+  - [Filter rows by value](#filter-rows-by-value)
+  - [Print lines between two patterns](#print-lines-between-two-patterns)
+  - [Remove duplicate lines (maintaining order)](#remove-duplicate-lines-maintaining-order)
+  - [Print the last field of every line](#print-the-last-field-of-every-line)
+  - [Reverse the order of fields](#reverse-the-order-of-fields)
+  - [Count lines matching a pattern](#count-lines-matching-a-pattern)
+  - [Extract unique values from a column](#extract-unique-values-from-a-column)
+  - [Add a header and footer to output](#add-a-header-and-footer-to-output)
+  - [Compute word frequency](#compute-word-frequency)
+  - [Parse Apache/Nginx access logs](#parse-apachenginx-access-logs)
+  - [Join two files on a common key](#join-two-files-on-a-common-key)
+  - [Find the maximum value in a column](#find-the-maximum-value-in-a-column)
+- [Tips and Gotchas](#tips-and-gotchas)
+- [Quick Reference Card](#quick-reference-card)
 
 ---
-
 ## What is AWK?
 
 AWK reads input line by line, splits each line into fields, and lets you apply rules to process those fields. It's not a general-purpose programming language — it's purpose-built for text transformation, filtering, and reporting.
@@ -41,6 +87,9 @@ AWK is installed by default on virtually every Unix, Linux, and macOS system. Yo
 The examples in this guide work with all common variants unless noted.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Basic Syntax
 
@@ -71,9 +120,15 @@ $3 > 100 { print }
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Running AWK
 
 You can run AWK directly from the command line or from a script file.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Inline (one-liner)
 
@@ -86,6 +141,9 @@ awk 'program' file
 awk '{ print $2 }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Piped input
 
 ```bash
@@ -93,11 +151,17 @@ echo "hello world" | awk '{ print $1 }'
 # Output: hello
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### From a script file
 
 ```bash
 awk -f myscript.awk data.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Passing variables with -v
 
@@ -107,13 +171,22 @@ awk -v threshold=50 '$3 > threshold { print }' data.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Records and Fields
 
 This is the heart of AWK.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Records
 
 By default, AWK reads one **record** (line) at a time. The record separator is stored in the variable `RS` (record separator), which defaults to a newline `\n`.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Fields
 
@@ -129,6 +202,9 @@ Each record is split into **fields** by the **field separator** `FS`, which defa
 echo "Alice 30 Engineer" | awk '{ print $1, $3 }'
 # Output: Alice Engineer
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Changing the field separator
 
@@ -148,6 +224,9 @@ You can use a regex as the separator:
 awk -F'[,;]' '{ print $2 }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Modifying fields
 
 You can assign to fields, which rebuilds `$0`:
@@ -158,6 +237,9 @@ echo "hello world" | awk '{ $2 = "AWK"; print $0 }'
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Built-in Variables
 
@@ -174,6 +256,9 @@ AWK has a set of useful built-in variables you can read or set.
 | `FNR` | Record number within the current file | — |
 | `FILENAME` | Name of the current input file | — |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### OFS and ORS examples
 
 ```bash
@@ -183,6 +268,9 @@ awk 'BEGIN { OFS="," } { print $1, $3 }' data.txt
 # Print records separated by blank lines
 awk 'BEGIN { ORS="\n\n" } { print }' data.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### NR and FNR
 
@@ -198,9 +286,15 @@ awk 'FNR == 1 { print FILENAME, $0 }' file1.txt file2.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Patterns
 
 Patterns are conditions that control when an action runs.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### No pattern
 
@@ -209,6 +303,9 @@ The action runs on every line.
 ```bash
 awk '{ print $1 }' file.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Regular expression pattern
 
@@ -222,6 +319,9 @@ awk '/ERROR/ { print }' app.log
 awk '!/DEBUG/ { print }' app.log
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Comparison pattern
 
 ```bash
@@ -229,6 +329,9 @@ awk '$3 > 100 { print }' data.txt
 awk '$1 == "Alice" { print }' data.txt
 awk 'NR > 5 && NR < 10 { print }' data.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Range pattern
 
@@ -239,6 +342,9 @@ awk '/START/,/END/ { print }' file.txt
 ```
 
 This prints every line from the first occurrence of "START" through the first occurrence of "END".
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Compound patterns
 
@@ -251,9 +357,15 @@ awk '/error/ || /warning/ { print }' app.log
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Actions
 
 Actions are enclosed in `{ }` and can contain multiple statements separated by semicolons or newlines.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### print vs printf
 
@@ -280,6 +392,9 @@ Common printf format specifiers:
 | `%-10s` | left-aligned string, width 10 |
 | `%05d` | zero-padded integer, width 5 |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Redirecting output
 
 ```bash
@@ -295,7 +410,13 @@ awk '{ print $1 | "sort" }' data.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Arithmetic and String Operations
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Arithmetic
 
@@ -308,6 +429,9 @@ awk '{ total += $3 } END { print total }' data.txt
 
 AWK performs automatic type conversion — a string that looks like a number is treated as one in numeric contexts.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### String concatenation
 
 Strings are concatenated simply by placing them next to each other:
@@ -315,6 +439,9 @@ Strings are concatenated simply by placing them next to each other:
 ```bash
 awk '{ full = $1 " " $2; print full }' data.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Comparison operators
 
@@ -324,6 +451,9 @@ awk '{ full = $1 " " $2; print full }' data.txt
 awk '$1 == "Alice" { print }' data.txt   # string comparison
 awk '$2 == 30 { print }' data.txt        # numeric comparison
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### String matching operators
 
@@ -337,7 +467,13 @@ awk '$1 !~ /^A/ { print }' data.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Built-in Functions
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### String functions
 
@@ -369,6 +505,9 @@ awk '{ gsub(/foo/, "bar"); print }' file.txt
 awk '{ n = split($3, parts, ","); for (i=1; i<=n; i++) print parts[i] }' file.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Numeric functions
 
 | Function | Description |
@@ -389,9 +528,15 @@ awk 'BEGIN { srand(); print int(rand() * 100) }'
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Control Flow
 
 AWK supports familiar control flow structures.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### if / else
 
@@ -405,6 +550,9 @@ awk '{
 }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### while loop
 
 ```bash
@@ -416,6 +564,9 @@ awk '{
     }
 }' data.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### for loop
 
@@ -435,6 +586,9 @@ awk '{
 }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### do-while loop
 
 ```bash
@@ -446,6 +600,9 @@ awk 'BEGIN {
     } while (i <= 5)
 }'
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### next and exit
 
@@ -462,6 +619,9 @@ awk 'NR > 100 { exit } { print }' file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Arrays
 
 AWK arrays are associative (like dictionaries/hash maps). Keys can be strings or numbers.
@@ -471,6 +631,9 @@ AWK arrays are associative (like dictionaries/hash maps). Keys can be strings or
 awk '{ count[$1]++ } END { for (name in count) print name, count[name] }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Checking if a key exists
 
 ```bash
@@ -479,12 +642,18 @@ awk '{
 }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Deleting elements
 
 ```bash
 delete count["Alice"]   # delete one element
 delete count            # delete the entire array
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Multi-dimensional arrays
 
@@ -496,6 +665,9 @@ awk '{ grid[$1, $2]++ }' data.txt           # all AWK (uses SUBSEP as separator)
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## BEGIN and END Blocks
 
@@ -528,6 +700,9 @@ awk 'BEGIN { print 2^10 }'
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Multiple Input Files
 
 AWK handles multiple files naturally:
@@ -547,6 +722,9 @@ awk 'FNR == NR { store[$1] = $2; next } { print $1, store[$1] }' lookup.txt data
 This classic idiom loads `lookup.txt` into an array (when `FNR == NR`, we're on the first file), then uses it while processing `data.txt`.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## AWK Scripts
 
@@ -584,7 +762,13 @@ chmod +x report.awk
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common Real-World Examples
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Print specific columns
 
@@ -592,11 +776,17 @@ chmod +x report.awk
 awk '{ print $1, $3 }' file.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Print line numbers
 
 ```bash
 awk '{ print NR": "$0 }' file.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Sum a column
 
@@ -604,11 +794,17 @@ awk '{ print NR": "$0 }' file.txt
 awk '{ sum += $2 } END { print "Total:", sum }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Calculate average
 
 ```bash
 awk '{ sum += $2 } END { print "Average:", sum/NR }' data.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Filter rows by value
 
@@ -616,11 +812,17 @@ awk '{ sum += $2 } END { print "Average:", sum/NR }' data.txt
 awk -F',' '$4 > 1000 { print }' sales.csv
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Print lines between two patterns
 
 ```bash
 awk '/BEGIN_SECTION/,/END_SECTION/' file.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Remove duplicate lines (maintaining order)
 
@@ -628,11 +830,17 @@ awk '/BEGIN_SECTION/,/END_SECTION/' file.txt
 awk '!seen[$0]++' file.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Print the last field of every line
 
 ```bash
 awk '{ print $NF }' file.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Reverse the order of fields
 
@@ -640,11 +848,17 @@ awk '{ print $NF }' file.txt
 awk '{ for (i=NF; i>=1; i--) printf "%s%s", $i, (i>1 ? OFS : ORS) }' file.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Count lines matching a pattern
 
 ```bash
 awk '/error/ { count++ } END { print count }' app.log
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Extract unique values from a column
 
@@ -652,11 +866,17 @@ awk '/error/ { count++ } END { print count }' app.log
 awk '!seen[$1]++ { print $1 }' data.txt
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Add a header and footer to output
 
 ```bash
 awk 'BEGIN { print "=== Report ===" } { print } END { print "=== End ===" }' file.txt
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Compute word frequency
 
@@ -668,12 +888,18 @@ awk '{
 }' document.txt | sort -rn | head -20
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Parse Apache/Nginx access logs
 
 ```bash
 # Print IP address and status code from a common log format
 awk '{ print $1, $9 }' access.log | sort | uniq -c | sort -rn
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Join two files on a common key
 
@@ -682,6 +908,9 @@ awk '{ print $1, $9 }' access.log | sort | uniq -c | sort -rn
 awk -F',' 'FNR==NR { map[$1]=$2; next } { print $0, map[$1] }' file1.csv file2.csv
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Find the maximum value in a column
 
 ```bash
@@ -689,6 +918,9 @@ awk 'NR==1 || $3 > max { max=$3 } END { print "Max:", max }' data.txt
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Tips and Gotchas
 
@@ -721,6 +953,9 @@ awk 'BEGIN { RS=""; FS="\n" } { print "Record:", NR; print "Lines:", NF }' parag
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Quick Reference Card
 
@@ -762,3 +997,9 @@ Useful one-liners:
 ---
 
 *Happy AWKing! Once you internalize the pattern-action model, you'll find yourself reaching for AWK constantly for quick data wrangling tasks that would take far more code in any other language.*
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

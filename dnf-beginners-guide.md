@@ -2,29 +2,81 @@
 
 DNF (Dandified YUM) is the default package manager for RPM-based Linux distributions such as Fedora, RHEL (Red Hat Enterprise Linux), CentOS Stream, and AlmaLinux. It handles installing, updating, removing, and querying software packages, along with automatically resolving dependencies.
 
----
 
 ## Table of Contents
 
-1. [What is DNF?](#what-is-dnf)
-2. [Basic Concepts](#basic-concepts)
-3. [Getting Started](#getting-started)
-4. [Installing Packages](#installing-packages)
-5. [Removing Packages](#removing-packages)
-6. [Updating Packages](#updating-packages)
-7. [Searching for Packages](#searching-for-packages)
-8. [Getting Package Information](#getting-package-information)
-9. [Managing Repositories](#managing-repositories)
-10. [Working with Package Groups](#working-with-package-groups)
-11. [History and Rollback](#history-and-rollback)
-12. [Cleaning Up](#cleaning-up)
-13. [Useful Flags and Options](#useful-flags-and-options)
-14. [Configuration](#configuration)
-15. [Common Recipes](#common-recipes)
-16. [Tips and Best Practices](#tips-and-best-practices)
+- [What is DNF?](#what-is-dnf)
+- [Basic Concepts](#basic-concepts)
+- [Getting Started](#getting-started)
+- [Installing Packages](#installing-packages)
+  - [Install a single package](#install-a-single-package)
+  - [Install multiple packages at once](#install-multiple-packages-at-once)
+  - [Install a local `.rpm` file](#install-a-local-rpm-file)
+  - [Install a specific version](#install-a-specific-version)
+  - [Reinstall a package](#reinstall-a-package)
+- [Removing Packages](#removing-packages)
+  - [Remove a single package](#remove-a-single-package)
+  - [Remove a package and its unused dependencies](#remove-a-package-and-its-unused-dependencies)
+- [Updating Packages](#updating-packages)
+  - [Update all packages](#update-all-packages)
+  - [Update a specific package](#update-a-specific-package)
+  - [Check for available updates without installing](#check-for-available-updates-without-installing)
+  - [Upgrade vs Update](#upgrade-vs-update)
+  - [Upgrade your entire distribution (e.g., Fedora release upgrade)](#upgrade-your-entire-distribution-eg-fedora-release-upgrade)
+- [Searching for Packages](#searching-for-packages)
+  - [Search by name or summary](#search-by-name-or-summary)
+  - [Search in package names only](#search-in-package-names-only)
+  - [Find which package provides a specific file or command](#find-which-package-provides-a-specific-file-or-command)
+- [Getting Package Information](#getting-package-information)
+  - [Show detailed package info](#show-detailed-package-info)
+  - [List all installed packages](#list-all-installed-packages)
+  - [List all available packages](#list-all-available-packages)
+  - [List packages with available updates](#list-packages-with-available-updates)
+  - [Check if a specific package is installed](#check-if-a-specific-package-is-installed)
+  - [List files installed by a package](#list-files-installed-by-a-package)
+  - [Show dependencies of a package](#show-dependencies-of-a-package)
+  - [Show what packages depend on a given package](#show-what-packages-depend-on-a-given-package)
+- [Managing Repositories](#managing-repositories)
+  - [List all enabled repositories](#list-all-enabled-repositories)
+  - [List all repositories (enabled and disabled)](#list-all-repositories-enabled-and-disabled)
+  - [Enable a repository temporarily (for one command)](#enable-a-repository-temporarily-for-one-command)
+  - [Enable a repository permanently](#enable-a-repository-permanently)
+  - [Disable a repository permanently](#disable-a-repository-permanently)
+  - [Add a new repository](#add-a-new-repository)
+  - [Enable Third-Party Repos (Fedora)](#enable-third-party-repos-fedora)
+- [Working with Package Groups](#working-with-package-groups)
+  - [List all available groups](#list-all-available-groups)
+  - [Get info about a group](#get-info-about-a-group)
+  - [Install a group](#install-a-group)
+  - [Remove a group](#remove-a-group)
+  - [Update all packages in a group](#update-all-packages-in-a-group)
+- [History and Rollback](#history-and-rollback)
+  - [View transaction history](#view-transaction-history)
+  - [View details of a specific transaction](#view-details-of-a-specific-transaction)
+  - [Undo a specific transaction](#undo-a-specific-transaction)
+  - [Redo a specific transaction](#redo-a-specific-transaction)
+  - [Roll back to a specific transaction](#roll-back-to-a-specific-transaction)
+- [Cleaning Up](#cleaning-up)
+  - [Remove cached package data](#remove-cached-package-data)
+  - [Remove cached metadata](#remove-cached-metadata)
+  - [Remove all cached data](#remove-all-cached-data)
+  - [Remove orphaned packages (auto-installed, no longer needed)](#remove-orphaned-packages-auto-installed-no-longer-needed)
+  - [Rebuild the metadata cache](#rebuild-the-metadata-cache)
+- [Useful Flags and Options](#useful-flags-and-options)
+  - [Example: Non-interactive update](#example-non-interactive-update)
+  - [Example: Download a package without installing it](#example-download-a-package-without-installing-it)
+- [Configuration](#configuration)
+- [Common Recipes](#common-recipes)
+  - [Install development tools](#install-development-tools)
+  - [Find and install a missing library](#find-and-install-a-missing-library)
+  - [Keep your system up to date automatically (Fedora)](#keep-your-system-up-to-date-automatically-fedora)
+  - [Downgrade a package to a previous version](#downgrade-a-package-to-a-previous-version)
+  - [Install a package from a different release (Fedora Rawhide, etc.)](#install-a-package-from-a-different-release-fedora-rawhide-etc)
+  - [Lock a package to its current version](#lock-a-package-to-its-current-version)
+- [Tips and Best Practices](#tips-and-best-practices)
+- [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
 
 ---
-
 ## What is DNF?
 
 DNF replaced the older YUM (Yellowdog Updater Modified) package manager starting with Fedora 22. It is faster, uses less memory, and has a cleaner API. Under the hood, DNF:
@@ -35,6 +87,9 @@ DNF replaced the older YUM (Yellowdog Updater Modified) package manager starting
 - Maintains a **transaction history** so you can undo changes
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Basic Concepts
 
@@ -49,6 +104,9 @@ DNF replaced the older YUM (Yellowdog Updater Modified) package manager starting
 **Epoch, Version, Release (EVR)** — The three-part version string used to compare packages: `epoch:version-release.arch` (e.g., `2:5.14.0-284.fc38.x86_64`).
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Getting Started
 
@@ -69,7 +127,13 @@ dnf help <command>   # help for a specific command
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Installing Packages
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Install a single package
 
@@ -85,11 +149,17 @@ sudo dnf install vim
 
 DNF will show you a summary of what will be installed (including dependencies) and ask for confirmation. Type `y` and press Enter to proceed.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Install multiple packages at once
 
 ```bash
 sudo dnf install vim git curl wget
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Install a local `.rpm` file
 
@@ -99,11 +169,17 @@ sudo dnf install ./mypackage.rpm
 
 Using `dnf install` instead of `rpm -i` for local files ensures dependencies are resolved from your repos.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Install a specific version
 
 ```bash
 sudo dnf install vim-9.0.1234
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Reinstall a package
 
@@ -115,7 +191,13 @@ sudo dnf reinstall vim
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Removing Packages
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Remove a single package
 
@@ -128,6 +210,9 @@ Example:
 ```bash
 sudo dnf remove vim
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Remove a package and its unused dependencies
 
@@ -147,7 +232,13 @@ sudo dnf remove vim && sudo dnf autoremove
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Updating Packages
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Update all packages
 
@@ -157,11 +248,17 @@ sudo dnf update
 
 This fetches the latest package metadata and upgrades all installed packages with available updates.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Update a specific package
 
 ```bash
 sudo dnf update vim
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Check for available updates without installing
 
@@ -169,9 +266,15 @@ sudo dnf update vim
 dnf check-update
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Upgrade vs Update
 
 `dnf upgrade` and `dnf update` are functionally identical in modern DNF. Both handle version upgrades and obsoletes.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Upgrade your entire distribution (e.g., Fedora release upgrade)
 
@@ -182,7 +285,13 @@ sudo dnf system-upgrade reboot
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Searching for Packages
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Search by name or summary
 
@@ -196,11 +305,17 @@ Example:
 dnf search video editor
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Search in package names only
 
 ```bash
 dnf search --name <keyword>
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Find which package provides a specific file or command
 
@@ -222,7 +337,13 @@ dnf provides /usr/bin/python3
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Getting Package Information
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Show detailed package info
 
@@ -232,11 +353,17 @@ dnf info <package-name>
 
 Displays version, description, size, repo, license, and more.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### List all installed packages
 
 ```bash
 dnf list installed
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### List all available packages
 
@@ -244,11 +371,17 @@ dnf list installed
 dnf list available
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### List packages with available updates
 
 ```bash
 dnf list updates
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Check if a specific package is installed
 
@@ -256,17 +389,26 @@ dnf list updates
 dnf list installed vim
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### List files installed by a package
 
 ```bash
 dnf repoquery -l <package-name>
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Show dependencies of a package
 
 ```bash
 dnf repoquery --requires <package-name>
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Show what packages depend on a given package
 
@@ -276,7 +418,13 @@ dnf repoquery --whatrequires <package-name>
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Managing Repositories
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### List all enabled repositories
 
@@ -284,11 +432,17 @@ dnf repoquery --whatrequires <package-name>
 dnf repolist
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### List all repositories (enabled and disabled)
 
 ```bash
 dnf repolist all
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Enable a repository temporarily (for one command)
 
@@ -296,17 +450,26 @@ dnf repolist all
 sudo dnf install <package> --enablerepo=<repo-id>
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Enable a repository permanently
 
 ```bash
 sudo dnf config-manager --enable <repo-id>
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Disable a repository permanently
 
 ```bash
 sudo dnf config-manager --disable <repo-id>
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Add a new repository
 
@@ -326,6 +489,9 @@ gpgcheck=1
 gpgkey=https://example.com/repo/RPM-GPG-KEY
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Enable Third-Party Repos (Fedora)
 
 Popular third-party repos include **RPM Fusion**, which provides software not included in Fedora by default (e.g., media codecs, proprietary drivers):
@@ -338,9 +504,15 @@ sudo dnf install \
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Working with Package Groups
 
 Groups are collections of related packages bundled together for convenience.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### List all available groups
 
@@ -348,11 +520,17 @@ Groups are collections of related packages bundled together for convenience.
 dnf group list
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Get info about a group
 
 ```bash
 dnf group info "Development Tools"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Install a group
 
@@ -360,11 +538,17 @@ dnf group info "Development Tools"
 sudo dnf group install "Development Tools"
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Remove a group
 
 ```bash
 sudo dnf group remove "Development Tools"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Update all packages in a group
 
@@ -374,9 +558,15 @@ sudo dnf group update "Development Tools"
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## History and Rollback
 
 DNF keeps a log of all transactions, allowing you to view and undo changes.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### View transaction history
 
@@ -384,11 +574,17 @@ DNF keeps a log of all transactions, allowing you to view and undo changes.
 dnf history
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### View details of a specific transaction
 
 ```bash
 dnf history info <transaction-id>
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Undo a specific transaction
 
@@ -396,11 +592,17 @@ dnf history info <transaction-id>
 sudo dnf history undo <transaction-id>
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Redo a specific transaction
 
 ```bash
 sudo dnf history redo <transaction-id>
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Roll back to a specific transaction
 
@@ -412,9 +614,15 @@ This reverts your system to the state it was in after the given transaction ID.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Cleaning Up
 
 Over time, DNF caches metadata and downloaded packages. Cleaning up can free disk space.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Remove cached package data
 
@@ -422,11 +630,17 @@ Over time, DNF caches metadata and downloaded packages. Cleaning up can free dis
 sudo dnf clean packages
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Remove cached metadata
 
 ```bash
 sudo dnf clean metadata
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Remove all cached data
 
@@ -434,11 +648,17 @@ sudo dnf clean metadata
 sudo dnf clean all
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Remove orphaned packages (auto-installed, no longer needed)
 
 ```bash
 sudo dnf autoremove
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Rebuild the metadata cache
 
@@ -447,6 +667,9 @@ sudo dnf makecache
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Useful Flags and Options
 
@@ -464,11 +687,17 @@ sudo dnf makecache
 | `--downloaddir=<path>` | Specify directory for `--downloadonly` |
 | `--setopt=<key=value>` | Override a config option temporarily |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Example: Non-interactive update
 
 ```bash
 sudo dnf update -y
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Example: Download a package without installing it
 
@@ -477,6 +706,9 @@ sudo dnf install --downloadonly --downloaddir=/tmp vim
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Configuration
 
@@ -501,7 +733,13 @@ sudo dnf update --setopt=max_parallel_downloads=10
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common Recipes
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Install development tools
 
@@ -510,12 +748,18 @@ sudo dnf group install "Development Tools"
 sudo dnf install gcc make cmake python3-devel
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Find and install a missing library
 
 ```bash
 dnf provides libssl.so.3
 sudo dnf install openssl-libs
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Keep your system up to date automatically (Fedora)
 
@@ -526,17 +770,26 @@ sudo systemctl enable --now dnf-automatic.timer
 
 Edit `/etc/dnf/automatic.conf` to configure behavior (e.g., download only vs. auto-apply updates).
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Downgrade a package to a previous version
 
 ```bash
 sudo dnf downgrade vim
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Install a package from a different release (Fedora Rawhide, etc.)
 
 ```bash
 sudo dnf install --releasever=rawhide <package>
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Lock a package to its current version
 
@@ -546,6 +799,9 @@ sudo dnf versionlock add vim
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Tips and Best Practices
 
@@ -571,6 +827,9 @@ sudo dnf update --best --allowerasing
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Quick Reference Cheat Sheet
 
 ```
@@ -595,3 +854,9 @@ dnf group install <group>  Install a package group
 ---
 
 *This guide covers DNF as used on Fedora, RHEL 8+, CentOS Stream, AlmaLinux, and Rocky Linux. Some behavior may vary slightly between distributions.*
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

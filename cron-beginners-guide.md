@@ -2,27 +2,67 @@
 
 Cron is a time-based job scheduler built into Unix-like operating systems (Linux, macOS, BSD). It lets you automatically run scripts, commands, or programs at specified times and intervals — making it one of the most essential tools for system administrators, developers, and power users alike.
 
----
 
 ## Table of Contents
 
-1. [What is Cron?](#what-is-cron)
-2. [How Cron Works](#how-cron-works)
-3. [The Crontab File](#the-crontab-file)
-4. [Cron Syntax Explained](#cron-syntax-explained)
-5. [Special Characters](#special-characters)
-6. [Practical Examples](#practical-examples)
-7. [Cron Shortcuts](#cron-shortcuts)
-8. [Managing Your Crontab](#managing-your-crontab)
-9. [Environment Variables in Cron](#environment-variables-in-cron)
-10. [Logging and Debugging](#logging-and-debugging)
-11. [System-Wide Cron Jobs](#system-wide-cron-jobs)
-12. [Common Pitfalls](#common-pitfalls)
-13. [Security Considerations](#security-considerations)
-14. [Quick Reference](#quick-reference)
+- [What is Cron?](#what-is-cron)
+- [How Cron Works](#how-cron-works)
+- [The Crontab File](#the-crontab-file)
+- [Cron Syntax Explained](#cron-syntax-explained)
+  - [Field Ranges at a Glance](#field-ranges-at-a-glance)
+- [Special Characters](#special-characters)
+  - [Asterisk `*` — Wildcard](#asterisk-wildcard)
+  - [Comma `,` — List](#comma-list)
+  - [Hyphen `-` — Range](#hyphen-range)
+  - [Slash `/` — Step](#slash-step)
+  - [Question Mark `?` — No Specific Value](#question-mark-no-specific-value)
+  - [Hash `#` — Comments](#hash-comments)
+- [Practical Examples](#practical-examples)
+  - [Every Minute](#every-minute)
+  - [Every 5 Minutes](#every-5-minutes)
+  - [Every Hour (at :00)](#every-hour-at-00)
+  - [Every Day at Midnight](#every-day-at-midnight)
+  - [Every Day at 2:30 AM](#every-day-at-230-am)
+  - [Every Monday at 8:00 AM](#every-monday-at-800-am)
+  - [Every Weekday (Mon–Fri) at 9:00 AM](#every-weekday-monfri-at-900-am)
+  - [First Day of Every Month at Midnight](#first-day-of-every-month-at-midnight)
+  - [Every 3 Hours](#every-3-hours)
+  - [Twice a Day (Noon and Midnight)](#twice-a-day-noon-and-midnight)
+  - [Every Sunday at 4:00 AM](#every-sunday-at-400-am)
+  - [On January 1st at Midnight (Happy New Year!)](#on-january-1st-at-midnight-happy-new-year)
+  - [Every 30 Minutes During Business Hours on Weekdays](#every-30-minutes-during-business-hours-on-weekdays)
+- [Cron Shortcuts](#cron-shortcuts)
+- [Managing Your Crontab](#managing-your-crontab)
+  - [Open Your Crontab for Editing](#open-your-crontab-for-editing)
+  - [View Your Current Crontab](#view-your-current-crontab)
+  - [Remove Your Crontab](#remove-your-crontab)
+  - [Edit Another User's Crontab (as root)](#edit-another-users-crontab-as-root)
+  - [List Another User's Crontab (as root)](#list-another-users-crontab-as-root)
+  - [Choosing Your Editor](#choosing-your-editor)
+- [Environment Variables in Cron](#environment-variables-in-cron)
+  - [Setting Variables in Your Crontab](#setting-variables-in-your-crontab)
+  - [Key Variables to Know](#key-variables-to-know)
+  - [Sourcing Your Profile](#sourcing-your-profile)
+- [Logging and Debugging](#logging-and-debugging)
+  - [Redirect Output to a Log File](#redirect-output-to-a-log-file)
+  - [Separate stdout and stderr](#separate-stdout-and-stderr)
+  - [Check the System Cron Log](#check-the-system-cron-log)
+  - [Test Your Script Manually First](#test-your-script-manually-first)
+  - [Simulate the Cron Environment](#simulate-the-cron-environment)
+  - [Add Timestamps to Log Output](#add-timestamps-to-log-output)
+- [System-Wide Cron Jobs](#system-wide-cron-jobs)
+  - [`/etc/crontab`](#etccrontab)
+  - [`/etc/cron.d/`](#etccrond)
+  - [The `cron.*` Directories](#the-cron-directories)
+- [Common Pitfalls](#common-pitfalls)
+- [Security Considerations](#security-considerations)
+- [Quick Reference](#quick-reference)
+  - [Syntax Template](#syntax-template)
+  - [Special Characters Summary](#special-characters-summary)
+  - [Crontab Commands](#crontab-commands)
+  - [Useful Online Tools](#useful-online-tools)
 
 ---
-
 ## What is Cron?
 
 The word **cron** comes from the Greek word *chronos* (χρόνος), meaning time. The cron daemon (`crond`) is a background process that wakes up every minute, checks if any scheduled jobs need to run, and executes them.
@@ -37,6 +77,9 @@ Cron is ideal for tasks like:
 - Generating invoices at the end of each month
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## How Cron Works
 
@@ -54,6 +97,9 @@ System Boot → crond starts → reads crontabs every minute
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## The Crontab File
 
 A crontab is a plain text file where each line defines one scheduled job. There are two main types:
@@ -63,6 +109,9 @@ A crontab is a plain text file where each line defines one scheduled job. There 
 **System crontabs** — located in `/etc/cron.d/`, `/etc/crontab`, and the `/etc/cron.*/` directories. These can specify which user runs the job and are typically managed by root.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Cron Syntax Explained
 
@@ -89,6 +138,9 @@ Each field can contain:
 | `*/2` | Every 2nd value (step) |
 | `1-5/2` | Every 2nd value within a range |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Field Ranges at a Glance
 
 | Field | Allowed Values | Notes |
@@ -103,7 +155,13 @@ Each field can contain:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Special Characters
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Asterisk `*` — Wildcard
 
@@ -112,6 +170,9 @@ Matches every possible value in that field.
 ```
 * * * * * echo "runs every minute"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Comma `,` — List
 
@@ -122,6 +183,9 @@ Specifies multiple discrete values.
 # Runs at 9:00 AM, 12:00 PM, and 5:00 PM every day
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Hyphen `-` — Range
 
 Specifies a continuous range of values.
@@ -130,6 +194,9 @@ Specifies a continuous range of values.
 0 9-17 * * 1-5 /scripts/work_hours.sh
 # Runs at the top of every hour from 9 AM to 5 PM, Monday through Friday
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Slash `/` — Step
 
@@ -143,9 +210,15 @@ Specifies intervals. `*/n` means "every n units."
 # Runs every 6 hours (at 00:00, 06:00, 12:00, 18:00)
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Question Mark `?` — No Specific Value
 
 Used in some cron implementations (like Quartz) but **not** standard POSIX cron. Avoid it unless you know your cron supports it.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Hash `#` — Comments
 
@@ -158,67 +231,109 @@ Any line starting with `#` is a comment and is ignored.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Practical Examples
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every Minute
 ```
 * * * * * /scripts/monitor.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Every 5 Minutes
 ```
 */5 * * * * /scripts/poll.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every Hour (at :00)
 ```
 0 * * * * /scripts/hourly.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Every Day at Midnight
 ```
 0 0 * * * /scripts/daily_cleanup.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every Day at 2:30 AM
 ```
 30 2 * * * /scripts/backup.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Every Monday at 8:00 AM
 ```
 0 8 * * 1 /scripts/weekly_report.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every Weekday (Mon–Fri) at 9:00 AM
 ```
 0 9 * * 1-5 /scripts/standup_reminder.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### First Day of Every Month at Midnight
 ```
 0 0 1 * * /scripts/monthly_invoice.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every 3 Hours
 ```
 0 */3 * * * /scripts/sync.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Twice a Day (Noon and Midnight)
 ```
 0 0,12 * * * /scripts/twice_daily.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every Sunday at 4:00 AM
 ```
 0 4 * * 0 /scripts/weekly_maintenance.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### On January 1st at Midnight (Happy New Year!)
 ```
 0 0 1 1 * /scripts/new_year.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Every 30 Minutes During Business Hours on Weekdays
 ```
@@ -226,6 +341,9 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Cron Shortcuts
 
@@ -252,7 +370,13 @@ Usage examples:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Managing Your Crontab
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Open Your Crontab for Editing
 
@@ -262,11 +386,17 @@ crontab -e
 
 This opens your personal crontab in your default editor (usually `nano` or `vi`). Save and exit to install it.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### View Your Current Crontab
 
 ```bash
 crontab -l
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Remove Your Crontab
 
@@ -276,17 +406,26 @@ crontab -r
 
 > **Warning:** `crontab -r` deletes your entire crontab without confirmation. Some systems support `crontab -i` for an interactive (prompted) removal.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Edit Another User's Crontab (as root)
 
 ```bash
 sudo crontab -u username -e
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### List Another User's Crontab (as root)
 
 ```bash
 sudo crontab -u username -l
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Choosing Your Editor
 
@@ -299,9 +438,15 @@ crontab -e
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Environment Variables in Cron
 
 Cron runs in a **very minimal environment** — it doesn't load your shell profile (`.bashrc`, `.zshrc`, etc.), so environment variables you rely on in your terminal may not be available.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Setting Variables in Your Crontab
 
@@ -314,6 +459,9 @@ MAILTO=admin@example.com
 
 0 2 * * * /scripts/backup.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Key Variables to Know
 
@@ -333,6 +481,9 @@ MAILTO=admin@example.com
 
 **`HOME`** — Sets the home directory for the job.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Sourcing Your Profile
 
 If your script needs your full shell environment, source your profile explicitly:
@@ -351,9 +502,15 @@ source /home/user/.bashrc
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Logging and Debugging
 
 Debugging cron jobs can be tricky since they run silently in the background. Here are practical strategies.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Redirect Output to a Log File
 
@@ -366,11 +523,17 @@ Debugging cron jobs can be tricky since they run silently in the background. Her
 
 Use `>` instead of `>>` to overwrite the log each time rather than appending.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Separate stdout and stderr
 
 ```
 0 2 * * * /scripts/backup.sh >> /var/log/backup.log 2>> /var/log/backup_errors.log
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Check the System Cron Log
 
@@ -388,6 +551,9 @@ journalctl -u cron
 journalctl -u crond
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Test Your Script Manually First
 
 Always run your script directly from the terminal before scheduling it, using the same user that cron will use:
@@ -396,6 +562,9 @@ Always run your script directly from the terminal before scheduling it, using th
 bash /path/to/your/script.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Simulate the Cron Environment
 
 Since cron has a minimal environment, test your script in a similar context:
@@ -403,6 +572,9 @@ Since cron has a minimal environment, test your script in a similar context:
 ```bash
 env -i HOME=/home/user SHELL=/bin/bash PATH=/usr/bin:/bin /path/to/script.sh
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Add Timestamps to Log Output
 
@@ -423,9 +595,15 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting backup..."
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## System-Wide Cron Jobs
 
 Beyond user crontabs, Linux systems have several system-level cron locations.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### `/etc/crontab`
 
@@ -442,9 +620,15 @@ The main system crontab. It has an extra field for the **username** to run the c
   0 2 * * * root /scripts/nightly_backup.sh
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### `/etc/cron.d/`
 
 Drop-in files with the same format as `/etc/crontab` (including the user field). These are used by system packages to install their own cron jobs without modifying `/etc/crontab` directly.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### The `cron.*` Directories
 
@@ -467,6 +651,9 @@ sudo chmod +x /etc/cron.daily/my_backup
 > **Note:** Script files in these directories should **not** have a file extension (no `.sh`) on many systems, as the `run-parts` command may skip files with extensions.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Common Pitfalls
 
@@ -494,6 +681,9 @@ sudo chmod +x /etc/cron.daily/my_backup
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Security Considerations
 
 **Principle of least privilege.** Run cron jobs as the least privileged user that can accomplish the task. Avoid running everything as root.
@@ -519,7 +709,13 @@ done
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Quick Reference
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Syntax Template
 
@@ -533,6 +729,9 @@ MIN HOUR DOM MON DOW command
  └──────────────────── Minute       (0–59)
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Special Characters Summary
 
 | Character | Meaning | Example |
@@ -541,6 +740,9 @@ MIN HOUR DOM MON DOW command
 | `,` | List | `1,15,30` — at minutes 1, 15, and 30 |
 | `-` | Range | `1-5` — values 1 through 5 |
 | `/` | Step | `*/10` — every 10 units |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Crontab Commands
 
@@ -551,6 +753,9 @@ MIN HOUR DOM MON DOW command
 | `crontab -r` | Remove your crontab |
 | `crontab -u user -e` | Edit another user's crontab (root only) |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Useful Online Tools
 
 - **crontab.guru** — An interactive cron expression editor and explainer. Paste any cron expression and see a plain-English description.
@@ -560,3 +765,9 @@ MIN HOUR DOM MON DOW command
 ---
 
 *Happy scheduling! Cron is simple on the surface but incredibly powerful once you get comfortable with the syntax. When in doubt, use [crontab.guru](https://crontab.guru) to verify your expressions before deploying them.*
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

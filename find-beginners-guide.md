@@ -2,25 +2,34 @@
 
 The `find` command is one of the most powerful tools in Unix/Linux. It lets you search for files and directories based on almost any criteria imaginable — name, size, type, date modified, permissions, and more — and then act on the results. This guide walks you through everything you need to get started.
 
----
 
 ## Table of Contents
 
-1. [Basic Syntax](#basic-syntax)
-2. [Searching by Name](#searching-by-name)
-3. [Searching by Type](#searching-by-type)
-4. [Searching by Size](#searching-by-size)
-5. [Searching by Time](#searching-by-time)
-6. [Searching by Permissions](#searching-by-permissions)
-7. [Searching by Owner](#searching-by-owner)
-8. [Limiting Search Depth](#limiting-search-depth)
-9. [Combining Conditions](#combining-conditions)
-10. [Acting on Results](#acting-on-results)
-11. [Practical Examples](#practical-examples)
-12. [Tips and Gotchas](#tips-and-gotchas)
+- [Basic Syntax](#basic-syntax)
+- [Searching by Name](#searching-by-name)
+- [Searching by Type](#searching-by-type)
+- [Searching by Size](#searching-by-size)
+- [Searching by Time](#searching-by-time)
+- [Searching by Permissions](#searching-by-permissions)
+- [Searching by Owner](#searching-by-owner)
+- [Limiting Search Depth](#limiting-search-depth)
+- [Combining Conditions](#combining-conditions)
+  - [AND (both must be true)](#and-both-must-be-true)
+  - [OR (either must be true)](#or-either-must-be-true)
+  - [NOT (negate a condition)](#not-negate-a-condition)
+  - [Grouping with Parentheses](#grouping-with-parentheses)
+- [Acting on Results](#acting-on-results)
+  - [`-print` (default)](#-print-default)
+  - [`-delete`](#-delete)
+  - [`-exec`](#-exec)
+  - [`-exec` with `+` (more efficient)](#-exec-with-more-efficient)
+  - [Piping to `xargs`](#piping-to-xargs)
+  - [`-ls`](#-ls)
+- [Practical Examples](#practical-examples)
+- [Tips and Gotchas](#tips-and-gotchas)
+- [Quick Reference Card](#quick-reference-card)
 
 ---
-
 ## Basic Syntax
 
 ```
@@ -48,6 +57,9 @@ find / 2>/dev/null
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Searching by Name
 
@@ -82,6 +94,9 @@ find . -name "*.?"
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Searching by Type
 
 The `-type` flag filters by the kind of filesystem entry.
@@ -106,6 +121,9 @@ find . -type l
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Searching by Size
 
@@ -135,6 +153,9 @@ find . -size +1M -size -100M
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Searching by Time
 
@@ -173,6 +194,9 @@ find . -newer reference.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Searching by Permissions
 
 The `-perm` flag matches files by their permission bits.
@@ -197,6 +221,9 @@ find / -perm /4000 2>/dev/null
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Searching by Owner
 
 ```bash
@@ -211,6 +238,9 @@ find . -uid 1001
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Limiting Search Depth
 
@@ -229,9 +259,15 @@ find . -mindepth 2 -maxdepth 3 -name "*.conf"
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Combining Conditions
 
 By default, multiple conditions are joined with an implicit **AND** — all conditions must be true. You can be explicit or use other logical operators.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### AND (both must be true)
 
@@ -243,12 +279,18 @@ find . -name "*.sh" -size +10k
 find . -name "*.sh" -and -size +10k
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### OR (either must be true)
 
 ```bash
 # Find .jpg or .png files
 find . -name "*.jpg" -or -name "*.png"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### NOT (negate a condition)
 
@@ -259,6 +301,9 @@ find . -not -name "*.log"
 # Shorthand: !
 find . ! -name "*.log"
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Grouping with Parentheses
 
@@ -271,9 +316,15 @@ find . \( -name "*.jpg" -or -name "*.png" \) -size +1M
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Acting on Results
 
 The real power of `find` comes from being able to **do something** with the files it finds.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### `-print` (default)
 
@@ -282,6 +333,9 @@ Prints the path of each result. This is what `find` does when you don't specify 
 ```bash
 find . -name "*.txt" -print
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### `-delete`
 
@@ -293,6 +347,9 @@ find . -name "*.tmp" -delete
 ```
 
 > Always run the command without `-delete` first to preview what will be deleted!
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### `-exec`
 
@@ -309,6 +366,9 @@ find . -name "*.sh" -exec chmod +x {} \;
 find /etc -name "*.conf" -exec cp {} /backup/ \;
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### `-exec` with `+` (more efficient)
 
 Using `+` instead of `\;` passes all results to the command at once (like `xargs`), which is faster:
@@ -316,6 +376,9 @@ Using `+` instead of `\;` passes all results to the command at once (like `xargs
 ```bash
 find . -name "*.log" -exec rm {} +
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Piping to `xargs`
 
@@ -328,6 +391,9 @@ find . -name "*.txt" | xargs grep "TODO"
 find . -name "*.txt" -print0 | xargs -0 grep "TODO"
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### `-ls`
 
 A shortcut for running `ls -l` on each result:
@@ -337,6 +403,9 @@ find . -name "*.sh" -ls
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Practical Examples
 
@@ -376,6 +445,9 @@ find . -mmin -60 -type f
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Tips and Gotchas
 
 **Always quote your patterns.** Without quotes, the shell may expand wildcards before `find` sees them, leading to unexpected results.
@@ -411,6 +483,9 @@ find . -path ./node_modules -prune -o -type f -print
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Quick Reference Card
 
 | Task | Command |
@@ -429,3 +504,9 @@ find . -path ./node_modules -prune -o -type f -print
 ---
 
 With practice, `find` becomes an indispensable part of your daily workflow. Start with simple name searches and gradually layer in size, time, and permission filters as you grow more comfortable. Happy searching!
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

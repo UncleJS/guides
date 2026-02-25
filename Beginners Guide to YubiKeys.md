@@ -1,8 +1,44 @@
+
+
+## Table of Contents
+
+- [Beginner’s Guide to YubiKeys](#beginners-guide-to-yubikeys)
+- [What is a YubiKey?](#what-is-a-yubikey)
+- [Why use a hardware key instead of SMS / app codes?](#why-use-a-hardware-key-instead-of-sms-app-codes)
+- [What does a YubiKey actually do?](#what-does-a-yubikey-actually-do)
+- [Common YubiKey Types](#common-yubikey-types)
+- [Key Concepts (Critical for Beginners)](#key-concepts-critical-for-beginners)
+  - [1. The YubiKey does **not** store your password](#1-the-yubikey-does-not-store-your-password)
+  - [2. Registering vs Using](#2-registering-vs-using)
+  - [3. Always own a backup key](#3-always-own-a-backup-key)
+- [Where can you use a YubiKey?](#where-can-you-use-a-yubikey)
+- [How Authentication Works (Simplified)](#how-authentication-works-simplified)
+- [First-Time Setup Strategy](#first-time-setup-strategy)
+  - [Step 1 – Identify critical accounts](#step-1-identify-critical-accounts)
+  - [Step 2 – Register keys](#step-2-register-keys)
+  - [Step 3 – Test recovery paths](#step-3-test-recovery-paths)
+- [Using YubiKeys on Linux (RHEL-Style)](#using-yubikeys-on-linux-rhel-style)
+  - [Detecting the key](#detecting-the-key)
+  - [Required packages](#required-packages)
+  - [Checking key status](#checking-key-status)
+  - [Common Pitfall (Linux)](#common-pitfall-linux)
+- [OTP vs FIDO2 vs Passkeys (Beginner Confusion)](#otp-vs-fido2-vs-passkeys-beginner-confusion)
+- [Practical Security Habits](#practical-security-habits)
+- [Threats YubiKeys Help Mitigate](#threats-yubikeys-help-mitigate)
+- [When a YubiKey is Overkill](#when-a-yubikey-is-overkill)
+- [Loss & Disaster Recovery](#loss-disaster-recovery)
+- [Frequently Overlooked Beginner Mistakes](#frequently-overlooked-beginner-mistakes)
+- [Mental Model for Beginners](#mental-model-for-beginners)
+
+---
 ## Beginner’s Guide to YubiKeys
 
 *A practical, ground-up introduction to hardware security keys*
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## What is a YubiKey?
 
@@ -16,6 +52,9 @@ In simple terms:
 Combining both dramatically reduces account takeover risk.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Why use a hardware key instead of SMS / app codes?
 
@@ -35,6 +74,9 @@ A YubiKey mitigates these by:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## What does a YubiKey actually do?
 
 A YubiKey can perform multiple roles depending on protocol:
@@ -49,6 +91,9 @@ A YubiKey can perform multiple roles depending on protocol:
 One physical key, multiple functions.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Common YubiKey Types
 
@@ -74,13 +119,22 @@ Typical variants:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Key Concepts (Critical for Beginners)
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 1. The YubiKey does **not** store your password
 
 It stores cryptographic keys. Your password still exists unless you move to passwordless login.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 2. Registering vs Using
 
@@ -90,6 +144,9 @@ It stores cryptographic keys. Your password still exists unless you move to pass
 Every service requires initial registration.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 3. Always own a backup key
 
@@ -107,6 +164,9 @@ Best practice:
 Failure to do this is the most common mistake.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Where can you use a YubiKey?
 
@@ -129,6 +189,9 @@ Support usually appears as:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## How Authentication Works (Simplified)
 
 ![Image](https://images.pingidentity.com/image/upload/f_auto%2Cq_auto%2Cw_auto%2Cc_scale/ping_dam/content/dam/picr/img/bl/2022/0909/Img-Blog-FIDO2-Passkeys-v02-1044x1490.png)
@@ -150,7 +213,13 @@ No shared secrets → phishing resistance.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## First-Time Setup Strategy
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Step 1 – Identify critical accounts
 
@@ -162,6 +231,9 @@ Prioritize:
 * Developer accounts (GitHub, etc.)
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Step 2 – Register keys
 
@@ -177,6 +249,9 @@ Repeat for backup key.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Step 3 – Test recovery paths
 
 Verify:
@@ -187,11 +262,17 @@ Verify:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Using YubiKeys on Linux (RHEL-Style)
 
 YubiKeys integrate cleanly with Linux systems.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Detecting the key
 
@@ -207,6 +288,9 @@ Bus XXX Device XXX: Yubico.com YubiKey
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Required packages
 
 For smartcard / PAM / PIV workflows:
@@ -218,6 +302,9 @@ sudo systemctl enable --now pcscd
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Checking key status
 
 ```bash
@@ -227,6 +314,9 @@ ykman info
 Shows supported applications and firmware.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Common Pitfall (Linux)
 
@@ -243,6 +333,9 @@ Most FIDO2 usage works without extra drivers.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## OTP vs FIDO2 vs Passkeys (Beginner Confusion)
 
 | Technology           | When Used                      |
@@ -258,6 +351,9 @@ Avoid building new systems around OTP unless required.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Practical Security Habits
 
 Good practices:
@@ -269,6 +365,9 @@ Good practices:
 * Keep firmware reasonably current
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Threats YubiKeys Help Mitigate
 
@@ -289,6 +388,9 @@ Hardware keys improve authentication, not overall device hygiene.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## When a YubiKey is Overkill
 
 May be unnecessary for:
@@ -300,6 +402,9 @@ May be unnecessary for:
 Focus on high-impact accounts first.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Loss & Disaster Recovery
 
@@ -314,6 +419,9 @@ Treat keys like house keys.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Frequently Overlooked Beginner Mistakes
 
 ❌ Buying wrong connector type
@@ -324,6 +432,9 @@ Treat keys like house keys.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Mental Model for Beginners
 
 Think of a YubiKey as:
@@ -333,3 +444,9 @@ Think of a YubiKey as:
 It proves who you are; it does not hold your data.
 
 ---
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

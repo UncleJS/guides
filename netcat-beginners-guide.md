@@ -2,31 +2,28 @@
 
 Netcat (nc) is often called the "Swiss Army knife" of networking. It's a simple but powerful command-line utility that reads and writes data across network connections using TCP or UDP. Whether you're debugging network issues, transferring files, or learning about networking fundamentals, netcat is an indispensable tool.
 
----
 
 ## Table of Contents
 
-1. [What is Netcat?](#what-is-netcat)
-2. [Installation](#installation)
-3. [Basic Syntax](#basic-syntax)
-4. [Common Flags](#common-flags)
-5. [Core Use Cases](#core-use-cases)
-   - [Testing Connectivity](#testing-connectivity)
-   - [Port Scanning](#port-scanning)
-   - [Chat Between Two Machines](#chat-between-two-machines)
-   - [Transferring Files](#transferring-files)
-   - [Setting Up a Simple Server](#setting-up-a-simple-server)
-   - [Banners and Service Fingerprinting](#banners-and-service-fingerprinting)
-   - [Proxying and Relaying Traffic](#proxying-and-relaying-traffic)
-   - [Reverse Shells (for Authorized Testing)](#reverse-shells-for-authorized-testing)
-6. [UDP Mode](#udp-mode)
-7. [Netcat Variants](#netcat-variants)
-8. [Tips and Tricks](#tips-and-tricks)
-9. [Security Considerations](#security-considerations)
-10. [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
+- [What is Netcat?](#what-is-netcat)
+- [Installation](#installation)
+- [Basic Syntax](#basic-syntax)
+- [Common Flags](#common-flags)
+- [Core Use Cases](#core-use-cases)
+  - [Testing Connectivity](#testing-connectivity)
+  - [Port Scanning](#port-scanning)
+  - [Chat Between Two Machines](#chat-between-two-machines)
+  - [Transferring Files](#transferring-files)
+  - [Setting Up a Simple Server](#setting-up-a-simple-server)
+  - [Banners and Service Fingerprinting](#banners-and-service-fingerprinting)
+  - [Reverse Shells (for Authorized Testing)](#reverse-shells-for-authorized-testing)
+- [UDP Mode](#udp-mode)
+- [Netcat Variants](#netcat-variants)
+- [Tips and Tricks](#tips-and-tricks)
+- [Security Considerations](#security-considerations)
+- [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
 
 ---
-
 ## What is Netcat?
 
 Netcat was originally written by Hobbit in 1995. At its core, it does one thing: it opens a TCP or UDP connection and lets you send and receive raw data through it. That simplicity is exactly what makes it so versatile.
@@ -34,6 +31,9 @@ Netcat was originally written by Hobbit in 1995. At its core, it does one thing:
 Think of it like a pipe between two computers. On one end you listen, on the other you connect — and anything typed or piped into one end comes out the other.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Installation
 
@@ -69,6 +69,9 @@ nc --version
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Basic Syntax
 
 ```
@@ -89,6 +92,9 @@ nc -l 4444
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common Flags
 
 | Flag | Description |
@@ -106,7 +112,13 @@ nc -l 4444
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Core Use Cases
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Testing Connectivity
 
@@ -135,6 +147,9 @@ nc -zv 192.168.1.1 20 21 22 80 443
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Port Scanning
 
 Netcat can scan a range of ports using `-z` (zero I/O) mode. This won't replace a full port scanner like nmap, but it's handy when nmap isn't available.
@@ -155,6 +170,9 @@ nc -znvw1 192.168.1.1 1-1000
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Chat Between Two Machines
 
 Netcat can function as a primitive real-time chat tool between two machines on the same network.
@@ -172,6 +190,9 @@ nc 192.168.1.10 5000
 Now anything you type on either machine appears on the other. Press `Ctrl+D` to close the connection.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Transferring Files
 
@@ -208,6 +229,9 @@ cat bigfile.iso | pv | nc 192.168.1.10 5000
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Setting Up a Simple Server
 
 You can use netcat to serve a file over HTTP — useful for quickly sharing something over a local network.
@@ -225,6 +249,9 @@ nc -l -p 8080
 Then make a request to it and watch the raw HTTP headers come in.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Banners and Service Fingerprinting
 
@@ -262,6 +289,9 @@ This manual approach helps you understand the raw protocols and is useful when d
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Reverse Shells (for Authorized Testing)
 
 > ⚠️ **Only use this on systems you own or have explicit written permission to test. Unauthorized use is illegal.**
@@ -288,6 +318,9 @@ Once connected, the attacker has an interactive shell on the target machine.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## UDP Mode
 
 Add the `-u` flag to any netcat command to switch from TCP to UDP. UDP is connectionless, so the behavior is slightly different — there's no handshake, so "connection refused" messages aren't reported.
@@ -310,6 +343,9 @@ nc -zuv 192.168.1.1 53
 UDP is useful for testing DNS (port 53), SNMP (port 161), Syslog (port 514), and other UDP-based services.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Netcat Variants
 
@@ -336,6 +372,9 @@ nc -h 2>&1 | head -5
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Tips and Tricks
 
@@ -385,6 +424,9 @@ nc -l -p 5000
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Security Considerations
 
 Netcat is a powerful tool that can be misused. Keep these things in mind:
@@ -403,6 +445,9 @@ nc -l -p 4444 127.0.0.1
 **Disable it on production servers.** If you don't need netcat installed in a production environment, remove it. Its presence can be exploited by an attacker who gains access.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Quick Reference Cheat Sheet
 
@@ -448,3 +493,9 @@ nc -vv host port
 ---
 
 *Netcat is a foundational tool for anyone learning networking, system administration, or security. The best way to get comfortable with it is to experiment in a safe lab environment — spin up two VMs or two terminals on the same machine and start connecting them.*
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

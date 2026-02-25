@@ -9,9 +9,27 @@ Words:
 ---
 
 
+## Table of Contents
 
+- [Introduction to SELinux](#introduction-to-selinux)
+  - [Why Use SELinux?](#why-use-selinux)
+- [SELinux Modes](#selinux-modes)
+- [Key Concepts in SELinux](#key-concepts-in-selinux)
+  - [Contexts (Labels)](#contexts-labels)
+  - [Policies](#policies)
+  - [Booleans](#booleans)
+- [Managing SELinux Contexts](#managing-selinux-contexts)
+  - [Viewing and Changing Contexts](#viewing-and-changing-contexts)
+  - [Ports](#ports)
+- [Troubleshooting SELinux Issues](#troubleshooting-selinux-issues)
+- [Common Use Cases](#common-use-cases)
+  - [Web Server (Apache)](#web-server-apache)
+  - [Database (MySQL/MariaDB)](#database-mysqlmariadb)
+  - [Custom Applications](#custom-applications)
+- [Best Practices for Beginners](#best-practices-for-beginners)
+- [Advanced Topics (For Later)](#advanced-topics-for-later)
 
-
+---
 ## Introduction to SELinux
 
 SELinux (Security-Enhanced Linux) is a security module integrated into the Linux kernel that provides a mechanism for supporting access control security policies. It was originally developed by the United States National Security Agency (NSA) and has been part of the mainline Linux kernel since version 2.6.
@@ -20,6 +38,9 @@ Unlike traditional Discretionary Access Control (DAC) systems (like standard Uni
 
 SELinux is commonly used in enterprise environments, servers, and distributions like Red Hat Enterprise Linux (RHEL), CentOS, Fedora, and even some Android systems. It's designed to protect against exploits, misconfigurations, and insider threats by confining processes to only the resources they need.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Why Use SELinux?
 - **Enhanced Security**: Limits damage from compromised applications.
 - **Compliance**: Meets standards like PCI DSS, HIPAA, or government requirements.
@@ -27,6 +48,9 @@ SELinux is commonly used in enterprise environments, servers, and distributions 
 - **Auditability**: Logs access denials for troubleshooting and forensics.
 
 However, it can be complex for beginners, often leading to frustration with "permission denied" errors that aren't related to standard file permissions.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## SELinux Modes
 
@@ -61,7 +85,13 @@ Then reboot the system.
 
 **Tip**: Start in Permissive mode when learning to avoid disrupting your system.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Key Concepts in SELinux
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Contexts (Labels)
 Every file, process, port, and user in SELinux has a **security context** (also called a label). This is a string that defines the security attributes, typically in the format:
@@ -83,6 +113,9 @@ Example output for a file:
 -rw-r--r--. root root system_u:object_r:httpd_sys_content_t:s0 /var/www/html/index.html
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Policies
 SELinux policies define rules for what subjects (processes) can do to objects (files, ports, etc.). Common policy types:
 - **Targeted**: Default in most distros; confines specific services like HTTPD, while others run unconfined.
@@ -94,6 +127,9 @@ Install policy tools if needed:
 sudo yum install policycoreutils-python-utils  # On RHEL/CentOS/Fedora
 sudo apt install policycoreutils selinux-utils selinux-policy-dev  # On Debian/Ubuntu (SELinux support is limited here)
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Booleans
 Booleans are toggles that allow or deny certain behaviors without rewriting policies. For example, `httpd_can_network_connect` allows Apache to connect to networks.
@@ -118,7 +154,13 @@ Make it permanent:
 setsebool -P httpd_can_network_connect 1
 ```
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Managing SELinux Contexts
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Viewing and Changing Contexts
 To change a file's context:
@@ -140,6 +182,9 @@ restorecon -R /path/to/dir
 - `semanage fcontext`: Manages file context mappings.
 - `restorecon`: Restores default contexts based on policy.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Ports
 Allow a service on a non-standard port:
 ```
@@ -150,6 +195,9 @@ List ports:
 ```
 semanage port -l | grep http
 ```
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Troubleshooting SELinux Issues
 
@@ -182,19 +230,34 @@ To generate a custom policy module for allowing a denial:
 
 **Warning**: Custom modules can weaken security; use them sparingly and understand the implications.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common Use Cases
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Web Server (Apache)
 - Ensure web content has `httpd_sys_content_t` context.
 - Allow scripts: Set boolean `httpd_enable_cgi` if needed.
 - For home directories: `setsebool -P httpd_enable_homedirs 1`
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Database (MySQL/MariaDB)
 - Data directory: `chcon -R -t mysqld_db_t /path/to/data`
 - Allow network: Check `mysqld_can_network_connect`
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Custom Applications
 - If your app needs special access, create a policy module or use `semanage` to map contexts.
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Best Practices for Beginners
 - **Start Simple**: Run in Permissive mode, fix issues, then switch to Enforcing.
@@ -206,6 +269,9 @@ To generate a custom policy module for allowing a denial:
   - Books: "SELinux by Example" for deeper dives.
 - **Tools**: Use `sesearch` to query policy rules, e.g., `sesearch -A -s httpd_t -t httpd_sys_content_t`.
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Advanced Topics (For Later)
 - **Policy Development**: Writing custom policies with `sepolicy`.
 - **Users and Roles**: Mapping Linux users to SELinux users with `semanage user`.
@@ -213,3 +279,8 @@ To generate a custom policy module for allowing a denial:
 - **Auditing**: Configuring audit rules for specific monitoring.
 
 Remember, SELinux is powerful but requires patience. Practice on a virtual machine to avoid locking yourself out of production systems. If you encounter specific errors, tools like `sealert` are your best friend!
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

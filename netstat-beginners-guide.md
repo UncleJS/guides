@@ -1,10 +1,46 @@
 # Netstat: A Beginner's Guide
 
+
+## Table of Contents
+
+- [What is Netstat?](#what-is-netstat)
+- [Installation & Availability](#installation-availability)
+- [Basic Syntax](#basic-syntax)
+- [Understanding the Output](#understanding-the-output)
+- [Connection States Explained](#connection-states-explained)
+- [Essential Flags & Options](#essential-flags-options)
+  - [Linux / macOS](#linux-macos)
+  - [Windows](#windows)
+- [Common Commands with Examples](#common-commands-with-examples)
+  - [1. Show all active connections and listening ports](#1-show-all-active-connections-and-listening-ports)
+  - [2. Show listening ports only (what's waiting for connections)](#2-show-listening-ports-only-whats-waiting-for-connections)
+  - [3. Show numeric addresses (no DNS lookup)](#3-show-numeric-addresses-no-dns-lookup)
+  - [4. Show which program is using which port](#4-show-which-program-is-using-which-port)
+  - [5. Show the routing table](#5-show-the-routing-table)
+  - [6. Show network interface statistics](#6-show-network-interface-statistics)
+  - [7. Show protocol statistics](#7-show-protocol-statistics)
+  - [8. Watch connections in real time](#8-watch-connections-in-real-time)
+  - [9. Filter output with grep (Linux/macOS)](#9-filter-output-with-grep-linuxmacos)
+  - [10. Windows — Find which app owns a port](#10-windows-find-which-app-owns-a-port)
+- [Practical Use Cases](#practical-use-cases)
+  - [Is my web server running?](#is-my-web-server-running)
+  - [Why is my connection slow?](#why-is-my-connection-slow)
+  - [Is something connecting to an unexpected address?](#is-something-connecting-to-an-unexpected-address)
+  - [Check for a port conflict before starting a service](#check-for-a-port-conflict-before-starting-a-service)
+  - [How many connections does my server have?](#how-many-connections-does-my-server-have)
+- [Netstat vs. Modern Alternatives](#netstat-vs-modern-alternatives)
+- [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
+- [Tips for Beginners](#tips-for-beginners)
+
+---
 ## What is Netstat?
 
 `netstat` (network statistics) is a command-line tool that displays information about your computer's network connections, routing tables, interface statistics, and more. It's one of the most useful tools for diagnosing network issues, identifying open ports, and monitoring active connections — and it's available on Linux, macOS, and Windows.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Installation & Availability
 
@@ -18,6 +54,9 @@
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Basic Syntax
 
 ```
@@ -27,6 +66,9 @@ netstat [options]
 Running `netstat` with no options displays a list of active connections.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Understanding the Output
 
@@ -50,6 +92,9 @@ udp       0       0    0.0.0.0:68             0.0.0.0:*
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Connection States Explained
 
 Understanding TCP states is crucial for reading netstat output:
@@ -67,7 +112,13 @@ Understanding TCP states is crucial for reading netstat output:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Essential Flags & Options
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Linux / macOS
 
@@ -85,6 +136,9 @@ Understanding TCP states is crucial for reading netstat output:
 | `-c` | **Continuously** refresh the output |
 | `-e` | Show **extended** information |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Windows
 
 | Flag | Description |
@@ -100,7 +154,13 @@ Understanding TCP states is crucial for reading netstat output:
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common Commands with Examples
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 1. Show all active connections and listening ports
 
@@ -111,6 +171,9 @@ netstat -a
 This is the most common starting point. It shows every open socket on your machine.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 2. Show listening ports only (what's waiting for connections)
 
@@ -126,6 +189,9 @@ This is useful for seeing which services are running and exposed on your machine
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 3. Show numeric addresses (no DNS lookup)
 
 ```bash
@@ -135,6 +201,9 @@ netstat -an
 By default, netstat tries to resolve IP addresses to hostnames, which is slow. Adding `-n` skips this and gives you raw IPs and port numbers instantly.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 4. Show which program is using which port
 
@@ -159,6 +228,9 @@ This is the single most useful `netstat` command for most people.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 5. Show the routing table
 
 ```bash
@@ -168,6 +240,9 @@ netstat -r
 This shows how your machine decides where to send network traffic — similar to `route -n` on Linux or `route print` on Windows.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 6. Show network interface statistics
 
@@ -179,6 +254,9 @@ Displays statistics per interface (e.g., `eth0`, `wlan0`) including packets sent
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 7. Show protocol statistics
 
 ```bash
@@ -188,6 +266,9 @@ netstat -s
 Gives a breakdown of statistics for TCP, UDP, ICMP, and IP — useful for spotting errors or dropped packets at a protocol level.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 8. Watch connections in real time
 
@@ -200,6 +281,9 @@ netstat -an 2
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### 9. Filter output with grep (Linux/macOS)
 
@@ -216,6 +300,9 @@ netstat -tlnp | grep ':443'
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### 10. Windows — Find which app owns a port
 
 ```bash
@@ -228,7 +315,13 @@ tasklist /fi "PID eq 1234"
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Practical Use Cases
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Is my web server running?
 
@@ -240,6 +333,9 @@ If you see a process `LISTEN`ing on port 80 or 443, your web server is up.
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Why is my connection slow?
 
 ```bash
@@ -249,6 +345,9 @@ netstat -s | grep -i retransmit
 A high number of retransmitted segments suggests packet loss or a poor connection.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### Is something connecting to an unexpected address?
 
@@ -260,6 +359,9 @@ Review the foreign addresses. Unexpected IPs in the list could indicate unwanted
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Check for a port conflict before starting a service
 
 ```bash
@@ -270,6 +372,9 @@ If something is already listening on port 3000, your new app will fail to bind t
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### How many connections does my server have?
 
 ```bash
@@ -277,6 +382,9 @@ netstat -an | grep ESTABLISHED | wc -l
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Netstat vs. Modern Alternatives
 
@@ -292,6 +400,9 @@ On Linux, `netstat` is deprecated in favor of `ss`, which is faster and more fea
 The flags are largely compatible, so learning `netstat` translates almost directly to using `ss`.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Quick Reference Cheat Sheet
 
@@ -323,6 +434,9 @@ netstat -an | grep ESTABLISHED | wc -l
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Tips for Beginners
 
 **Start with `sudo netstat -tulnp`.** This single command tells you almost everything you need: what protocols, what ports, what IPs, and what programs are involved. It's the Swiss Army knife of netstat commands.
@@ -338,3 +452,9 @@ netstat -an | grep ESTABLISHED | wc -l
 ---
 
 *That's everything you need to get started with `netstat`. It's a simple tool with a lot of depth — the more you use it, the more natural reading network output becomes.*
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)

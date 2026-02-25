@@ -1,5 +1,34 @@
 # A User's Guide to `sed` — The Linux Stream Editor
 
+
+## Table of Contents
+
+- [What is `sed`?](#what-is-sed)
+- [Core Concepts](#core-concepts)
+- [The Substitute Command: `s`](#the-substitute-command-s)
+- [Backreferences](#backreferences)
+- [Addressing: Targeting Specific Lines](#addressing-targeting-specific-lines)
+- [Deleting Lines: `d`](#deleting-lines-d)
+- [Printing Lines: `p`](#printing-lines-p)
+- [Inserting and Appending Text: `i` and `a`](#inserting-and-appending-text-i-and-a)
+- [Changing Lines: `c`](#changing-lines-c)
+- [Reading and Writing Files: `r` and `w`](#reading-and-writing-files-r-and-w)
+- [Editing Files In-Place: `-i`](#editing-files-in-place-i)
+- [Multiple Commands](#multiple-commands)
+- [Transliterate: `y`](#transliterate-y)
+- [Quitting Early: `q` and `Q`](#quitting-early-q-and-q)
+- [The Hold Space](#the-hold-space)
+- [Branching and Labels](#branching-and-labels)
+- [Useful One-Liners](#useful-one-liners)
+- [Regular Expression Quick Reference](#regular-expression-quick-reference)
+- [Common Options](#common-options)
+  - [POSIX Standard Options](#posix-standard-options)
+  - [Widely Supported Options](#widely-supported-options)
+  - [GNU sed Only Options](#gnu-sed-only-options)
+- [Tips and Gotchas](#tips-and-gotchas)
+- [Further Reading](#further-reading)
+
+---
 ## What is `sed`?
 
 `sed` (Stream EDitor) is a powerful, non-interactive command-line tool for parsing and transforming text. It reads input line by line, applies editing commands, and writes the result to standard output. It's fast, scriptable, and available on virtually every Unix-like system.
@@ -18,6 +47,9 @@ cat file.txt | sed 'command'
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Core Concepts
 
 **sed processes text line by line.** For each line, it loads the line into a buffer called the *pattern space*, applies your commands, then prints the pattern space (unless told otherwise).
@@ -27,6 +59,9 @@ cat file.txt | sed 'command'
 **sed does not modify files by default.** Output goes to stdout. To edit files in-place, use the `-i` flag.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## The Substitute Command: `s`
 
@@ -69,6 +104,9 @@ sed 's#https://old.com#https://new.com#g' file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Backreferences
 
 Parentheses capture groups in the pattern, and you reference them in the replacement with `\1`, `\2`, etc. In basic regex mode, parentheses must be escaped; in extended regex mode (`-E`), they are not.
@@ -92,6 +130,9 @@ sed 's/[0-9]*/(&)/g' file.txt
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Addressing: Targeting Specific Lines
 
@@ -132,6 +173,9 @@ sed '/START/,/END/s/foo/bar/' file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Deleting Lines: `d`
 
 ```bash
@@ -143,6 +187,9 @@ sed '/^#/d' file.txt               # delete comment lines
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Printing Lines: `p`
 
@@ -158,6 +205,9 @@ sed -n '/START/,/END/p' file.txt   # print between two patterns
 This is essentially a simpler `grep` for many use cases.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Inserting and Appending Text: `i` and `a`
 
@@ -177,6 +227,9 @@ sed '3i This line is inserted' file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Changing Lines: `c`
 
 Replaces the entire addressed line (or range) with new text:
@@ -188,6 +241,9 @@ sed '/pattern/c\Replaced line' file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Reading and Writing Files: `r` and `w`
 
 ```bash
@@ -196,6 +252,9 @@ sed -n '/pattern/w output.txt' file.txt  # write matching lines to output.txt
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Editing Files In-Place: `-i`
 
@@ -219,6 +278,9 @@ sed -i '' 's/old/new/g' file.txt    # macOS
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Multiple Commands
 
 Use `-e` to chain multiple commands, or separate them with semicolons:
@@ -236,6 +298,9 @@ sed -f my-script.sed file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Transliterate: `y`
 
 The `y` command does character-by-character substitution (similar to `tr`):
@@ -247,6 +312,9 @@ sed 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' file.txt  # upper
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Quitting Early: `q` and `Q`
 
 ```bash
@@ -257,6 +325,9 @@ sed '5Q' file.txt                   # quit before printing line 5 (GNU sed)
 This is useful for getting the head of a large file without reading the whole thing.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## The Hold Space
 
@@ -279,6 +350,9 @@ sed -n '1!G; h; $p' file.txt
 This works by accumulating lines into the hold space and printing only at the end.
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Branching and Labels
 
@@ -304,6 +378,9 @@ sed ':a; /\\$/{N; s/\\\n//; ba}' file.txt
 ```
 
 ---
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ## Useful One-Liners
 
@@ -346,6 +423,9 @@ sed '/pattern/s/^/#/' file.txt
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Regular Expression Quick Reference
 
 sed uses basic regular expressions (BRE) by default. Use `-E` for extended regular expressions (ERE), which have cleaner syntax.
@@ -369,7 +449,13 @@ sed uses basic regular expressions (BRE) by default. Use `-E` for extended regul
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Common Options
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### POSIX Standard Options
 
@@ -381,6 +467,9 @@ These work on every POSIX-compliant `sed` implementation (GNU, BSD, macOS, etc.)
 | `-e script` | Add an inline command; can be used multiple times to chain commands |
 | `-f file` | Read sed commands from a script file instead of the command line |
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ### Widely Supported Options
 
 Supported by both GNU and BSD sed, though syntax may differ slightly:
@@ -389,6 +478,9 @@ Supported by both GNU and BSD sed, though syntax may differ slightly:
 |--------|-------------|
 | `-i[suffix]` | Edit file in-place; optional suffix creates a backup (e.g., `-i.bak`). On macOS, an argument is always required — use `-i ''` for no backup |
 | `-E` | Use extended regular expressions (ERE), allowing `+`, `?`, `()` without backslash escaping. POSIX standard since 2008 |
+
+
+[↑ Goto TOC](#table-of-contents)
 
 ### GNU sed Only Options
 
@@ -407,6 +499,9 @@ These options are specific to GNU sed (the version found on most Linux systems):
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Tips and Gotchas
 
 **Escaping special characters.** Characters like `.`, `*`, `[`, `\`, `/`, `^`, and `$` have special meaning in regex. To match them literally, escape with `\`. In the replacement string, `&` and `\` also need escaping.
@@ -419,8 +514,17 @@ These options are specific to GNU sed (the version found on most Linux systems):
 
 ---
 
+
+[↑ Goto TOC](#table-of-contents)
+
 ## Further Reading
 
 - `man sed` — the authoritative reference on your system
 - GNU sed manual: https://www.gnu.org/software/sed/manual/sed.html
 - `sed` one-liners collection: https://edoras.sdsu.edu/doc/sed-oneliners.html
+
+[↑ Goto TOC](#table-of-contents)
+
+---
+
+© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
