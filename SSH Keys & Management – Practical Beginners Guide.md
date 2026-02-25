@@ -18,32 +18,34 @@ All examples assume a Linux environment (RHEL/RHEL-compatible).
 
 ## Table of Contents
 
-- [1. What SSH Keys Actually Are](#1-what-ssh-keys-actually-are)
-- [2. Default SSH Key Locations (Linux)](#2-default-ssh-key-locations-linux)
-- [3. Recommended Key Type (Modern Standard)](#3-recommended-key-type-modern-standard)
-- [4. Generating Your First Key (Correctly)](#4-generating-your-first-key-correctly)
-- [5. Understanding Generated Files](#5-understanding-generated-files)
-- [6. Installing Your Public Key on a Server](#6-installing-your-public-key-on-a-server)
-  - [Option A – Easiest (If Password Login Works)](#option-a--easiest-if-password-login-works)
-  - [Option B – Manual Method](#option-b--manual-method)
-- [7. Connecting Using a Specific Key](#7-connecting-using-a-specific-key)
-- [8. Managing Multiple Keys (Very Common)](#8-managing-multiple-keys-very-common)
-- [9. SSH Agent (Avoid Re-typing Passphrases)](#9-ssh-agent-avoid-re-typing-passphrases)
-- [10. Key Security Best Practices](#10-key-security-best-practices)
-  - [✔ Always Use Passphrases](#-always-use-passphrases)
-  - [✔ Never Reuse Keys Across Roles](#-never-reuse-keys-across-roles)
-  - [✔ Protect Permissions](#-protect-permissions)
-  - [✔ Disable Password Authentication (Servers)](#-disable-password-authentication-servers)
-- [11. Revoking / Removing Access](#11-revoking--removing-access)
-- [12. Verifying Which Key Is Used](#12-verifying-which-key-is-used)
-- [13. Common Problems & Fixes](#13-common-problems--fixes)
-  - [❌ Permission Denied (Publickey)](#-permission-denied-publickey)
-  - [❌ Wrong Key Used](#-wrong-key-used)
-  - [❌ Server Ignores Key](#-server-ignores-key)
-  - [❌ SELinux Issues (RHEL Specific)](#-selinux-issues-rhel-specific)
-- [14. Backing Up SSH Keys (Important)](#14-backing-up-ssh-keys-important)
-- [15. When To Generate New Keys](#15-when-to-generate-new-keys)
-- [16. Good Operational Habits](#16-good-operational-habits)
+- [SSH Keys \& Management – Practical Beginner’s Guide](#ssh-keys--management--practical-beginners-guide)
+  - [Table of Contents](#table-of-contents)
+  - [1. What SSH Keys Actually Are](#1-what-ssh-keys-actually-are)
+  - [2. Default SSH Key Locations (Linux)](#2-default-ssh-key-locations-linux)
+  - [3. Recommended Key Type (Modern Standard)](#3-recommended-key-type-modern-standard)
+  - [4. Generating Your First Key (Correctly)](#4-generating-your-first-key-correctly)
+  - [5. Understanding Generated Files](#5-understanding-generated-files)
+  - [6. Installing Your Public Key on a Server](#6-installing-your-public-key-on-a-server)
+    - [Option A – Easiest (If Password Login Works)](#option-a--easiest-if-password-login-works)
+    - [Option B – Manual Method](#option-b--manual-method)
+  - [7. Connecting Using a Specific Key](#7-connecting-using-a-specific-key)
+  - [8. Managing Multiple Keys (Very Common)](#8-managing-multiple-keys-very-common)
+  - [9. SSH Agent (Avoid Re-typing Passphrases)](#9-ssh-agent-avoid-re-typing-passphrases)
+  - [10. Key Security Best Practices](#10-key-security-best-practices)
+    - [✔ Always Use Passphrases](#-always-use-passphrases)
+    - [✔ Never Reuse Keys Across Roles](#-never-reuse-keys-across-roles)
+    - [✔ Protect Permissions](#-protect-permissions)
+    - [✔ Disable Password Authentication (Servers)](#-disable-password-authentication-servers)
+  - [11. Revoking / Removing Access](#11-revoking--removing-access)
+  - [12. Verifying Which Key Is Used](#12-verifying-which-key-is-used)
+  - [13. Common Problems \& Fixes](#13-common-problems--fixes)
+    - [❌ Permission Denied (Publickey)](#-permission-denied-publickey)
+    - [❌ Wrong Key Used](#-wrong-key-used)
+    - [❌ Server Ignores Key](#-server-ignores-key)
+    - [❌ SELinux Issues (RHEL Specific)](#-selinux-issues-rhel-specific)
+  - [14. Backing Up SSH Keys (Important)](#14-backing-up-ssh-keys-important)
+  - [15. When To Generate New Keys](#15-when-to-generate-new-keys)
+  - [16. Good Operational Habits](#16-good-operational-habits)
 
 ---
 ## 1. What SSH Keys Actually Are
@@ -505,11 +507,11 @@ Generate new keys if:
 
 ## 16. Good Operational Habits
 
-✔ Use descriptive filenames
-✔ Separate keys by trust boundary
-✔ Keep config clean
-✔ Remove unused keys
-✔ Use passphrases always
+✔ Use descriptive filenames </br>
+✔ Separate keys by trust boundary </br>
+✔ Keep config clean </br>
+✔ Remove unused keys </br>
+✔ Use passphrases always </br>
 
 
 
