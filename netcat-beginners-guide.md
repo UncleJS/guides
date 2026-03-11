@@ -1,5 +1,8 @@
 # A Beginner's Guide to Netcat
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 Netcat (nc) is often called the "Swiss Army knife" of networking. It's a simple but powerful command-line utility that reads and writes data across network connections using TCP or UDP. Whether you're debugging network issues, transferring files, or learning about networking fundamentals, netcat is an indispensable tool.
 
 
@@ -498,4 +501,4 @@ nc -vv host port
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

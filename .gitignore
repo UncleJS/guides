@@ -1,0 +1,36 @@
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# Config files containing credentials
+config.yml
+config.yaml
+config.json
+config.toml
+config.ini
+secrets.yml
+secrets.yaml
+secrets.json
+credentials.yml
+credentials.yaml
+credentials.json
+*.credentials
+*.secret
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Temporary / build artefacts
+*.tmp
+*.bak
+*.log

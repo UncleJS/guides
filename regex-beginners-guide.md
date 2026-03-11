@@ -1,5 +1,8 @@
 # Regular Expressions: A Complete Beginner's Guide
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 Regular expressions (regex or regexp) are patterns used to search, match, and manipulate text. Once you understand them, they're one of the most powerful tools in any programmer's toolkit. This guide will take you from zero to functional in a logical, step-by-step way.
 
 
@@ -811,4 +814,4 @@ The biggest leap in regex mastery comes from reading other people's patterns and
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

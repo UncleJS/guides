@@ -1,5 +1,8 @@
 # A Beginner's Guide to `jq`
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 `jq` is a lightweight, powerful command-line tool for parsing, filtering, and transforming JSON data. Think of it as `sed` or `awk` for JSON — it lets you slice, dice, and reshape JSON right in your terminal.
 
 
@@ -905,4 +908,4 @@ inputs              All remaining inputs
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

@@ -1,5 +1,8 @@
 # A Beginner's Guide to the `find` Command
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 The `find` command is one of the most powerful tools in Unix/Linux. It lets you search for files and directories based on almost any criteria imaginable — name, size, type, date modified, permissions, and more — and then act on the results. This guide walks you through everything you need to get started.
 
 
@@ -509,4 +512,4 @@ With practice, `find` becomes an indispensable part of your daily workflow. Star
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

@@ -1,5 +1,8 @@
 # 🐚 Bash: A Comprehensive Beginner's Guide
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 Bash (Bourne Again SHell) is the default command-line shell on most Linux distributions and macOS. It's a powerful tool for automating tasks, managing files, and controlling your system. This guide will take you from absolute beginner to confidently writing your own Bash scripts.
 
 
@@ -1107,4 +1110,4 @@ Happy scripting! 🚀
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

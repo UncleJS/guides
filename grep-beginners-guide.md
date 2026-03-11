@@ -1,5 +1,8 @@
 # A Beginner's Guide to `grep`
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 `grep` is one of the most powerful and commonly used command-line tools in Unix/Linux systems. It searches for patterns within text — whether in files, command output, or streams — and prints matching lines. This guide will take you from zero to confident with `grep`.
 
 
@@ -681,4 +684,4 @@ With these fundamentals, you're well-equipped to use `grep` effectively in your 
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

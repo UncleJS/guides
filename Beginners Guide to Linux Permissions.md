@@ -9,6 +9,9 @@ Words:
 ---
  
 
+
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 Welcome to this comprehensive beginner's guide to Linux permissions! Linux is a multi-user operating system, and permissions are a fundamental part of its security model. They control who can read, write, or execute files and directories. This guide will walk you through the basics, step by step, using simple explanations, examples, and commands. We'll assume you're using a terminal on a Linux distribution like Ubuntu or Fedora.
 
 By the end, you'll understand how to view, modify, and manage permissions effectively. Let's dive in!
@@ -252,4 +255,4 @@ If you encounter errors, search for them (e.g., "chmod permission denied"). This
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

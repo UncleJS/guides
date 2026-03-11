@@ -11,6 +11,9 @@ Words:
 
 
 
+
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 Access Control Lists (ACLs) in Linux provide a more flexible and granular way to manage file and directory permissions compared to the traditional user/group/others (ugo) model. While standard permissions are limited to three categories, ACLs allow you to assign specific permissions to multiple users or groups individually. This is particularly useful in shared environments, like servers or team projects, where you need fine-tuned access without creating numerous groups.
 
 This guide builds on basic Linux permissions knowledge. We'll cover ACL concepts, setup, commands, examples, and advanced topics. Examples assume a terminal on a common distro like Ubuntu or Fedora. Some commands may require `sudo` for system files.
@@ -294,4 +297,4 @@ ACLs empower precise control but add complexity. Practice in a non-critical dire
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

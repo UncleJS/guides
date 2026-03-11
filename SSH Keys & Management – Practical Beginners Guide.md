@@ -1,5 +1,8 @@
 # SSH Keys & Management – Practical Beginner’s Guide
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 SSH keys are the standard, secure way to authenticate to remote systems without passwords. Properly used, they are **more secure**, **automatable**, and **safer** than passwords.
 
 This guide focuses on:
@@ -519,4 +522,4 @@ Generate new keys if:
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

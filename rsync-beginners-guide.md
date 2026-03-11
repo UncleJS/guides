@@ -1,5 +1,8 @@
 # A Beginner's Guide to rsync
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 ## Table of Contents
 
@@ -506,4 +509,4 @@ rsync -avhz -e "ssh -i ~/.ssh/key.pem -p 2222" source/ user@host:/dest/
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)

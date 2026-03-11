@@ -1,5 +1,8 @@
 # A Beginner's Guide to AWK
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 AWK is a powerful text-processing language that has been a staple of Unix systems since the 1970s. Named after its creators — **A**ho, **W**einberger, and **K**ernighan — it excels at processing structured text, extracting fields, and generating reports. If you work with log files, CSVs, or any columnar data, AWK will change your life.
 
 
@@ -1002,4 +1005,4 @@ Useful one-liners:
 
 ---
 
-© 2026 Jaco Steyn — Licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+© 2026 Jaco Steyn — Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
