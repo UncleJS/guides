@@ -78,7 +78,7 @@ setenforce 0  # Permissive
 setenforce 1  # Enforcing
 ```
 
-For permanent changes, edit `/etc/selinux/config` (or `/etc/sysconfig/selinux` on some systems):
+For permanent changes, edit `/etc/selinux/config` (on modern RHEL/Fedora this is canonical; `/etc/sysconfig/selinux` is a legacy symlink to it):
 ```
 SELINUX=enforcing
 # or SELINUX=permissive
@@ -127,7 +127,7 @@ SELinux policies define rules for what subjects (processes) can do to objects (f
 
 Install policy tools if needed:
 ```
-sudo yum install policycoreutils-python-utils  # On RHEL/CentOS/Fedora
+sudo dnf install policycoreutils-python-utils  # On RHEL/CentOS/Fedora
 sudo apt install policycoreutils selinux-utils selinux-policy-dev  # On Debian/Ubuntu (SELinux support is limited here)
 ```
 
@@ -208,7 +208,7 @@ SELinux denials are logged in `/var/log/audit/audit.log` (if auditd is running) 
 
 Install tools to analyze logs:
 ```
-sudo yum install setroubleshoot setroubleshoot-server
+sudo dnf install setroubleshoot setroubleshoot-server
 ```
 
 Then, use:

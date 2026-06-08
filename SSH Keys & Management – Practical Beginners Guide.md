@@ -510,11 +510,11 @@ Generate new keys if:
 
 ## 16. Good Operational Habits
 
-✔ Use descriptive filenames </br>
-✔ Separate keys by trust boundary </br>
-✔ Keep config clean </br>
-✔ Remove unused keys </br>
-✔ Use passphrases always </br>
+- ✔ Use descriptive filenames
+- ✔ Separate keys by trust boundary
+- ✔ Keep config clean
+- ✔ Remove unused keys
+- ✔ Use passphrases always
 
 
 

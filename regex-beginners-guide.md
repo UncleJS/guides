@@ -687,11 +687,11 @@ Loving this #sunset view! #travel #photography2024 always inspires me.
 /#\w+/
 ```
 
-**Step 3** — Make sure `#` is at a word boundary (so we don't match things like `c#` inside code):
+**Step 3** — Avoid matching a `#` that follows a word character (so we don't match things like `c#` inside code):
 ```
 /\B#\w+/
 ```
-(`\B` is a non-word boundary, which is what exists before `#` when it starts a hashtag)
+(`\B` is a *non-word boundary* — a position where the characters on both sides are the same "kind". Since `#` is a non-word character, `\B#` only matches a `#` that is **not** preceded by a word character, e.g. after a space or at the start of the text — but not in `c#`. For most text, the simpler `/#\w+/` works just as well.)
 
 **Result:**
 ```

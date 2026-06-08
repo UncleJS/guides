@@ -282,7 +282,7 @@ systemctl --user enable --now webapp.container
 | **Rotation Strategy** | Delete old secret, create new, restart containers. Automate with cron/Ansible |
 | **Avoid Logs** | Never echo secrets, use process substitution, redirect stdin only |
 | **Rootless by Default** | Use rootless Podman (user namespace), secrets stored in user-specific location |
-| **SELinux Enforcement** | Keep SELinux enforcing, verify contexts: `ls -Z /run/containers/secrets` |
+| **SELinux Enforcement** | Keep SELinux enforcing, verify contexts: `ls -Z /run/user/$UID/containers/secrets` (rootless) or `/run/containers/secrets` (rootful) |
 | **Audit Access** | Monitor with auditd, `journalctl -u container-*`, track secret usage |
 
 ---
@@ -406,7 +406,7 @@ vault kv get -field=password secret/db | \
 
 - **Podman 5.x:** Enhanced secret driver support, improved passthrough security
 - **SELinux:** container_secret_t context, enforcing by default
-- **FIPS 140-3:** Validated crypto for secret encryption when FIPS mode enabled
+- **FIPS 140-3:** When the host runs in FIPS mode, container crypto uses FIPS-validated modules. Note: the default secret driver stores secrets unencrypted on tmpfs — use an external driver for encryption at rest
 - **Systemd 256+:** Native Quadlet .container format with Secret= directive
 - **cgroup v2:** Unified hierarchy, improved resource limits around secret tmpfs
 

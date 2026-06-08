@@ -1056,9 +1056,11 @@ EOF
 Convert lines of input into arguments for another command:
 
 ```bash
-find . -name "*.log" | xargs rm          # Delete all .log files found
-cat urls.txt | xargs -I {} curl -O {}    # Download each URL from a file
+find . -name "*.log" -print0 | xargs -0 rm   # Delete all .log files found
+cat urls.txt | xargs -I {} curl -O {}         # Download each URL from a file
 ```
+
+> ⚠️ `xargs rm` permanently deletes files. Run the `find` part on its own first to preview what matches. Use `find ... -print0 | xargs -0` (as above) so filenames containing spaces or newlines are handled safely.
 
 
 [↑ Goto TOC](#table-of-contents)
@@ -1069,8 +1071,8 @@ cat urls.txt | xargs -I {} curl -O {}    # Download each URL from a file
 # Count occurrences of a word in a file
 grep -o "word" file.txt | wc -l
 
-# Find and replace text in multiple files
-sed -i 's/old/new/g' *.txt
+# Find and replace text in multiple files (-i.bak keeps a backup of each original)
+sed -i.bak 's/old/new/g' *.txt
 
 # Print a specific column from a CSV
 awk -F',' '{print $2}' data.csv

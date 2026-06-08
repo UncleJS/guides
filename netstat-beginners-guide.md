@@ -49,7 +49,7 @@
 
 | OS | Status |
 |---|---|
-| Linux | Usually pre-installed. If not: `sudo apt install net-tools` (Debian/Ubuntu) or `sudo yum install net-tools` (RHEL/CentOS) |
+| Linux | Usually pre-installed. If not: `sudo apt install net-tools` (Debian/Ubuntu) or `sudo dnf install net-tools` (RHEL/Fedora) |
 | macOS | Pre-installed |
 | Windows | Pre-installed (run via Command Prompt or PowerShell) |
 
