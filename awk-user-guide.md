@@ -32,7 +32,7 @@
   - [String Concatenation](#string-concatenation)
   - [Regular Expression Operators](#regular-expression-operators)
 - [9. Control Flow](#9-control-flow)
-  - [9.1 if / else if / else](#91-if-else-if-else)
+  - [9.1 if, else if, else](#91-if-else-if-else)
   - [9.2 while Loop](#92-while-loop)
   - [9.3 for Loop](#93-for-loop)
   - [9.4 do-while Loop](#94-do-while-loop)
@@ -69,7 +69,7 @@
   - [Gotcha 4: Regex Anchors in Field Matching](#gotcha-4-regex-anchors-in-field-matching)
   - [Gotcha 5: Modifying $0](#gotcha-5-modifying-0)
   - [Gotcha 6: The `next` Statement](#gotcha-6-the-next-statement)
-  - [Tip: Use -v to Pass Shell Variables](#tip-use-v-to-pass-shell-variables)
+  - [Tip: Passing Shell Variables](#tip-passing-shell-variables)
   - [Tip: Suppress Output with 0 or 1 as Action](#tip-suppress-output-with-0-or-1-as-action)
   - [Tip: Pipe to sort in END](#tip-pipe-to-sort-in-end)
   - [Tip: gawk Extensions](#tip-gawk-extensions)
@@ -93,7 +93,7 @@ Think of AWK as a domain-specific language purpose-built for the pattern: *read 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 2. Getting Started
 
@@ -119,7 +119,7 @@ Congratulations — you just ran AWK. It read one line of input, split it into w
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 3. How AWK Thinks: The Record/Field Model
 
@@ -153,7 +153,7 @@ Notice that "New York" gets split because AWK sees it as two fields separated by
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 4. Basic Syntax
 
@@ -202,14 +202,14 @@ awk -v threshold=100 '$2 > threshold { print }' data.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 5. Patterns
 
 Patterns control which records an action applies to. AWK checks the pattern for each record; if it's true (or matches), the action runs.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 5.1 No Pattern (Match Everything)
 
@@ -220,7 +220,7 @@ Patterns control which records an action applies to. AWK checks the pattern for 
 Runs on every line. Prints the first field of every record.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 5.2 Comparison Patterns
 
@@ -234,7 +234,7 @@ NR == 5 { print }            # Only line number 5
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 5.3 Regular Expression Patterns
 
@@ -257,7 +257,7 @@ $3 !~ /Manager/ { print }   # Field 3 does NOT match "Manager"
 The `~` operator means "matches" and `!~` means "does not match."
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 5.4 Compound Patterns
 
@@ -269,7 +269,7 @@ $2 > 25 && $3 == "Engineer" { print }   # Both conditions must be true
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 5.5 Range Patterns
 
@@ -284,14 +284,14 @@ This prints every line from the first line matching `START` through the next lin
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 6. Actions
 
 Actions are blocks of code enclosed in `{ }` that execute when the pattern matches. They can contain print statements, calculations, conditionals, loops, and more.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 6.1 print
 
@@ -308,7 +308,7 @@ The workhorse of AWK output:
 The comma in `print` uses the **output field separator** (OFS, default is a space). String concatenation (no comma) directly glues strings together.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 6.2 printf
 
@@ -337,14 +337,14 @@ Format specifiers:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 7. Built-in Variables
 
 AWK provides several built-in variables that let you control behavior and access metadata:
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Record and Field Variables
 
@@ -357,7 +357,7 @@ AWK provides several built-in variables that let you control behavior and access
 | `FNR`    | Number of records read from the current file only |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Separator Variables
 
@@ -369,7 +369,7 @@ AWK provides several built-in variables that let you control behavior and access
 | `ORS`    | Output record separator | Newline |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Other Variables
 
@@ -380,7 +380,7 @@ AWK provides several built-in variables that let you control behavior and access
 | `ARGV`   | Array of command-line arguments |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Changing the Field Separator
 
@@ -404,7 +404,7 @@ awk 'BEGIN { FS = "," } { print $1 }' data.csv
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Changing the Output Field Separator
 
@@ -423,14 +423,14 @@ BEGIN { FS = ","; OFS = "|" }
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 8. Operators
 
 AWK supports arithmetic, comparison, logical, and string operators.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Arithmetic Operators
 
@@ -444,7 +444,7 @@ $2 ^ $3    # Exponentiation (or **)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Arithmetic Assignment Operators
 
@@ -459,7 +459,7 @@ x--       # x is now 4 (decrement)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Comparison Operators
 
@@ -472,10 +472,10 @@ $2 >= 100   # Greater than or equal to
 $2 <= 100   # Less than or equal to
 ```
 
-**Important:** AWK automatically treats values as numbers or strings based on context. `"10" > "9"` is false numerically but true as strings (because "1" < "9" lexicographically). Be explicit: add 0 to force numeric comparison (`$1 + 0 > 9`).
+**Important:** AWK automatically treats values as numbers or strings based on context. `10 > 9` is true numerically, but `"10" > "9"` is false as strings (because "1" sorts before "9" lexicographically). Be explicit: add 0 to force numeric comparison (`$1 + 0 > 9`).
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### String Concatenation
 
@@ -487,7 +487,7 @@ AWK uses a space (or nothing) between values to concatenate strings:
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Regular Expression Operators
 
@@ -499,14 +499,14 @@ $0 !~ /pattern/   # True if $0 does not match
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 9. Control Flow
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### 9.1 if / else if / else
+### 9.1 if, else if, else
 
 ```awk
 {
@@ -523,7 +523,7 @@ $0 !~ /pattern/   # True if $0 does not match
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 9.2 while Loop
 
@@ -538,7 +538,7 @@ $0 !~ /pattern/   # True if $0 does not match
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 9.3 for Loop
 
@@ -559,7 +559,7 @@ $0 !~ /pattern/   # True if $0 does not match
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 9.4 do-while Loop
 
@@ -574,7 +574,7 @@ $0 !~ /pattern/   # True if $0 does not match
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 9.5 Loop Control: next, break, continue, exit
 
@@ -587,7 +587,7 @@ $0 !~ /pattern/   # True if $0 does not match
         print i
     }
 }
-END_PATTERN { exit }  # Stop processing entirely; jumps to END block
+$1 == "STOP" { exit }  # Stop reading input entirely; jumps to the END block
 ```
 
 The `next` statement is one of the most useful tools in AWK. It tells AWK to stop processing the current record and move on to the next one. It's often used to skip lines you don't want to process:
@@ -601,14 +601,14 @@ $3 == "" { next }       # Skip lines where field 3 is empty
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 10. Arrays
 
 AWK supports associative arrays (also called dictionaries or hash maps). Unlike most languages, you don't need to declare them — just use them. Array keys can be strings or numbers.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Basic Array Usage
 
@@ -624,7 +624,7 @@ END {
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Checking if a Key Exists
 
@@ -634,7 +634,7 @@ if (!("Bob" in myarray)) { print "No Bob" }
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Deleting Array Elements
 
@@ -644,14 +644,13 @@ delete myarray           # Delete the entire array
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Multi-Dimensional Arrays
 
-AWK simulates multi-dimensional arrays by concatenating keys with a separator (SUBSEP, which is `\034` by default):
+POSIX AWK simulates multi-dimensional arrays by concatenating keys with a separator (SUBSEP, which is `\034` by default). This works in every AWK (gawk, mawk, BSD/macOS awk):
 
 ```awk
-{ sales[$1][$2] += $3 }        # This won't work as-is
 { sales[$1, $2] += $3 }        # Use comma — AWK joins with SUBSEP
 END {
     for (key in sales) {
@@ -661,8 +660,19 @@ END {
 }
 ```
 
+gawk (the default `awk` on Fedora and RHEL) also supports true arrays of arrays as an extension. They do not work in mawk or BSD/macOS awk:
 
-[↑ Goto TOC](#table-of-contents)
+```awk
+{ sales[$1][$2] += $3 }        # gawk only: an array inside an array
+END {
+    for (a in sales)
+        for (b in sales[a])
+            print a, b, sales[a][b]
+}
+```
+
+
+[↑ Back to TOC](#table-of-contents)
 
 ### Example: Summing by Category
 
@@ -687,14 +697,14 @@ END {
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 11. Built-in Functions
 
 AWK has a rich set of built-in functions for string manipulation, math, and I/O.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 11.1 String Functions
 
@@ -758,7 +768,7 @@ AWK has a rich set of built-in functions for string manipulation, math, and I/O.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 11.2 Math Functions
 
@@ -779,7 +789,7 @@ BEGIN { srand() }          # Seed random number generator with current time
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 11.3 I/O Functions
 
@@ -817,7 +827,7 @@ END {
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 12. User-Defined Functions
 
@@ -859,7 +869,7 @@ function process(input,    local_var, i, tmp) {
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 13. BEGIN and END Blocks
 
@@ -898,7 +908,7 @@ You can have multiple `BEGIN` and `END` blocks — they all execute in order.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 14. Working with Multiple Files
 
@@ -932,14 +942,14 @@ The trick here is `FNR == NR` — this condition is only true while reading the 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 15. AWK One-Liners Cookbook
 
 These practical one-liners cover the most common everyday tasks.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Text Extraction
 
@@ -954,7 +964,7 @@ awk '{ print $NF }' file.txt
 awk '{ print $2, $3, $4 }' file.txt
 
 # Print all fields except the first (fields 2 to NF)
-awk '{ $1=""; print }' file.txt
+awk '{ $1=""; print }' file.txt   # note: leaves a leading space (OFS)
 
 # Print the first 3 fields in reverse order
 awk '{ print $3, $2, $1 }' file.txt
@@ -973,7 +983,7 @@ awk 'NR==42' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Filtering
 
@@ -1004,7 +1014,7 @@ awk '!/^#/ && NF > 0' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Calculations and Aggregation
 
@@ -1035,7 +1045,7 @@ awk '!seen[$0]++' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Text Transformation
 
@@ -1069,7 +1079,7 @@ awk '{ gsub(/^[ \t]+|[ \t]+$/, ""); print }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Log File Analysis
 
@@ -1090,12 +1100,12 @@ awk '{ if ($10 ~ /^[0-9]+$/) bytes += $10 }
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 16. Real-World Examples
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Example 1: Process /etc/passwd
 
@@ -1112,7 +1122,7 @@ awk -F':' '{ shells[$7]++ }
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Example 2: Summarize a Sales Report
 
@@ -1154,7 +1164,7 @@ END {
 Run with: `awk -f report.awk sales.csv`
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Example 3: Monitor a Log File
 
@@ -1188,7 +1198,7 @@ END {
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Example 4: Data Validation
 
@@ -1237,7 +1247,7 @@ END {
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Example 5: Reformat Data
 
@@ -1265,12 +1275,12 @@ END {
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 17. Tips, Tricks, and Gotchas
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Gotcha 1: Numeric vs. String Comparison
 
@@ -1289,14 +1299,14 @@ AWK decides whether to compare numerically or as strings based on context. If bo
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Gotcha 2: Uninitialized Variables
 
 In AWK, uninitialized variables are 0 (numeric) or "" (string) — this is actually a feature. It means you can write `count++` without ever initializing `count = 0`, and it works fine.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Gotcha 3: print vs. printf Newlines
 
@@ -1309,7 +1319,7 @@ In AWK, uninitialized variables are 0 (numeric) or "" (string) — this is actua
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Gotcha 4: Regex Anchors in Field Matching
 
@@ -1321,7 +1331,7 @@ $1 == "error"    # Also exactly "error" — usually clearer for exact matches
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Gotcha 5: Modifying $0
 
@@ -1333,7 +1343,7 @@ BEGIN { OFS = "," }
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Gotcha 6: The `next` Statement
 
@@ -1345,9 +1355,9 @@ NR == 1 { print "Header:", $0; next }   # next skips remaining rules for this re
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Tip: Use -v to Pass Shell Variables
+### Tip: Passing Shell Variables
 
 Never try to embed shell variables inside single-quoted AWK programs. Instead, use `-v`:
 
@@ -1361,7 +1371,7 @@ awk -v threshold="$threshold" '{ if ($2 > threshold) print }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Tip: Suppress Output with 0 or 1 as Action
 
@@ -1374,7 +1384,7 @@ NR%2            # Prints odd-numbered lines (NR%2 is 1 for odd, 0 for even)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Tip: Pipe to sort in END
 
@@ -1391,7 +1401,7 @@ END {
 AWK keeps the pipe open and passes all output through sort at once.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Tip: gawk Extensions
 
@@ -1411,7 +1421,7 @@ echo "hello world" | gawk '{ print gensub(/(\w+) (\w+)/, "\\2 \\1", "g") }'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Card
 
@@ -1446,7 +1456,7 @@ FUNCTIONS:       function name(params,    local_vars) { ... return val }
 
 *This guide was written for AWK beginners and covers POSIX-standard AWK with notes on GNU AWK (gawk) extensions. For the definitive reference, see the book "The AWK Programming Language" by Aho, Weinberger, and Kernighan, or run `man awk` on your system.*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

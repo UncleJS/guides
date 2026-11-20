@@ -3,7 +3,7 @@
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 
-Bash (Bourne Again SHell) is the default command-line shell on most Linux distributions and macOS. It's a powerful tool for automating tasks, managing files, and controlling your system. This guide will take you from absolute beginner to confidently writing your own Bash scripts.
+Bash (Bourne Again SHell) is the default command-line shell on most Linux distributions, including Fedora and RHEL. (macOS switched its default to `zsh` in macOS 10.15 Catalina; it still ships an old Bash 3.2 at `/bin/bash`, which lacks some features shown here, such as associative arrays and negative array indexes.) It's a powerful tool for automating tasks, managing files, and controlling your system. This guide will take you from absolute beginner to confidently writing your own Bash scripts.
 
 
 ## Table of Contents
@@ -77,14 +77,14 @@ Bash (Bourne Again SHell) is the default command-line shell on most Linux distri
 ---
 ## 1. What is Bash?
 
-Bash is both a **command-line interpreter** (you type commands and it runs them) and a **scripting language** (you can write programs called "scripts" that Bash executes). It was written as a free replacement for the original Bourne Shell (`sh`) and has been the standard shell on Linux since the late 1980s.
+Bash is both a **command-line interpreter** (you type commands and it runs them) and a **scripting language** (you can write programs called "scripts" that Bash executes). It was written as a free replacement for the original Bourne Shell (`sh`). First released in 1989, it has been the standard shell on most Linux distributions since the early 1990s.
 
 A Bash **script** is simply a plain text file containing a series of commands. When you run the script, Bash executes each command in order, top to bottom.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 2. Opening a Terminal
 
@@ -103,12 +103,12 @@ The `$` means you're a regular user. A `#` means you're the root (administrator)
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 3. Navigating the File System
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Essential Navigation Commands
 
@@ -122,7 +122,7 @@ The `$` means you're a regular user. A `#` means you're the root (administrator)
 | `cd -` | Go to the previous directory |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `ls` Options
 
@@ -135,7 +135,7 @@ ls -R       # Recursively list all subdirectories
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Understanding Paths
 
@@ -151,12 +151,12 @@ cd ../../other      # Go up two levels, then into 'other'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 4. Working with Files and Directories
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Creating Files and Directories
 
@@ -167,7 +167,7 @@ mkdir -p a/b/c              # Create nested directories in one go
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Copying, Moving, and Renaming
 
@@ -180,7 +180,7 @@ mv folder/ /tmp/            # Move a directory
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Deleting Files and Directories
 
@@ -195,7 +195,7 @@ rmdir empty_folder          # Delete an empty directory
 > ⚠️ **Warning:** There is no Recycle Bin in Bash. Deleted files are gone immediately. Use `rm -i` when you're unsure.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Finding Files
 
@@ -210,12 +210,12 @@ find . -size +10M                   # Files larger than 10 MB
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 5. Viewing and Editing Files
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Viewing File Contents
 
@@ -229,7 +229,7 @@ tail -f logfile.log         # Follow a file in real time (great for logs)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Searching Within Files
 
@@ -243,7 +243,7 @@ grep -c "word" file.txt             # Count matching lines
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Text Editors in the Terminal
 
@@ -255,27 +255,29 @@ vim file.txt        # Powerful but has a steep learning curve
 In `nano`: Use `Ctrl+O` to save, `Ctrl+X` to exit.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Word Count
 
 ```bash
-wc file.txt         # Lines, words, and characters
+wc file.txt         # Lines, words, and bytes
 wc -l file.txt      # Count lines only
 wc -w file.txt      # Count words only
+wc -c file.txt      # Count bytes only
+wc -m file.txt      # Count characters (differs from bytes for UTF-8 text)
 ```
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 6. Permissions
 
 Every file and directory has permissions that control who can read, write, or execute it.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Reading Permissions
 
@@ -287,16 +289,15 @@ Run `ls -l` to see permissions:
 
 Breaking this down:
 
-```
-- rwx r-x r--
-│ │   │   └── Other: read only
-│ │   └────── Group: read and execute
-│ └────────── Owner: read, write, execute
-└──────────── File type (- = file, d = directory, l = symlink)
-```
+| Characters | Applies to | Meaning |
+|---|---|---|
+| `-` | File type | `-` = regular file, `d` = directory, `l` = symlink |
+| `rwx` | Owner | Read, write, execute |
+| `r-x` | Group | Read and execute |
+| `r--` | Other | Read only |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Changing Permissions with `chmod`
 
@@ -305,8 +306,16 @@ chmod +x script.sh          # Make a file executable
 chmod -w file.txt           # Remove write permission
 chmod 755 script.sh         # Set permissions using octal notation
 chmod 644 file.txt          # Owner can read/write; others can read
-chmod -R 755 folder/        # Apply permissions recursively
+chmod -R u=rwX,go=rX folder/   # Recursively: dirs 755, files 644 (X = execute only on dirs
+                               # and files that are already executable)
 ```
+
+> ⚠️ Avoid `chmod -R 755 folder/`: it makes every regular file executable too. Use the symbolic `X` form above, or set directories and files separately:
+>
+> ```bash
+> find folder/ -type d -exec chmod 755 {} +
+> find folder/ -type f -exec chmod 644 {} +
+> ```
 
 **Octal notation quick reference:**
 
@@ -319,7 +328,7 @@ chmod -R 755 folder/        # Apply permissions recursively
 | 0 | No permission (---) |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Changing Ownership
 
@@ -332,14 +341,14 @@ sudo chown -R alice folder/     # Recursively change ownership
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 7. Redirection and Pipes
 
 One of Bash's most powerful features is the ability to redirect output and chain commands together.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Standard Streams
 
@@ -348,7 +357,7 @@ One of Bash's most powerful features is the ability to redirect output and chain
 - **stderr (2):** Error output (usually screen)
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Redirection Operators
 
@@ -362,7 +371,7 @@ command < input.txt         # Use a file as stdin
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Pipes
 
@@ -379,12 +388,12 @@ history | tail -20              # Show last 20 commands
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 8. Variables
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Defining and Using Variables
 
@@ -396,7 +405,7 @@ echo 'Hello, $name!'    # Single quotes — literal, NOT expanded
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Variable Rules
 
@@ -405,7 +414,7 @@ echo 'Hello, $name!'    # Single quotes — literal, NOT expanded
 - Use `$` when reading a variable, but not when assigning.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Command Substitution
 
@@ -420,7 +429,7 @@ echo "There are $files files here."
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Special Variables
 
@@ -438,7 +447,7 @@ echo "There are $files files here."
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 9. User Input
 
@@ -460,12 +469,12 @@ echo "Password received."
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 10. Conditionals
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The `if` Statement
 
@@ -480,7 +489,7 @@ fi
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### File Test Operators
 
@@ -496,7 +505,7 @@ if [ -n "$var" ]; then echo "variable is not empty"; fi
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Comparison Operators
 
@@ -516,13 +525,14 @@ if [ -n "$var" ]; then echo "variable is not empty"; fi
 ```bash
 [ "$a" = "$b" ]     # Equal
 [ "$a" != "$b" ]    # Not equal
-[ "$a" < "$b" ]     # Less than (alphabetical)
+[ "$a" \< "$b" ]    # Less than (alphabetical) — the \ is required, or < is a redirect
+[[ "$a" < "$b" ]]   # Same test inside [[ ]] (no escaping needed)
 [ -z "$a" ]         # String is empty
 [ -n "$a" ]         # String is not empty
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Logical Operators
 
@@ -537,7 +547,7 @@ if [ -n "$var" ]; then echo "variable is not empty"; fi
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The `case` Statement
 
@@ -560,12 +570,12 @@ esac
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 11. Loops
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `for` Loop
 
@@ -592,7 +602,7 @@ done
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `while` Loop
 
@@ -610,7 +620,7 @@ done < file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `until` Loop
 
@@ -625,7 +635,7 @@ done
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Loop Control
 
@@ -649,7 +659,7 @@ done
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 12. Functions
 
@@ -667,7 +677,7 @@ greet "Bob"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Functions with Return Values
 
@@ -684,7 +694,7 @@ echo "5 + 10 = $sum"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Local Variables
 
@@ -703,7 +713,7 @@ echo $temp      # This will be empty — $temp doesn't exist here
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 13. Arrays
 
@@ -735,7 +745,7 @@ done
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Associative Arrays (Dictionaries)
 
@@ -755,7 +765,7 @@ done
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 14. String Manipulation
 
@@ -780,7 +790,7 @@ echo ${file%.tar.gz}        # Remove suffix: backup_2024
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 15. Arithmetic
 
@@ -808,12 +818,12 @@ echo "scale=4; sqrt(2)" | bc -l  # 1.4142
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 16. Script Best Practices
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The Shebang Line
 
@@ -824,7 +834,7 @@ Always start your script with a shebang to tell the system which interpreter to 
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### A Well-Structured Script
 
@@ -859,7 +869,7 @@ main "$@"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Strict Mode
 
@@ -874,7 +884,7 @@ set -euo pipefail
 - `-o pipefail`: A pipeline fails if any command in it fails.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Making a Script Executable
 
@@ -884,7 +894,7 @@ chmod +x my_script.sh
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Quoting
 
@@ -899,7 +909,7 @@ rm "$filename"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Error Handling
 
@@ -913,7 +923,7 @@ fi
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 17. Useful Built-in Commands
 
@@ -937,7 +947,7 @@ sudo !!                      # Re-run the last command as root
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 18. Process Management
 
@@ -965,7 +975,7 @@ nohup ./script.sh &
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 19. Environment Variables
 
@@ -974,7 +984,7 @@ env                             # List all environment variables
 echo $PATH                      # See your PATH
 echo $HOME                      # Your home directory
 echo $USER                      # Current username
-echo $SHELL                     # Current shell
+echo $SHELL                     # Your login shell (not necessarily the one running)
 
 # Set a temporary variable (only for this session)
 export MY_VAR="hello"
@@ -993,12 +1003,12 @@ export PATH="$PATH:/home/user/my_scripts"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 20. Tips and Tricks
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Keyboard Shortcuts
 
@@ -1017,7 +1027,7 @@ export PATH="$PATH:/home/user/my_scripts"
 | `↑` / `↓` | Cycle through command history |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Brace Expansion
 
@@ -1029,7 +1039,7 @@ cp file.txt{,.bak}          # Quickly create a backup copy
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Here Documents
 
@@ -1049,7 +1059,7 @@ EOF
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The `xargs` Command
 
@@ -1063,7 +1073,7 @@ cat urls.txt | xargs -I {} curl -O {}         # Download each URL from a file
 > ⚠️ `xargs rm` permanently deletes files. Run the `find` part on its own first to preview what matches. Use `find ... -print0 | xargs -0` (as above) so filenames containing spaces or newlines are handled safely.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Useful One-Liners
 
@@ -1093,7 +1103,7 @@ watch -n 2 "free -h"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Next Steps
 
@@ -1108,7 +1118,7 @@ You now have a solid foundation in Bash! Here are some suggestions for where to 
 
 Happy scripting! 🚀
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

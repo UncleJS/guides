@@ -45,7 +45,7 @@ SSH replaced older, insecure protocols like Telnet and rsh, and is now the stand
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## How SSH Works (The Short Version)
 
@@ -61,12 +61,12 @@ You can also authenticate with a **password**, though key-based authentication i
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Installing SSH
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Linux
 Most Linux distributions ship with OpenSSH pre-installed. If not:
@@ -91,13 +91,13 @@ sudo systemctl enable --now sshd
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### macOS
 SSH comes pre-installed. Just open Terminal and you're ready.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Windows
 Windows 10/11 includes a built-in OpenSSH client. Enable it via:
@@ -108,7 +108,7 @@ Alternatively, use [PuTTY](https://www.putty.org/) or [Windows Terminal](https:/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Connecting to a Remote Server
 
@@ -142,12 +142,19 @@ ED25519 key fingerprint is SHA256:abc123...
 Are you sure you want to continue connecting (yes/no/[fingerprint])?
 ```
 
-Type `yes` to accept and save the server's fingerprint to `~/.ssh/known_hosts`. Future connections will be verified against this fingerprint.
+Before typing `yes`, **check that the fingerprint is really the server's**. Get the real value through a trusted channel (the server's console, your admin, or your cloud provider's dashboard). On the server itself, show its host key fingerprints with:
+
+```bash
+# Run on the server (Fedora/RHEL, Debian and macOS use the same paths)
+for f in /etc/ssh/ssh_host_*_key.pub; do ssh-keygen -lf "$f"; done
+```
+
+If the fingerprint matches, type `yes` to accept and save the server's key to `~/.ssh/known_hosts`. Future connections will be verified against it. If it does not match, answer `no`: someone may be intercepting the connection.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Generating SSH Keys
 
@@ -160,14 +167,14 @@ ssh-keygen -t ed25519 -C "your_email@example.com"
 - `-t ed25519` specifies the key type. Ed25519 is modern and recommended.
 - `-C` adds a comment (usually your email) to help identify the key.
 
-You can also use RSA if Ed25519 isn't supported by your target system:
+You can also use RSA if Ed25519 isn't supported by your target system. Use at least 3072 bits (4096 is fine):
 
 ```bash
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### What happens next
 
@@ -187,14 +194,14 @@ This creates two files:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Copying Your Public Key to a Server
 
 To enable key-based login, your public key must be added to `~/.ssh/authorized_keys` on the remote server.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The easy way
 
@@ -205,7 +212,7 @@ ssh-copy-id username@hostname
 This automatically appends your public key to the server's `authorized_keys` file.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The manual way
 
@@ -218,14 +225,19 @@ mkdir -p ~/.ssh
 echo "your-public-key-here" >> ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
+
+# Fedora/RHEL (SELinux): restore the correct SELinux labels
+restorecon -Rv ~/.ssh
 ```
 
 > **Note:** File permissions matter. SSH will refuse to use keys if the permissions are too open.
 
+> **SELinux note (Fedora/RHEL):** If `~/.ssh` was created by hand, copied from elsewhere, or restored from a backup, it may carry the wrong SELinux label, and `sshd` will ignore `authorized_keys` even though the permissions look right. `restorecon -Rv ~/.ssh` fixes the label. `ssh-copy-id` already does this for you. Debian/Ubuntu and macOS don't use SELinux by default, so skip this step there.
+
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## The SSH Config File
 
@@ -252,7 +264,7 @@ ssh work
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Common config options
 
@@ -262,18 +274,21 @@ ssh work
 | `User` | Username to log in as |
 | `Port` | SSH port (default: 22) |
 | `IdentityFile` | Path to your private key |
-| `ForwardAgent` | Forward your SSH agent to the remote host |
+| `ForwardAgent` | Forward your SSH agent to the remote host (see the warning below) |
+| `ProxyJump` | Connect through an intermediate (jump) host, e.g. `ProxyJump bastion` |
 | `ServerAliveInterval` | Send keep-alive packets to prevent timeouts |
+
+> **Security warning about `ForwardAgent`:** With agent forwarding on, anyone with root access on the remote host (or who has taken it over) can use your agent to log in to other servers as you while you are connected. Leave it off (the default), and never set it under `Host *`. To reach a server behind a bastion, use `ProxyJump` (or `ssh -J bastion target`) instead: your keys stay on your own machine.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common SSH Commands
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Run a single command remotely
 
@@ -282,7 +297,7 @@ ssh alice@example.com "ls -la /var/www"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Copy files with SCP (Secure Copy)
 
@@ -298,7 +313,7 @@ scp -r my_folder/ alice@example.com:/home/alice/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Transfer files with SFTP
 
@@ -309,7 +324,7 @@ sftp alice@example.com
 Inside SFTP, you can use commands like `ls`, `cd`, `get`, `put`, `mkdir`, and `exit`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Rsync over SSH (for syncing directories)
 
@@ -320,14 +335,14 @@ rsync -avz -e ssh my_folder/ alice@example.com:/home/alice/my_folder/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## SSH Tunneling
 
 SSH can forward ports and create encrypted tunnels — useful for accessing services that aren't publicly exposed.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Local Port Forwarding
 
@@ -340,7 +355,7 @@ ssh -L 8080:localhost:80 alice@example.com
 Now visiting `http://localhost:8080` on your machine connects to port 80 on the remote server.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Remote Port Forwarding
 
@@ -353,7 +368,7 @@ ssh -R 9090:localhost:3000 alice@example.com
 Now port 9090 on the remote server connects back to port 3000 on your machine.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Dynamic Port Forwarding (SOCKS Proxy)
 
@@ -368,7 +383,7 @@ Then configure your browser to use `SOCKS5 localhost:1080` as a proxy.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## SSH Agent
 
@@ -390,13 +405,17 @@ On macOS, keys added with `ssh-add --apple-use-keychain` persist across reboots 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Securing Your SSH Server
 
-If you're running an SSH server, these configuration changes (in `/etc/ssh/sshd_config`) significantly improve security:
+If you're running an SSH server, these configuration changes significantly improve security.
+
+**Put your changes in a drop-in file, not in `/etc/ssh/sshd_config` itself.** On Fedora/RHEL (and recent Debian/Ubuntu), the main file starts with `Include /etc/ssh/sshd_config.d/*.conf`. The files are read in alphabetical order and, for most options, **the first value sshd finds wins**. Fedora/RHEL ship `40-redhat-crypto-policies.conf` and `50-redhat.conf` there, so give your file a lower number, such as `10-custom.conf`, or its settings may be ignored. Package updates also leave your own drop-in alone.
 
 ```
+# /etc/ssh/sshd_config.d/10-custom.conf
+
 # Disable root login
 PermitRootLogin no
 
@@ -409,36 +428,63 @@ MaxAuthTries 3
 # Only allow specific users
 AllowUsers alice bob
 
-# Change the default port (obscures from casual scans)
+# Change the default port (obscures from casual scans; see the steps below)
 Port 2222
-
-# Use modern key exchange algorithms only
-KexAlgorithms curve25519-sha256,diffie-hellman-group14-sha256
 ```
 
-After making changes, restart the SSH service:
+**Changing the port on Fedora/RHEL** needs two more steps, or sshd will fail to start (SELinux) or be unreachable (firewall):
 
 ```bash
+# Allow sshd to bind the new port under SELinux
+sudo semanage port -a -t ssh_port_t -p tcp 2222
+
+# Open the new port in firewalld
+sudo firewall-cmd --permanent --add-port=2222/tcp
+sudo firewall-cmd --reload
+```
+
+Once you can log in on the new port, you can close the old one with `sudo firewall-cmd --permanent --remove-service=ssh && sudo firewall-cmd --reload`. On Debian/Ubuntu with `ufw`, use `sudo ufw allow 2222/tcp` instead (no SELinux step).
+
+**Ciphers and key exchange (`KexAlgorithms`, `Ciphers`, `MACs`):** On Fedora/RHEL these are set system-wide by **crypto-policies** (loaded through `40-redhat-crypto-policies.conf`). Rather than listing algorithms in sshd's config, change the policy, which also covers other programs:
+
+```bash
+update-crypto-policies --show          # current policy, e.g. DEFAULT
+sudo update-crypto-policies --set FUTURE   # stricter policy (then restart sshd)
+```
+
+If you do set `KexAlgorithms` or `Ciphers` yourself, the line only takes effect from a drop-in that sorts before `40-redhat-crypto-policies.conf`, and it overrides the system policy for sshd. On Debian/Ubuntu and macOS there are no crypto-policies; the OpenSSH defaults are already modern.
+
+**Check and apply the configuration:**
+
+```bash
+# Check the syntax; prints nothing if the config is valid
+sudo sshd -t
+
+# Show the effective settings after all files are combined
+sudo sshd -T | grep -iE '^(permitrootlogin|passwordauthentication|port|kexalgorithms) '
+
+# Restart the SSH service (Debian/Ubuntu: the unit is called "ssh")
 sudo systemctl restart sshd
 ```
 
-> **Warning:** Before disabling password authentication, make sure your key-based login works. Otherwise you may lock yourself out.
+> **Warning:** Keep your current SSH session open while you make and test these changes. Open a **second** terminal and log in again (on the new port, with your key) before you close the first one. If you've made a mistake, you can still fix it from the session that is still open. Before disabling password authentication, make sure your key-based login works, or you may lock yourself out.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Troubleshooting
 
 **"Permission denied (publickey)"**
 - Ensure your public key is in `~/.ssh/authorized_keys` on the server.
 - Check file permissions: `chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys`.
+- On Fedora/RHEL, fix SELinux labels: `restorecon -Rv ~/.ssh`.
 - Verify you're using the right key with `ssh -i ~/.ssh/your_key user@host`.
 
 **"Connection refused"**
 - The SSH service may not be running: `sudo systemctl start sshd`.
-- A firewall may be blocking port 22: `sudo ufw allow ssh`.
+- A firewall may be blocking port 22. On Fedora/RHEL (firewalld): `sudo firewall-cmd --permanent --add-service=ssh && sudo firewall-cmd --reload`. On Debian/Ubuntu (ufw): `sudo ufw allow ssh`.
 
 **"Host key verification failed"**
 - The server's fingerprint changed (could indicate a security issue or the server was reinstalled).
@@ -460,7 +506,7 @@ ssh -vvv alice@example.com
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference
 
@@ -480,7 +526,7 @@ ssh -vvv alice@example.com
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Next Steps
 
@@ -494,7 +540,7 @@ Now that you have the basics down, here are some things to explore:
 
 SSH is one of the most powerful tools in a developer's or sysadmin's toolkit. With these fundamentals, you're well on your way to managing remote systems confidently and securely.
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

