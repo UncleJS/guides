@@ -8,36 +8,36 @@ Regular expressions (regex or regexp) are patterns used to search, match, and ma
 
 ## Table of Contents
 
-- [1. What Is a Regular Expression? {#what-is-a-regular-expression}](#1-what-is-a-regular-expression-what-is-a-regular-expression)
+- [1. What Is a Regular Expression?](#1-what-is-a-regular-expression)
   - [A Simple Example](#a-simple-example)
-- [2. How to Read This Guide {#how-to-read-this-guide}](#2-how-to-read-this-guide-how-to-read-this-guide)
-- [3. Literal Characters {#literal-characters}](#3-literal-characters-literal-characters)
-- [4. Special Characters (Metacharacters) {#metacharacters}](#4-special-characters-metacharacters-metacharacters)
-  - [The Dot `.`](#the-dot)
-- [5. Character Classes {#character-classes}](#5-character-classes-character-classes)
+- [2. How to Read This Guide](#2-how-to-read-this-guide)
+- [3. Literal Characters](#3-literal-characters)
+- [4. Special Characters (Metacharacters)](#4-special-characters-metacharacters)
+  - [The Dot](#the-dot)
+- [5. Character Classes](#5-character-classes)
   - [Basic Character Classes](#basic-character-classes)
   - [Ranges](#ranges)
   - [Negated Character Classes](#negated-character-classes)
-- [6. Shorthand Character Classes {#shorthand-character-classes}](#6-shorthand-character-classes-shorthand-character-classes)
-- [7. Anchors {#anchors}](#7-anchors-anchors)
+- [6. Shorthand Character Classes](#6-shorthand-character-classes)
+- [7. Anchors](#7-anchors)
   - [Start and End Anchors](#start-and-end-anchors)
   - [Word Boundaries](#word-boundaries)
-- [8. Quantifiers {#quantifiers}](#8-quantifiers-quantifiers)
+- [8. Quantifiers](#8-quantifiers)
   - [Examples](#examples)
   - [Greedy vs. Lazy](#greedy-vs-lazy)
-- [9. Grouping and Capturing {#grouping-and-capturing}](#9-grouping-and-capturing-grouping-and-capturing)
+- [9. Grouping and Capturing](#9-grouping-and-capturing)
   - [Grouping](#grouping)
   - [Capturing](#capturing)
   - [Non-Capturing Groups](#non-capturing-groups)
-- [10. Alternation {#alternation}](#10-alternation-alternation)
-- [11. Lookahead and Lookbehind {#lookahead-and-lookbehind}](#11-lookahead-and-lookbehind-lookahead-and-lookbehind)
-  - [Positive Lookahead `(?=...)`](#positive-lookahead)
-  - [Negative Lookahead `(?!...)`](#negative-lookahead)
-  - [Positive Lookbehind `(?<=...)`](#positive-lookbehind)
-  - [Negative Lookbehind `(?<!...)`](#negative-lookbehind)
-- [12. Flags / Modifiers {#flags}](#12-flags-modifiers-flags)
-  - [Examples](#examples)
-- [13. Common Patterns You Can Use Today {#common-patterns}](#13-common-patterns-you-can-use-today-common-patterns)
+- [10. Alternation](#10-alternation)
+- [11. Lookahead and Lookbehind](#11-lookahead-and-lookbehind)
+  - [Positive Lookahead](#positive-lookahead)
+  - [Negative Lookahead](#negative-lookahead)
+  - [Positive Lookbehind](#positive-lookbehind)
+  - [Negative Lookbehind](#negative-lookbehind)
+- [12. Flags and Modifiers](#12-flags-and-modifiers)
+  - [Examples](#examples-1)
+- [13. Common Patterns You Can Use Today](#13-common-patterns-you-can-use-today)
   - [Email Address (simple)](#email-address-simple)
   - [URL](#url)
   - [Phone Number (US format)](#phone-number-us-format)
@@ -48,18 +48,19 @@ Regular expressions (regex or regexp) are patterns used to search, match, and ma
   - [Strong Password (8+ chars, upper, lower, digit, special char)](#strong-password-8-chars-upper-lower-digit-special-char)
   - [Whitespace-only lines](#whitespace-only-lines)
   - [Trim leading/trailing whitespace](#trim-leadingtrailing-whitespace)
-- [14. Putting It All Together {#putting-it-all-together}](#14-putting-it-all-together-putting-it-all-together)
-- [15. Quick Reference Cheat Sheet {#cheat-sheet}](#15-quick-reference-cheat-sheet-cheat-sheet)
+- [14. Putting It All Together](#14-putting-it-all-together)
+- [15. Quick Reference Cheat Sheet](#15-quick-reference-cheat-sheet)
   - [Characters](#characters)
   - [Character Classes](#character-classes)
   - [Anchors](#anchors)
   - [Quantifiers](#quantifiers)
   - [Groups](#groups)
   - [Common Flags](#common-flags)
+- [16. Regex Flavours on the Command Line](#16-regex-flavours-on-the-command-line)
 - [Next Steps](#next-steps)
 
 ---
-## 1. What Is a Regular Expression? {#what-is-a-regular-expression}
+## 1. What Is a Regular Expression?
 
 A regular expression is a **sequence of characters that defines a search pattern**. You can use it to:
 
@@ -71,7 +72,7 @@ A regular expression is a **sequence of characters that defines a search pattern
 Regex is supported in almost every programming language (Python, JavaScript, Java, Ruby, Go, etc.) and in many text editors (VS Code, Sublime Text, Notepad++).
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### A Simple Example
 
@@ -86,9 +87,9 @@ The regex `cat` matches the word "cat" in that string. Simple enough. But regex 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 2. How to Read This Guide {#how-to-read-this-guide}
+## 2. How to Read This Guide
 
 Throughout this guide, patterns look like this: `/pattern/`
 
@@ -106,9 +107,9 @@ You can test all examples interactively at **regex101.com** — paste in a patte
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 3. Literal Characters {#literal-characters}
+## 3. Literal Characters
 
 The simplest regex is just a sequence of literal characters. The pattern matches exactly those characters, in that order.
 
@@ -123,9 +124,9 @@ The simplest regex is just a sequence of literal characters. The pattern matches
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 4. Special Characters (Metacharacters) {#metacharacters}
+## 4. Special Characters (Metacharacters)
 
 Some characters have special meaning in regex. These are called **metacharacters**:
 
@@ -143,9 +144,9 @@ If you want to match one of these characters *literally*, you must **escape** it
 | A literal backslash `\` | `\\` |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### The Dot `.`
+### The Dot
 
 The dot `.` is the wildcard character. It matches **any single character** except a newline.
 
@@ -160,14 +161,14 @@ The dot does **not** match "ct" (no character between c and t) or "coat" (two ch
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 5. Character Classes {#character-classes}
+## 5. Character Classes
 
 A **character class** is a set of characters inside square brackets `[ ]`. It matches **one character** from the set.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Basic Character Classes
 
@@ -184,7 +185,7 @@ Matches:  The [cat] sat on the [mat].
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Ranges
 
@@ -199,7 +200,7 @@ Inside a character class, you can use a **hyphen `-`** to specify a range of cha
 | `[a-zA-Z0-9]` | Any letter or digit |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Negated Character Classes
 
@@ -213,7 +214,8 @@ Put a caret `^` at the **start** of a character class to match anything *except*
 ```
 Pattern:  /[^aeiou]/
 Input:    hello
-Matches:  [h]e[ll][o]  →  h, l, l are matched
+Matches:  [h]e[l][l]o  →  h, l and l are matched, one character at a time
+          ("e" and "o" are vowels, so they are not matched)
 ```
 
 > ⚠️ The caret `^` has different meanings in different places:
@@ -223,9 +225,9 @@ Matches:  [h]e[ll][o]  →  h, l, l are matched
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 6. Shorthand Character Classes {#shorthand-character-classes}
+## 6. Shorthand Character Classes
 
 Because some character classes are used so often, regex provides shorthand codes for them:
 
@@ -248,9 +250,9 @@ Matches:  My ZIP code is [902]10.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 7. Anchors {#anchors}
+## 7. Anchors
 
 Anchors don't match characters — they match **positions** in the string.
 
@@ -262,7 +264,7 @@ Anchors don't match characters — they match **positions** in the string.
 | `\B` | At a **non-word boundary** |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Start and End Anchors
 
@@ -283,7 +285,7 @@ Match:    Hello, [world!]    ✅ matches (world! is at end)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Word Boundaries
 
@@ -304,9 +306,9 @@ Matches:  The [cat] scattered across the catfish.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 8. Quantifiers {#quantifiers}
+## 8. Quantifiers
 
 Quantifiers specify **how many times** the preceding element must appear.
 
@@ -320,7 +322,7 @@ Quantifiers specify **how many times** the preceding element must appear.
 | `{n,m}` | Between n and m times (inclusive) |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Examples
 
@@ -347,7 +349,7 @@ Matches:  "12", "123", "1234"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Greedy vs. Lazy
 
@@ -379,14 +381,14 @@ Match:    [<div>]Hello[</div>]
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 9. Grouping and Capturing {#grouping-and-capturing}
+## 9. Grouping and Capturing
 
 Parentheses `( )` serve two purposes: **grouping** and **capturing**.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Grouping
 
@@ -402,7 +404,7 @@ Matches:  "gray" and "grey"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Capturing
 
@@ -430,7 +432,7 @@ Matches:  This [is is] a [test test].
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Non-Capturing Groups
 
@@ -446,9 +448,9 @@ This is slightly more efficient and keeps your group numbering clean.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 10. Alternation {#alternation}
+## 10. Alternation
 
 The pipe `|` means "or." It matches either the expression to its left or the expression to its right.
 
@@ -468,18 +470,18 @@ Matches:  "I have a cat" or "I have a dog"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 11. Lookahead and Lookbehind {#lookahead-and-lookbehind}
+## 11. Lookahead and Lookbehind
 
 **Lookarounds** let you match something only if it is (or isn't) preceded or followed by something else — without including that something else in the match. They are **zero-width** assertions (they don't consume characters).
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Positive Lookahead `(?=...)`
+### Positive Lookahead
 
-Match X only if followed by Y:
+Match X only if followed by Y, written `(?=...)`:
 
 ```
 Pattern:  /\d+(?= dollars)/
@@ -489,25 +491,27 @@ Match:    I have [50] dollars and 30 euros.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Negative Lookahead `(?!...)`
+### Negative Lookahead
 
-Match X only if NOT followed by Y:
+Match X only if NOT followed by Y, written `(?!...)`:
 
 ```
-Pattern:  /\d+(?! dollars)/
+Pattern:  /\d+(?!\d| dollars)/
 Input:    I have 50 dollars and 30 euros.
 Match:    I have 50 dollars and [30] euros.
 (matches "30" because it is NOT followed by " dollars")
 ```
 
+Why the extra `\d` in the lookahead? With the simpler `/\d+(?! dollars)/`, the engine backtracks: `\d+` gives up the "0" of "50" and matches just "5", which is followed by "0", not " dollars", so "5" becomes a match too. Adding `\d` to the lookahead stops a match from ending in the middle of a number.
 
-[↑ Goto TOC](#table-of-contents)
 
-### Positive Lookbehind `(?<=...)`
+[↑ Back to TOC](#table-of-contents)
 
-Match X only if preceded by Y:
+### Positive Lookbehind
+
+Match X only if preceded by Y, written `(?<=...)`:
 
 ```
 Pattern:  /(?<=\$)\d+/
@@ -517,27 +521,33 @@ Match:    The price is $[42].
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Negative Lookbehind `(?<!...)`
+### Negative Lookbehind
 
-Match X only if NOT preceded by Y:
+Match X only if NOT preceded by Y, written `(?<!...)`:
 
 ```
-Pattern:  /(?<!\$)\d+/
+Pattern:  /(?<![$\d])\d+/
 Input:    I have $100 and 50 apples.
 Match:    I have $100 and [50] apples.
 (matches "50" because it's NOT preceded by "$")
 ```
 
-> ⚠️ Lookbehind support varies. Most modern engines support it, but older JavaScript (pre-2018) does not.
+The `\d` inside the lookbehind matters: with just `/(?<!\$)\d+/`, the engine can start one character later and match "00" in "$100" (that "0" is preceded by "1", not "$").
+
+> ⚠️ Lookbehind support varies. Most modern engines support it, but older JavaScript (pre-2018) does not. On the command line, lookarounds work only with PCRE, for example `grep -P`. Plain `grep`, `grep -E`, `sed` and `awk` do not support them (see [Regex Flavours on the Command Line](#16-regex-flavours-on-the-command-line)).
+>
+> ```bash
+> echo 'I have 50 dollars and 30 euros.' | grep -oP '\d+(?= dollars)'   # 50
+> ```
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 12. Flags / Modifiers {#flags}
+## 12. Flags and Modifiers
 
 Flags change how the entire pattern behaves. They're placed after the closing `/` in languages that use slash delimiters.
 
@@ -550,7 +560,7 @@ Flags change how the entire pattern behaves. They're placed after the closing `/
 | `x` | Extended / Verbose | Allows whitespace and comments in pattern (for readability) |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Examples
 
@@ -569,14 +579,14 @@ re.findall(r"cat", "CAT cat Cat", re.IGNORECASE)  # ['CAT', 'cat', 'Cat']
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 13. Common Patterns You Can Use Today {#common-patterns}
+## 13. Common Patterns You Can Use Today
 
 Here are battle-tested regex patterns for everyday use. Don't worry about understanding every detail — you can learn from them over time.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Email Address (simple)
 ```
@@ -584,7 +594,7 @@ Here are battle-tested regex patterns for everyday use. Don't worry about unders
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### URL
 ```
@@ -592,7 +602,7 @@ Here are battle-tested regex patterns for everyday use. Don't worry about unders
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Phone Number (US format)
 ```
@@ -601,7 +611,7 @@ Here are battle-tested regex patterns for everyday use. Don't worry about unders
 Matches: (555) 123-4567, 555.123.4567, 5551234567
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Date (YYYY-MM-DD)
 ```
@@ -609,15 +619,16 @@ Matches: (555) 123-4567, 555.123.4567, 5551234567
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### IPv4 Address
 ```
 /^(\d{1,3}\.){3}\d{1,3}$/
 ```
+This checks the shape only: it also accepts invalid addresses like `999.999.999.999`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Hex Color Code
 ```
@@ -626,7 +637,7 @@ Matches: (555) 123-4567, 555.123.4567, 5551234567
 Matches: #FF5733, #fff
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ZIP Code (US)
 ```
@@ -634,7 +645,7 @@ Matches: #FF5733, #fff
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Strong Password (8+ chars, upper, lower, digit, special char)
 ```
@@ -642,7 +653,7 @@ Matches: #FF5733, #fff
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Whitespace-only lines
 ```
@@ -650,7 +661,7 @@ Matches: #FF5733, #fff
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Trim leading/trailing whitespace
 ```
@@ -661,9 +672,9 @@ Replace with:    (empty string)
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 14. Putting It All Together {#putting-it-all-together}
+## 14. Putting It All Together
 
 Let's walk through building a regex from scratch for a real problem: **extracting all hashtags from a social media post.**
 
@@ -703,12 +714,12 @@ Matches:  [#sunset], [#travel], [#photography2024]
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## 15. Quick Reference Cheat Sheet {#cheat-sheet}
+## 15. Quick Reference Cheat Sheet
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Characters
 
@@ -721,7 +732,7 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `\t` | Tab |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Character Classes
 
@@ -740,7 +751,7 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `\S` | Non-whitespace |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Anchors
 
@@ -752,7 +763,7 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `\B` | Non-word boundary |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Quantifiers
 
@@ -767,7 +778,7 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `*?` `+?` | Lazy versions |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Groups
 
@@ -782,7 +793,7 @@ Matches:  [#sunset], [#travel], [#photography2024]
 | `(?<!abc)` | Negative lookbehind |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Common Flags
 
@@ -796,7 +807,44 @@ Matches:  [#sunset], [#travel], [#photography2024]
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
+
+## 16. Regex Flavours on the Command Line
+
+Not every tool speaks the same regex "dialect". The examples in this guide use the PCRE/JavaScript style (`\d`, lazy `+?`, lookarounds). Linux command-line tools mostly use the older POSIX flavours instead:
+
+- **BRE** (Basic Regular Expressions): `+`, `?`, `|`, `( )` and `{ }` are literal characters. Write `\+`, `\?`, `\|`, `\( \)` and `\{ \}` to make them special (the `\+`, `\?` and `\|` forms are GNU extensions).
+- **ERE** (Extended Regular Expressions): `+`, `?`, `|`, `( )` and `{ }` are special without backslashes.
+- **PCRE** (Perl-Compatible Regular Expressions): everything in this guide, including `\d`, lazy quantifiers and lookarounds.
+
+| Tool (Fedora/RHEL, GNU) | Flavour | `\d` | Lazy `+?` | Lookarounds |
+|---|---|---|---|---|
+| `grep` | BRE | No (use `[0-9]` or `[[:digit:]]`) | No | No |
+| `grep -E` | ERE | No | No | No |
+| `grep -P` | PCRE | Yes | Yes | Yes |
+| `sed` | BRE | No | No | No |
+| `sed -E` | ERE | No | No | No |
+| `awk` (gawk) | ERE | No | No | No |
+
+```bash
+echo 'ab12' | grep -o 'b[0-9]\+'          # BRE: \+ means "one or more"   -> b12
+echo 'ab12' | grep -oE 'b[0-9]+'          # ERE: + without a backslash     -> b12
+echo 'ab12' | grep -oP '(?<=b)\d+'        # PCRE: lookbehind and \d        -> 12
+echo 'ab12' | sed -E 's/[0-9]+/<&>/'      # ERE in sed                     -> ab<12>
+echo 'ab12' | awk '{ sub(/[0-9]+/, "#"); print }'   # ERE in awk           -> ab#
+```
+
+Things to remember:
+
+- `grep -E '\d'` does not match digits: GNU grep prints `warning: stray \ before d` and treats it as a plain `d`. Use `[0-9]` or `[[:digit:]]` outside PCRE.
+- GNU `grep`, GNU `sed` and gawk accept `\w`, `\s` and (except gawk, which uses `\y`) `\b` as extensions, but these are not POSIX.
+- Lookarounds `(?=...)`, `(?!...)`, `(?<=...)`, `(?<!...)` work only with PCRE, for example `grep -P`. In `sed -E` and awk they are a syntax error; in plain (BRE) `sed` they are silently treated as literal characters and never match. If you need them in a script, use `grep -P`, `perl` or a language like Python.
+- On macOS/BSD, `grep -P` is not available in the system `grep`, and BSD `sed` does not support the `\+`/`\?` GNU extensions in BRE (use `sed -E` instead).
+
+---
+
+
+[↑ Back to TOC](#table-of-contents)
 
 ## Next Steps
 
@@ -810,7 +858,7 @@ Now that you have the fundamentals, here's how to keep improving:
 
 The biggest leap in regex mastery comes from reading other people's patterns and understanding *why* they're written the way they are. Good luck!
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

@@ -16,7 +16,7 @@
 - [Inserting and Appending Text: `i` and `a`](#inserting-and-appending-text-i-and-a)
 - [Changing Lines: `c`](#changing-lines-c)
 - [Reading and Writing Files: `r` and `w`](#reading-and-writing-files-r-and-w)
-- [Editing Files In-Place: `-i`](#editing-files-in-place-i)
+- [Editing Files In-Place](#editing-files-in-place)
 - [Multiple Commands](#multiple-commands)
 - [Transliterate: `y`](#transliterate-y)
 - [Quitting Early: `q` and `Q`](#quitting-early-q-and-q)
@@ -51,7 +51,7 @@ cat file.txt | sed 'command'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Core Concepts
 
@@ -64,7 +64,7 @@ cat file.txt | sed 'command'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## The Substitute Command: `s`
 
@@ -108,7 +108,7 @@ sed 's#https://old.com#https://new.com#g' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Backreferences
 
@@ -129,13 +129,15 @@ The `&` symbol in the replacement refers to the entire matched string:
 
 ```bash
 # Wrap every number in parentheses
-sed 's/[0-9]*/(&)/g' file.txt
+sed 's/[0-9][0-9]*/(&)/g' file.txt     # or: sed -E 's/[0-9]+/(&)/g'
 ```
+
+Note: `[0-9]*` alone would be wrong here, because `*` also matches the empty string, so sed would insert `()` between every character (`ab` becomes `()a()b()`).
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Addressing: Targeting Specific Lines
 
@@ -177,7 +179,7 @@ sed '/START/,/END/s/foo/bar/' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Deleting Lines: `d`
 
@@ -192,7 +194,7 @@ sed '/^#/d' file.txt               # delete comment lines
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Printing Lines: `p`
 
@@ -210,7 +212,7 @@ This is essentially a simpler `grep` for many use cases.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Inserting and Appending Text: `i` and `a`
 
@@ -231,7 +233,7 @@ sed '3i This line is inserted' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Changing Lines: `c`
 
@@ -245,7 +247,7 @@ sed '/pattern/c\Replaced line' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Reading and Writing Files: `r` and `w`
 
@@ -257,11 +259,13 @@ sed -n '/pattern/w output.txt' file.txt  # write matching lines to output.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## Editing Files In-Place: `-i`
+## Editing Files In-Place
 
 The `-i` flag edits a file directly instead of printing to stdout.
+
+> ⚠️ **Warning:** `-i` overwrites the file with no undo. Run the command **without** `-i` first and check the output (for example, `sed 's/old/new/g' file.txt | less` or `| diff file.txt -`). Keep a backup, or use `-i.bak` as shown below, until you are sure the result is right.
 
 ```bash
 sed -i 's/old/new/g' file.txt
@@ -282,7 +286,7 @@ sed -i '' 's/old/new/g' file.txt    # macOS
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Multiple Commands
 
@@ -302,7 +306,7 @@ sed -f my-script.sed file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Transliterate: `y`
 
@@ -316,7 +320,7 @@ sed 'y/abcdefghijklmnopqrstuvwxyz/ABCDEFGHIJKLMNOPQRSTUVWXYZ/' file.txt  # upper
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quitting Early: `q` and `Q`
 
@@ -330,7 +334,7 @@ This is useful for getting the head of a large file without reading the whole th
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## The Hold Space
 
@@ -355,7 +359,7 @@ This works by accumulating lines into the hold space and printing only at the en
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Branching and Labels
 
@@ -371,8 +375,10 @@ T label     # branch if no substitution has been made (GNU sed)
 **Example — collapse multiple blank lines into one:**
 
 ```bash
-sed '/^$/{N; /^\n$/d}' file.txt
+sed '/^$/N; /^\n$/D' file.txt
 ```
+
+When a blank line is found, `N` appends the next line. If that line is blank too, the pattern space is just `\n`, and `D` deletes the first (blank) line and re-runs the script on what is left, so a run of any length shrinks to one blank line. (Using `d` instead of `D` here would delete blank lines in pairs and give wrong results for odd-length runs.) `cat -s file.txt` does the same job.
 
 **Example — join continuation lines (lines ending with `\`):**
 
@@ -383,7 +389,7 @@ sed ':a; /\\$/{N; s/\\\n//; ba}' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Useful One-Liners
 
@@ -427,7 +433,7 @@ sed '/pattern/s/^/#/' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Regular Expression Quick Reference
 
@@ -435,7 +441,7 @@ sed uses basic regular expressions (BRE) by default. Use `-E` for extended regul
 
 | Pattern | Meaning |
 |---------|---------|
-| `.` | Any character except newline |
+| `.` | Any single character (in GNU sed this includes a newline that `N` added to the pattern space) |
 | `*` | Zero or more of the preceding |
 | `^` | Start of line |
 | `$` | End of line |
@@ -453,12 +459,12 @@ sed uses basic regular expressions (BRE) by default. Use `-E` for extended regul
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common Options
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### POSIX Standard Options
 
@@ -471,7 +477,7 @@ These work on every POSIX-compliant `sed` implementation (GNU, BSD, macOS, etc.)
 | `-f file` | Read sed commands from a script file instead of the command line |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Widely Supported Options
 
@@ -480,10 +486,10 @@ Supported by both GNU and BSD sed, though syntax may differ slightly:
 | Option | Description |
 |--------|-------------|
 | `-i[suffix]` | Edit file in-place; optional suffix creates a backup (e.g., `-i.bak`). On macOS, an argument is always required — use `-i ''` for no backup |
-| `-E` | Use extended regular expressions (ERE), allowing `+`, `?`, `()` without backslash escaping. POSIX standard since 2008 |
+| `-E` | Use extended regular expressions (ERE), allowing `+`, `?`, `()` without backslash escaping. Part of POSIX since POSIX.1-2024 (supported by GNU and BSD sed long before that) |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### GNU sed Only Options
 
@@ -503,22 +509,22 @@ These options are specific to GNU sed (the version found on most Linux systems):
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips and Gotchas
 
 **Escaping special characters.** Characters like `.`, `*`, `[`, `\`, `/`, `^`, and `$` have special meaning in regex. To match them literally, escape with `\`. In the replacement string, `&` and `\` also need escaping.
 
-**Newlines in patterns.** By default, sed works one line at a time and `.` does not match newlines. To match across lines, use the `N` command to pull the next line into the pattern space.
+**Newlines in patterns.** By default, sed works one line at a time, so the pattern space contains no newline to match. To match across lines, use the `N` command to pull the next line into the pattern space, then match the embedded newline with `\n`. In GNU sed, `.` also matches that newline (`printf 'a\nb\n' | sed 'N; s/a.b/X/'` prints `X`), so use `[^\n]` if you need "any character except newline".
 
-**GNU sed vs. BSD sed.** Linux systems typically use GNU sed; macOS ships with BSD sed. Some features (like `\+`, `-E`, `-i ''`) behave differently. When writing portable scripts, stick to basic features and test on both.
+**GNU sed vs. BSD sed.** Linux systems typically use GNU sed; macOS ships with BSD sed. Some features (like `\+`, `I`, `0~2` step addresses and the argument to `-i`) are GNU extensions or behave differently. When writing portable scripts, stick to basic features and test on both.
 
-**Performance on large files.** For very large files, using a narrow address (like a line number or early-terminating pattern) is much faster than letting sed scan the whole file. Similarly, `sed -n '10q'` is faster than `head -10` for huge files because it stops early.
+**Performance on large files.** For very large files, using a narrow address (like a line number or early-terminating pattern) is much faster than letting sed scan the whole file. Similarly, `sed '10q'` prints the first 10 lines and stops reading, just like `head -n 10`. (Do not add `-n`: `sed -n '10q'` prints nothing.)
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Further Reading
 
@@ -526,7 +532,7 @@ These options are specific to GNU sed (the version found on most Linux systems):
 - GNU sed manual: https://www.gnu.org/software/sed/manual/sed.html
 - `sed` one-liners collection: https://edoras.sdsu.edu/doc/sed-oneliners.html
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

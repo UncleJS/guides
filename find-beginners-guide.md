@@ -25,7 +25,7 @@ The `find` command is one of the most powerful tools in Unix/Linux. It lets you 
   - [`-print` (default)](#-print-default)
   - [`-delete`](#-delete)
   - [`-exec`](#-exec)
-  - [`-exec` with `+` (more efficient)](#-exec-with-more-efficient)
+  - [`-exec` in Batches (more efficient)](#-exec-in-batches-more-efficient)
   - [Piping to `xargs`](#piping-to-xargs)
   - [`-ls`](#-ls)
 - [Practical Examples](#practical-examples)
@@ -43,7 +43,7 @@ find [path] [options] [expression]
 - **options** — Modify how `find` behaves (e.g., depth limits).
 - **expression** — The criteria to filter by (name, size, type, etc.).
 
-If you omit the path, `find` defaults to the current directory.
+If you omit the path, GNU `find` (Fedora/RHEL, Debian/Ubuntu) defaults to the current directory. BSD/macOS `find` requires a path, so write `find .` to be portable.
 
 ```bash
 # Find everything in the current directory and below
@@ -62,7 +62,7 @@ find / 2>/dev/null
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Searching by Name
 
@@ -98,7 +98,7 @@ find . -name "*.?"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Searching by Type
 
@@ -126,7 +126,7 @@ find . -type l
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Searching by Size
 
@@ -135,30 +135,34 @@ The `-size` flag matches files by size. The format is a number followed by a uni
 | Unit | Meaning |
 |---|---|
 | `c` | Bytes |
-| `k` | Kilobytes (1024 bytes) |
-| `M` | Megabytes |
-| `G` | Gigabytes |
+| `k` | Kibibytes (1024 bytes) |
+| `M` | Mebibytes (1024 × 1024 bytes) |
+| `G` | Gibibytes (1024 × 1024 × 1024 bytes) |
+
+A number with no unit counts 512-byte blocks.
 
 You can also use `+` (greater than) and `-` (less than) prefixes:
 
 ```bash
-# Files exactly 100 kilobytes
+# Files that take up 100 KiB when rounded up (more than 99 KiB, up to 100 KiB)
 find . -size 100k
 
-# Files larger than 50 megabytes
+# Files larger than 50 MiB
 find . -size +50M
 
-# Files smaller than 1 kilobyte
-find . -size -1k
+# Files smaller than 1 KiB (use bytes: -1k only matches empty files, see below)
+find . -size -1024c
 
-# Files between 1MB and 100MB
+# Files larger than 1 MiB and at most 99 MiB
 find . -size +1M -size -100M
 ```
+
+> **Gotcha: sizes are rounded up.** `find` rounds each file's size **up** to whole units before comparing. A 1-byte file counts as `1k`, so `-size -1k` ("less than 1 unit") only matches **empty** files, and `-size -100M` means 99 MiB or less. When you need precision, use bytes (`c`).
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Searching by Time
 
@@ -166,19 +170,28 @@ find . -size +1M -size -100M
 
 | Flag | Meaning |
 |---|---|
-| `-mtime n` | Modified exactly `n` days ago |
+| `-mtime n` | Modified `n` days ago (see rounding below) |
 | `-atime n` | Last accessed `n` days ago |
 | `-ctime n` | Status changed `n` days ago |
 | `-mmin n` | Modified `n` minutes ago |
 | `-amin n` | Accessed `n` minutes ago |
+| `-cmin n` | Status changed `n` minutes ago |
 
-Again, `+` means "more than" and `-` means "less than":
+Again, `+` means "more than" and `-` means "less than".
+
+> **Gotcha: days are whole 24-hour periods.** For `-mtime`, `-atime` and `-ctime`, `find` divides the file's age by 24 hours and **discards the fractional part**. A file modified 47 hours ago has an age of `1`, so:
+>
+> - `-mtime 1` matches files modified 24 to just under 48 hours ago
+> - `-mtime +1` means an age **greater than 1**, i.e. at least **2 full days** (48 hours or more)
+> - `-mtime -1` means an age of `0`, i.e. modified in the last 24 hours
+>
+> Also note that Fedora/RHEL and most Linux systems mount filesystems with `relatime`, so access times (`-atime`) are only updated about once a day and are not exact.
 
 ```bash
-# Files modified in the last 7 days
+# Files modified in the last 7 days (less than 7 × 24 hours ago)
 find . -mtime -7
 
-# Files not accessed in over 30 days
+# Files not accessed for more than 30 full days (31 days or more)
 find . -atime +30
 
 # Files modified more than 60 minutes ago
@@ -198,21 +211,29 @@ find . -newer reference.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Searching by Permissions
 
-The `-perm` flag matches files by their permission bits.
+The `-perm` flag matches files by their permission bits. The prefix changes how the mode is compared:
+
+| Form | Matches when |
+|---|---|
+| `-perm 644` | The permissions are **exactly** `644` |
+| `-perm -644` | **All** of these bits are set (other bits may also be set) |
+| `-perm /644` | **Any** of these bits is set |
 
 ```bash
 # Find files with exact permissions 644
 find . -perm 644
 
-# Find files where at least these bits are set (use / or -)
-# Files with the executable bit set for anyone
+# Files with the executable bit set for anyone (owner, group OR others): "any" match
 find . -perm /111
 
-# Files readable by owner
+# Files executable by owner, group AND others: "all" match
+find . -perm -111
+
+# Files readable by owner (this bit is set, whatever the others are)
 find . -perm -400
 
 # Find world-writable files (a security concern)
@@ -225,7 +246,7 @@ find / -perm /4000 2>/dev/null
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Searching by Owner
 
@@ -243,7 +264,7 @@ find . -uid 1001
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Limiting Search Depth
 
@@ -263,14 +284,14 @@ find . -mindepth 2 -maxdepth 3 -name "*.conf"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Combining Conditions
 
 By default, multiple conditions are joined with an implicit **AND** — all conditions must be true. You can be explicit or use other logical operators.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### AND (both must be true)
 
@@ -283,7 +304,7 @@ find . -name "*.sh" -and -size +10k
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### OR (either must be true)
 
@@ -293,7 +314,7 @@ find . -name "*.jpg" -or -name "*.png"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### NOT (negate a condition)
 
@@ -306,7 +327,7 @@ find . ! -name "*.log"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Grouping with Parentheses
 
@@ -320,14 +341,14 @@ find . \( -name "*.jpg" -or -name "*.png" \) -size +1M
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Acting on Results
 
 The real power of `find` comes from being able to **do something** with the files it finds.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `-print` (default)
 
@@ -338,21 +359,33 @@ find . -name "*.txt" -print
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `-delete`
 
 Deletes the matched files. **Use with caution — there is no confirmation prompt.**
 
 ```bash
-# Delete all .tmp files
+# Step 1: preview what would be deleted
+find . -name "*.tmp" -print
+
+# Step 2: same command, with -print replaced by -delete
 find . -name "*.tmp" -delete
 ```
 
-> Always run the command without `-delete` first to preview what will be deleted!
+> **Danger: `-delete` must come last.** `find` evaluates the expression left to right, and `-delete` is an action, not a filter. If you put it **before** your tests, it runs on every file it reaches before the tests are checked:
+>
+> ```bash
+> # WRONG: deletes EVERYTHING under the current directory
+> find . -delete -name "*.tmp"
+> ```
+>
+> Always run the command with `-print` first to preview what will be deleted, then swap `-print` for `-delete` at the **end** of the command.
+>
+> `-delete` also turns on `-depth` automatically (directory contents are processed before the directory itself), so it cannot be combined with `-prune`, and it only removes directories that are empty.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `-exec`
 
@@ -370,9 +403,9 @@ find /etc -name "*.conf" -exec cp {} /backup/ \;
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### `-exec` with `+` (more efficient)
+### `-exec` in Batches (more efficient)
 
 Using `+` instead of `\;` passes all results to the command at once (like `xargs`), which is faster:
 
@@ -381,7 +414,7 @@ find . -name "*.log" -exec rm {} +
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Piping to `xargs`
 
@@ -395,7 +428,7 @@ find . -name "*.txt" -print0 | xargs -0 grep "TODO"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `-ls`
 
@@ -408,7 +441,7 @@ find . -name "*.sh" -ls
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Practical Examples
 
@@ -435,6 +468,8 @@ find . -iname "*invoice*"
 
 # Find all broken symbolic links
 find . -type l ! -exec test -e {} \; -print
+# GNU find shortcut for the same thing
+find . -xtype l
 
 # Find duplicate-looking files by name
 find . -name "*.bak" -type f
@@ -449,7 +484,7 @@ find . -mmin -60 -type f
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips and Gotchas
 
@@ -463,7 +498,7 @@ find . -name *.txt
 find . -name "*.txt"
 ```
 
-**Preview before deleting.** Always run your `find` command without `-delete` or `-exec rm` first to see what matches.
+**Preview before deleting.** Always run your `find` command with `-print` instead of `-delete` or `-exec rm` first to see what matches, and keep `-delete` as the last item on the command line.
 
 **Suppress permission errors.** Redirect stderr to `/dev/null` to hide "Permission denied" noise:
 
@@ -487,7 +522,7 @@ find . -path ./node_modules -prune -o -type f -print
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Card
 
@@ -508,7 +543,7 @@ find . -path ./node_modules -prune -o -type f -print
 
 With practice, `find` becomes an indispensable part of your daily workflow. Start with simple name searches and gradually layer in size, time, and permission filters as you grow more comfortable. Happy searching!
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

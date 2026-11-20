@@ -14,7 +14,7 @@ AWK is a powerful text-processing language that has been a staple of Unix system
   - [Inline (one-liner)](#inline-one-liner)
   - [Piped input](#piped-input)
   - [From a script file](#from-a-script-file)
-  - [Passing variables with -v](#passing-variables-with-v)
+  - [Passing variables from the shell](#passing-variables-from-the-shell)
 - [Records and Fields](#records-and-fields)
   - [Records](#records)
   - [Fields](#fields)
@@ -41,7 +41,7 @@ AWK is a powerful text-processing language that has been a staple of Unix system
   - [String functions](#string-functions)
   - [Numeric functions](#numeric-functions)
 - [Control Flow](#control-flow)
-  - [if / else](#if-else)
+  - [if-else](#if-else)
   - [while loop](#while-loop)
   - [for loop](#for-loop)
   - [do-while loop](#do-while-loop)
@@ -92,7 +92,7 @@ The examples in this guide work with all common variants unless noted.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Basic Syntax
 
@@ -124,14 +124,14 @@ $3 > 100 { print }
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Running AWK
 
 You can run AWK directly from the command line or from a script file.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Inline (one-liner)
 
@@ -145,7 +145,7 @@ awk '{ print $2 }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Piped input
 
@@ -155,7 +155,7 @@ echo "hello world" | awk '{ print $1 }'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### From a script file
 
@@ -164,9 +164,11 @@ awk -f myscript.awk data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Passing variables with -v
+### Passing variables from the shell
+
+Use `-v name=value` to hand a shell value to AWK:
 
 ```bash
 awk -v threshold=50 '$3 > threshold { print }' data.txt
@@ -175,21 +177,21 @@ awk -v threshold=50 '$3 > threshold { print }' data.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Records and Fields
 
 This is the heart of AWK.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Records
 
 By default, AWK reads one **record** (line) at a time. The record separator is stored in the variable `RS` (record separator), which defaults to a newline `\n`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Fields
 
@@ -207,7 +209,7 @@ echo "Alice 30 Engineer" | awk '{ print $1, $3 }'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Changing the field separator
 
@@ -228,7 +230,7 @@ awk -F'[,;]' '{ print $2 }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Modifying fields
 
@@ -242,7 +244,7 @@ echo "hello world" | awk '{ $2 = "AWK"; print $0 }'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Built-in Variables
 
@@ -260,7 +262,7 @@ AWK has a set of useful built-in variables you can read or set.
 | `FILENAME` | Name of the current input file | — |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### OFS and ORS examples
 
@@ -273,7 +275,7 @@ awk 'BEGIN { ORS="\n\n" } { print }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### NR and FNR
 
@@ -290,14 +292,14 @@ awk 'FNR == 1 { print FILENAME, $0 }' file1.txt file2.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Patterns
 
 Patterns are conditions that control when an action runs.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### No pattern
 
@@ -308,7 +310,7 @@ awk '{ print $1 }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Regular expression pattern
 
@@ -323,7 +325,7 @@ awk '!/DEBUG/ { print }' app.log
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Comparison pattern
 
@@ -334,7 +336,7 @@ awk 'NR > 5 && NR < 10 { print }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Range pattern
 
@@ -344,10 +346,10 @@ Match from a start pattern to an end pattern (inclusive):
 awk '/START/,/END/ { print }' file.txt
 ```
 
-This prints every line from the first occurrence of "START" through the first occurrence of "END".
+This prints every line from a line matching "START" through the next line matching "END". If "START" appears again later, the range starts over.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Compound patterns
 
@@ -361,14 +363,14 @@ awk '/error/ || /warning/ { print }' app.log
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Actions
 
 Actions are enclosed in `{ }` and can contain multiple statements separated by semicolons or newlines.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### print vs printf
 
@@ -396,7 +398,7 @@ Common printf format specifiers:
 | `%05d` | zero-padded integer, width 5 |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Redirecting output
 
@@ -414,12 +416,12 @@ awk '{ print $1 | "sort" }' data.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Arithmetic and String Operations
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Arithmetic
 
@@ -433,7 +435,7 @@ awk '{ total += $3 } END { print total }' data.txt
 AWK performs automatic type conversion — a string that looks like a number is treated as one in numeric contexts.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### String concatenation
 
@@ -444,7 +446,7 @@ awk '{ full = $1 " " $2; print full }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Comparison operators
 
@@ -456,7 +458,7 @@ awk '$2 == 30 { print }' data.txt        # numeric comparison
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### String matching operators
 
@@ -471,12 +473,12 @@ awk '$1 !~ /^A/ { print }' data.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Built-in Functions
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### String functions
 
@@ -509,7 +511,7 @@ awk '{ n = split($3, parts, ","); for (i=1; i<=n; i++) print parts[i] }' file.tx
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Numeric functions
 
@@ -532,16 +534,16 @@ awk 'BEGIN { srand(); print int(rand() * 100) }'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Control Flow
 
 AWK supports familiar control flow structures.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### if / else
+### if-else
 
 ```bash
 awk '{
@@ -554,7 +556,7 @@ awk '{
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### while loop
 
@@ -569,7 +571,7 @@ awk '{
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### for loop
 
@@ -582,7 +584,8 @@ awk '{
 }' data.txt
 
 # for-in loop (iterates over array keys)
-awk '{
+awk '{ counts[$1]++ }
+END {
     for (key in counts) {
         print key, counts[key]
     }
@@ -590,7 +593,7 @@ awk '{
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### do-while loop
 
@@ -605,7 +608,7 @@ awk 'BEGIN {
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### next and exit
 
@@ -623,7 +626,7 @@ awk 'NR > 100 { exit } { print }' file.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Arrays
 
@@ -635,18 +638,19 @@ awk '{ count[$1]++ } END { for (name in count) print name, count[name] }' data.t
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Checking if a key exists
 
 ```bash
-awk '{
+awk '{ count[$1]++ }
+END {
     if ("Alice" in count) print "Alice has entries"
 }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Deleting elements
 
@@ -656,11 +660,11 @@ delete count            # delete the entire array
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Multi-dimensional arrays
 
-AWK simulates multi-dimensional arrays with concatenated keys:
+POSIX AWK simulates multi-dimensional arrays with concatenated keys. gawk (the default `awk` on Fedora and RHEL) also supports true arrays of arrays:
 
 ```bash
 awk '{ grid[$1][$2]++ }' data.txt          # gawk only
@@ -670,11 +674,11 @@ awk '{ grid[$1, $2]++ }' data.txt           # all AWK (uses SUBSEP as separator)
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## BEGIN and END Blocks
 
-`BEGIN` runs once before any input is read. `END` runs once after all input has been processed. Neither requires input.
+`BEGIN` runs once before any input is read. `END` runs once after all input has been processed. A program that has **only** `BEGIN` blocks reads no input at all. As soon as the program has an `END` block (or any main rule), AWK reads the whole input first, so `awk 'END { print NR }'` waits for a file or stdin.
 
 ```bash
 awk '
@@ -704,7 +708,7 @@ awk 'BEGIN { print 2^10 }'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Multiple Input Files
 
@@ -727,7 +731,7 @@ This classic idiom loads `lookup.txt` into an array (when `FNR == NR`, we're on 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## AWK Scripts
 
@@ -766,12 +770,12 @@ chmod +x report.awk
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common Real-World Examples
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Print specific columns
 
@@ -780,7 +784,7 @@ awk '{ print $1, $3 }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Print line numbers
 
@@ -789,7 +793,7 @@ awk '{ print NR": "$0 }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Sum a column
 
@@ -798,7 +802,7 @@ awk '{ sum += $2 } END { print "Total:", sum }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Calculate average
 
@@ -807,7 +811,7 @@ awk '{ sum += $2 } END { print "Average:", sum/NR }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Filter rows by value
 
@@ -816,7 +820,7 @@ awk -F',' '$4 > 1000 { print }' sales.csv
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Print lines between two patterns
 
@@ -825,7 +829,7 @@ awk '/BEGIN_SECTION/,/END_SECTION/' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Remove duplicate lines (maintaining order)
 
@@ -834,7 +838,7 @@ awk '!seen[$0]++' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Print the last field of every line
 
@@ -843,7 +847,7 @@ awk '{ print $NF }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Reverse the order of fields
 
@@ -852,7 +856,7 @@ awk '{ for (i=NF; i>=1; i--) printf "%s%s", $i, (i>1 ? OFS : ORS) }' file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Count lines matching a pattern
 
@@ -861,7 +865,7 @@ awk '/error/ { count++ } END { print count }' app.log
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Extract unique values from a column
 
@@ -870,7 +874,7 @@ awk '!seen[$1]++ { print $1 }' data.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Add a header and footer to output
 
@@ -879,7 +883,7 @@ awk 'BEGIN { print "=== Report ===" } { print } END { print "=== End ===" }' fil
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Compute word frequency
 
@@ -892,7 +896,7 @@ awk '{
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Parse Apache/Nginx access logs
 
@@ -902,7 +906,7 @@ awk '{ print $1, $9 }' access.log | sort | uniq -c | sort -rn
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Join two files on a common key
 
@@ -912,7 +916,7 @@ awk -F',' 'FNR==NR { map[$1]=$2; next } { print $0, map[$1] }' file1.csv file2.c
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Find the maximum value in a column
 
@@ -923,7 +927,7 @@ awk 'NR==1 || $3 > max { max=$3 } END { print "Max:", max }' data.txt
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips and Gotchas
 
@@ -947,7 +951,7 @@ awk -v pat="error" '$0 ~ pat { print }' file.txt
 
 **Integer arithmetic.** AWK uses floating point internally. For large integers, results may lose precision. Use `printf "%d"` to truncate.
 
-**Single quotes in one-liners.** AWK programs are almost always wrapped in single quotes on the command line to prevent the shell from interpreting `$`, `*`, etc. If you need a literal single quote inside the program, you have to end the quoting, escape it, and resume: `'...'\"'\"'...'` — or better yet, use a script file.
+**Single quotes in one-liners.** AWK programs are almost always wrapped in single quotes on the command line to prevent the shell from interpreting `$`, `*`, etc. If you need a literal single quote inside the program, you have to end the quoting, add an escaped quote, and resume: `'\''`. For example, `awk '{ print "it'\''s" }'` prints `it's`. You can also use the octal escape `\047` inside the AWK string (`awk '{ print "it\047s" }'`), or better yet, use a script file.
 
 **Multiline records.** Set `RS=""` to treat blank-line-delimited paragraphs as single records. Each paragraph becomes one record, and newlines within it become part of `$0`.
 
@@ -958,7 +962,7 @@ awk 'BEGIN { RS=""; FS="\n" } { print "Record:", NR; print "Lines:", NF }' parag
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Card
 
@@ -1001,7 +1005,7 @@ Useful one-liners:
 
 *Happy AWKing! Once you internalize the pattern-action model, you'll find yourself reaching for AWK constantly for quick data wrangling tasks that would take far more code in any other language.*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

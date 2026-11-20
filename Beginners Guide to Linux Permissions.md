@@ -1,18 +1,8 @@
----
-Created:
-  - "2026-02-19 06:48"
-Tags: 
-Work: 
-Private: 
-Tech: 
-Words:
----
- 
 # Beginner’s Guide to Linux Permissions
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-Welcome to this comprehensive beginner's guide to Linux permissions! Linux is a multi-user operating system, and permissions are a fundamental part of its security model. They control who can read, write, or execute files and directories. This guide will walk you through the basics, step by step, using simple explanations, examples, and commands. We'll assume you're using a terminal on a Linux distribution like Ubuntu or Fedora.
+Welcome to this comprehensive beginner's guide to Linux permissions! Linux is a multi-user operating system, and permissions are a fundamental part of its security model. They control who can read, write, or execute files and directories. This guide will walk you through the basics, step by step, using simple explanations, examples, and commands. We'll assume you're using a terminal on a Linux distribution like Fedora or RHEL (other distributions work the same way).
 
 By the end, you'll understand how to view, modify, and manage permissions effectively. Let's dive in!
 
@@ -43,12 +33,12 @@ In Linux, every file and directory has associated permissions that define:
 
 Permissions prevent unauthorized access, ensuring system stability and security. For example:
 - System files are often restricted to the root user.
-- User files are private by default.
+- Your home directory is private by default on Fedora/RHEL (mode `700`, set by `HOME_MODE` in `/etc/login.defs`). Files you create elsewhere are **not** private: with the default umask `0022`, new files are `644` (readable by everyone) and directories `755`.
 
 Permissions are stored in the file's metadata and can be viewed or changed using commands.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 2. File Types in Linux
 
@@ -63,7 +53,7 @@ Before permissions, note that Linux treats everything as a file, but there are t
 You'll see this when using the `ls -l` command.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 3. Viewing Permissions
 
@@ -92,7 +82,7 @@ Breakdown:
 To view hidden files too, use `ls -la`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 4. Understanding Permission Symbols
 
@@ -116,26 +106,26 @@ In the example `-rw-r--r--`:
 For directories, `x` allows traversal (entering the directory), even if you can't list contents without `r`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 5. Owners and Groups
 
 - **Owner**: The user who created the file (or last changed ownership). Defaults to your username.
-- **Group**: A collection of users. Files inherit the creator's primary group.
+- **Group**: A collection of users. Files get the creator's primary group (or the directory's group if the directory has setgid). Fedora/RHEL use *user private groups*: each new user gets a personal primary group with the same name (e.g., user `alice`, group `alice`).
 
 View your groups: `groups` or `id`.
 
 Why groups? They allow shared access without giving everyone full rights. For example, a "developers" group can edit project files.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 6. Changing Permissions with `chmod`
 
 The `chmod` (change mode) command modifies permissions. It has two modes: symbolic and numeric (octal).
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Symbolic Mode
 Use letters like `u`, `g`, `o`, `a` with `+` (add), `-` (remove), `=` (set exactly).
@@ -149,7 +139,7 @@ Examples:
 Apply recursively (for directories and contents): `chmod -R a+rx mydirectory`
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Numeric (Octal) Mode
 Permissions as numbers (base 8):
@@ -166,7 +156,7 @@ Examples:
 Octal is efficient for setting all at once.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 7. Changing Ownership with `chown` and `chgrp`
 
@@ -178,10 +168,10 @@ Octal is efficient for setting all at once.
 - `chgrp` (change group): Change group only.
   - Example: `chgrp developers projectfile.txt`
 
-These often require `sudo` if you're not root or the current owner.
+Only root can change a file's owner to another user, so `chown alice ...` needs `sudo` (even if you own the file). As the owner, you can change the group with `chgrp` (or `chown :group`) only to a group you are a member of; any other change needs `sudo`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 8. Special Permissions
 
@@ -198,20 +188,22 @@ In listings:
 Set with octal: Add 4 (setuid), 2 (setgid), 1 (sticky) as a fourth digit (e.g., `chmod 4755` for setuid + 755).
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 9. Umask: Default Permissions
 
-Umask sets default permissions for new files/directories by subtracting from 666 (files) or 777 (directories).
+Umask sets default permissions for new files/directories. Programs request a mode (usually 666 for files and 777 for directories), and every bit that is set in the umask is **removed** (masked out) from that mode: `mode AND NOT umask`. It is a bitmask, not subtraction.
 
-View umask: `umask` (e.g., 0022 means subtract 022, so files default to 644).
+View umask: `umask` (e.g., `0022` removes write for group and others, so files default to 644 and directories to 755). `umask -S` shows the result symbolically.
 
-Change: `umask 0027` (stricter defaults).
+Why "subtract" is wrong: with umask `0033`, files get `666 & ~033 = 644`, not `666 - 033 = 633`.
 
-It's per-session; edit ~/.bashrc for permanence.
+Change: `umask 0027` (stricter defaults: files 640, directories 750) or `umask 0077` (private: files 600, directories 700).
+
+It's per-session; add it to `~/.bashrc` for permanence. The system default on Fedora/RHEL is `UMASK 022` in `/etc/login.defs`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 10. Access Control Lists (ACLs)
 
@@ -222,15 +214,15 @@ Basic permissions are limited to user/group/others. ACLs provide finer control, 
 - View: `getfacl file`
 - Remove: `setfacl -x u:alice file`
 
-ACLs are advanced but useful for shared environments. Install `acl` package if needed (e.g., `sudo apt install acl` on Ubuntu).
+ACLs are advanced but useful for shared environments. The `acl` package is usually installed on Fedora/RHEL; if not, `sudo dnf install acl` (on Debian/Ubuntu: `sudo apt install acl`).
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 11. Common Scenarios and Best Practices
 
 - **Secure Home Directory**: `chmod 700 ~/private` (only you can access).
-- **Web Server Files**: Often `chmod 644` for files, `755` for directories, owned by www-data group.
+- **Web Server Files**: Often `chmod 644` for files, `755` for directories, readable by the `apache` group on Fedora/RHEL (`www-data` on Debian/Ubuntu). Don't give the web server write access unless it needs it, and keep the SELinux label (`httpd_sys_content_t`) correct.
 - **Scripts**: Make executable with `chmod +x script.sh`.
 - **Shared Folders**: Use groups and setgid for inheritance.
 - **Avoid 777**: Never use `chmod 777` unless necessary—it's insecure.
@@ -240,7 +232,7 @@ ACLs are advanced but useful for shared environments. Install `acl` package if n
 - **Inheritance**: New files in directories inherit group if setgid is on.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 12. Tips for Beginners
 
@@ -251,7 +243,8 @@ ACLs are advanced but useful for shared environments. Install `acl` package if n
 - Experiment: Create users/groups with `useradd`/`groupadd` to test.
 
 If you encounter errors, search for them (e.g., "chmod permission denied"). This guide covers the essentials—happy Linuxing! If you have questions, feel free to ask.
-[↑ Goto TOC](#table-of-contents)
+
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

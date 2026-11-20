@@ -7,12 +7,13 @@
 ## Table of Contents
 
 - [What is Netstat?](#what-is-netstat)
-- [Installation & Availability](#installation-availability)
+- [Installation and Availability](#installation-and-availability)
 - [Basic Syntax](#basic-syntax)
 - [Understanding the Output](#understanding-the-output)
 - [Connection States Explained](#connection-states-explained)
-- [Essential Flags & Options](#essential-flags-options)
-  - [Linux / macOS](#linux-macos)
+- [Essential Flags and Options](#essential-flags-and-options)
+  - [Linux](#linux)
+  - [macOS](#macos)
   - [Windows](#windows)
 - [Common Commands with Examples](#common-commands-with-examples)
   - [1. Show all active connections and listening ports](#1-show-all-active-connections-and-listening-ports)
@@ -24,7 +25,7 @@
   - [7. Show protocol statistics](#7-show-protocol-statistics)
   - [8. Watch connections in real time](#8-watch-connections-in-real-time)
   - [9. Filter output with grep (Linux/macOS)](#9-filter-output-with-grep-linuxmacos)
-  - [10. Windows — Find which app owns a port](#10-windows-find-which-app-owns-a-port)
+  - [10. Windows: Find which app owns a port](#10-windows-find-which-app-owns-a-port)
 - [Practical Use Cases](#practical-use-cases)
   - [Is my web server running?](#is-my-web-server-running)
   - [Why is my connection slow?](#why-is-my-connection-slow)
@@ -32,6 +33,7 @@
   - [Check for a port conflict before starting a service](#check-for-a-port-conflict-before-starting-a-service)
   - [How many connections does my server have?](#how-many-connections-does-my-server-have)
 - [Netstat vs. Modern Alternatives](#netstat-vs-modern-alternatives)
+  - [ss and ip equivalents](#ss-and-ip-equivalents)
 - [Quick Reference Cheat Sheet](#quick-reference-cheat-sheet)
 - [Tips for Beginners](#tips-for-beginners)
 
@@ -43,22 +45,23 @@
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## Installation & Availability
+## Installation and Availability
 
 | OS | Status |
 |---|---|
-| Linux | Usually pre-installed. If not: `sudo apt install net-tools` (Debian/Ubuntu) or `sudo dnf install net-tools` (RHEL/Fedora) |
-| macOS | Pre-installed |
+| Fedora/RHEL | **Not installed by default.** Install with `sudo dnf install net-tools`, or (better) use `ss` and `ip` from the `iproute` package, which are always present |
+| Debian/Ubuntu | Not installed by default on recent releases: `sudo apt install net-tools`. `ss` and `ip` (package `iproute2`) are preinstalled |
+| macOS | Pre-installed (BSD `netstat`, with different flags; see [macOS](#macos)) |
 | Windows | Pre-installed (run via Command Prompt or PowerShell) |
 
-> **Note:** On modern Linux systems, `netstat` is considered legacy and is part of the `net-tools` package. The recommended modern replacement is `ss` (socket statistics), but `netstat` remains widely used and understood.
+> **Note:** On Linux, `netstat` is **deprecated**. It is part of the `net-tools` package (with `ifconfig`, `route` and `arp`), which gets little maintenance. The modern replacements are `ss` (socket statistics) and `ip` (routes, interfaces). This guide teaches `netstat` because you'll still meet it in docs and on other systems, and lists the `ss`/`ip` equivalent for each task in [ss and ip equivalents](#ss-and-ip-equivalents).
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Basic Syntax
 
@@ -71,7 +74,7 @@ Running `netstat` with no options displays a list of active connections.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Understanding the Output
 
@@ -96,7 +99,7 @@ udp       0       0    0.0.0.0:68             0.0.0.0:*
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Connection States Explained
 
@@ -116,14 +119,14 @@ Understanding TCP states is crucial for reading netstat output:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## Essential Flags & Options
+## Essential Flags and Options
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Linux / macOS
+### Linux
 
 | Flag | Description |
 |---|---|
@@ -140,7 +143,24 @@ Understanding TCP states is crucial for reading netstat output:
 | `-e` | Show **extended** information |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
+
+### macOS
+
+macOS ships the BSD `netstat`, so several Linux flags don't exist or mean something else:
+
+| Linux | macOS equivalent | Notes |
+|---|---|---|
+| `-t` / `-u` | `-p tcp` / `-p udp` | On macOS, `-p` selects a **protocol**, not the program |
+| `-l` (listening) | `netstat -an -p tcp \| grep LISTEN` | macOS has no "listening only" flag |
+| `-p` (PID/program) | `sudo lsof -nP -iTCP -sTCP:LISTEN` | Recent macOS versions also show a PID column with `netstat -anv` |
+| `-c` (continuous) | `while sleep 1; do clear; netstat -an -p tcp; done` | macOS `netstat -w 1` shows interface traffic statistics, not connections |
+| `-r`, `-i`, `-s`, `-n`, `-a` | same | These work the same way |
+
+So the Linux favourite `netstat -tulnp` fails on macOS; use `sudo lsof -nP -iTCP -sTCP:LISTEN` instead.
+
+
+[↑ Back to TOC](#table-of-contents)
 
 ### Windows
 
@@ -158,12 +178,12 @@ Understanding TCP states is crucial for reading netstat output:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common Commands with Examples
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 1. Show all active connections and listening ports
 
@@ -176,16 +196,19 @@ This is the most common starting point. It shows every open socket on your machi
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 2. Show listening ports only (what's waiting for connections)
 
 ```bash
-# Linux/macOS
+# Linux
 netstat -l
 
 # More specific — only listening TCP ports
 netstat -lt
+
+# macOS
+netstat -an -p tcp | grep LISTEN
 ```
 
 This is useful for seeing which services are running and exposed on your machine.
@@ -193,7 +216,7 @@ This is useful for seeing which services are running and exposed on your machine
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 3. Show numeric addresses (no DNS lookup)
 
@@ -206,7 +229,7 @@ By default, netstat tries to resolve IP addresses to hostnames, which is slow. A
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 4. Show which program is using which port
 
@@ -232,7 +255,7 @@ This is the single most useful `netstat` command for most people.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 5. Show the routing table
 
@@ -245,7 +268,7 @@ This shows how your machine decides where to send network traffic — similar to
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 6. Show network interface statistics
 
@@ -258,7 +281,7 @@ Displays statistics per interface (e.g., `eth0`, `wlan0`) including packets sent
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 7. Show protocol statistics
 
@@ -271,13 +294,16 @@ Gives a breakdown of statistics for TCP, UDP, ICMP, and IP — useful for spotti
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 8. Watch connections in real time
 
 ```bash
-# Linux/macOS — refresh every second
+# Linux — refresh every second
 netstat -an -c
+
+# macOS — refresh every second (netstat -w 1 shows interface traffic, not connections)
+while sleep 1; do clear; netstat -an -p tcp; done
 
 # Windows — refresh every 2 seconds
 netstat -an 2
@@ -286,7 +312,7 @@ netstat -an 2
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 9. Filter output with grep (Linux/macOS)
 
@@ -294,19 +320,21 @@ netstat -an 2
 # Show only ESTABLISHED connections
 netstat -an | grep ESTABLISHED
 
-# Check if port 80 is in use
-netstat -an | grep ':80'
+# Check if port 80 is in use (the trailing space matters, see below)
+netstat -an | grep ':80 '
 
 # Find what's listening on port 443
-netstat -tlnp | grep ':443'
+sudo netstat -tlnp | grep ':443 '
 ```
+
+> **Watch out:** `grep ':80'` also matches `:8080`, `:8000` and `:80xx` ports. Add a trailing space (`':80 '`) or use `grep -E ':80([^0-9]|$)'`. Even better, let `ss` filter by port exactly: `ss -ltn 'sport = :80'`. On macOS, the port is separated by a dot (`*.80`), so use `grep '\.80 '`.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### 10. Windows — Find which app owns a port
+### 10. Windows: Find which app owns a port
 
 ```bash
 # Step 1: Find the PID using the port
@@ -319,17 +347,20 @@ tasklist /fi "PID eq 1234"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Practical Use Cases
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Is my web server running?
 
 ```bash
-netstat -tlnp | grep ':80\|:443'
+sudo netstat -tlnp | grep -E ':(80|443) '
+
+# Modern equivalent
+sudo ss -ltnp '( sport = :80 or sport = :443 )'
 ```
 
 If you see a process `LISTEN`ing on port 80 or 443, your web server is up.
@@ -337,7 +368,7 @@ If you see a process `LISTEN`ing on port 80 or 443, your web server is up.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Why is my connection slow?
 
@@ -350,7 +381,7 @@ A high number of retransmitted segments suggests packet loss or a poor connectio
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Is something connecting to an unexpected address?
 
@@ -363,12 +394,15 @@ Review the foreign addresses. Unexpected IPs in the list could indicate unwanted
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Check for a port conflict before starting a service
 
 ```bash
-netstat -tlnp | grep ':3000'
+sudo netstat -tlnp | grep ':3000 '
+
+# Modern equivalent
+sudo ss -ltnp 'sport = :3000'
 ```
 
 If something is already listening on port 3000, your new app will fail to bind to it.
@@ -376,7 +410,7 @@ If something is already listening on port 3000, your new app will fail to bind t
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### How many connections does my server have?
 
@@ -387,25 +421,39 @@ netstat -an | grep ESTABLISHED | wc -l
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Netstat vs. Modern Alternatives
 
-On Linux, `netstat` is deprecated in favor of `ss`, which is faster and more feature-rich.
+On Linux, `netstat` is deprecated in favor of `ss` (sockets) and `ip` (routes, interfaces) from the `iproute` package. They are installed on every Fedora/RHEL and Debian/Ubuntu system, faster, and more feature-rich.
 
-| Task | netstat | ss equivalent |
+
+[↑ Back to TOC](#table-of-contents)
+
+### ss and ip equivalents
+
+| Task | netstat | Modern equivalent |
 |---|---|---|
 | All sockets | `netstat -a` | `ss -a` |
 | TCP listening | `netstat -tln` | `ss -tln` |
-| With PIDs | `netstat -tlnp` | `ss -tlnp` |
-| UDP | `netstat -uln` | `ss -uln` |
+| TCP/UDP listening with PIDs | `sudo netstat -tulnp` | `sudo ss -tulnp` |
+| UDP listening | `netstat -uln` | `ss -uln` |
+| Who listens on port 80 (exact match) | `sudo netstat -tlnp \| grep ':80 '` | `sudo ss -ltnp 'sport = :80'` |
+| Established TCP connections | `netstat -ant \| grep ESTABLISHED` | `ss -tn state established` |
+| Count established connections | `netstat -ant \| grep -c ESTABLISHED` | `ss -Htn state established \| wc -l` |
+| Socket summary | `netstat -s` (per protocol) | `ss -s` (totals), `nstat -az` (counters) |
+| Retransmissions | `netstat -s \| grep -i retrans` | `nstat -az TcpRetransSegs` |
+| Routing table | `netstat -rn` | `ip route` |
+| Interface statistics | `netstat -i` | `ip -s link` |
+| Multicast groups | `netstat -g` | `ip maddr` |
+| Continuous refresh | `netstat -c` | `watch -n1 ss -tn` |
 
-The flags are largely compatible, so learning `netstat` translates almost directly to using `ss`.
+The socket flags (`-t`, `-u`, `-l`, `-n`, `-p`, `-a`) are largely the same, so learning `netstat` translates almost directly to using `ss`.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Cheat Sheet
 
@@ -429,7 +477,7 @@ netstat -s
 netstat -c
 
 # Find who owns port 8080
-sudo netstat -tlnp | grep ':8080'
+sudo netstat -tlnp | grep ':8080 '
 
 # Count established connections
 netstat -an | grep ESTABLISHED | wc -l
@@ -438,7 +486,7 @@ netstat -an | grep ESTABLISHED | wc -l
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips for Beginners
 
@@ -450,13 +498,13 @@ netstat -an | grep ESTABLISHED | wc -l
 
 **On Windows, combine with `tasklist`.** Since Windows doesn't show program names in netstat by default, the `netstat -ano` + `tasklist` combo is your best friend.
 
-**Graduate to `ss` on Linux.** Once you're comfortable with `netstat`, try `ss` — the syntax is nearly identical but it's faster and more powerful.
+**Graduate to `ss` on Linux.** Once you're comfortable with `netstat`, try `ss` — the syntax is nearly identical but it's faster and more powerful. On Fedora/RHEL it's already installed, while `netstat` needs the extra `net-tools` package.
 
 ---
 
 *That's everything you need to get started with `netstat`. It's a simple tool with a lot of depth — the more you use it, the more natural reading network output becomes.*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

@@ -41,14 +41,14 @@ Before diving in, it helps to understand two distinct concepts that often get bu
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## tar
 
 `tar` stands for **T**ape **AR**chive. Despite the old-fashioned name, it remains the standard archiving tool on Linux and macOS. Files it creates are called **tarballs** and typically end in `.tar`, `.tar.gz` (or `.tgz`), `.tar.bz2`, or `.tar.xz`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### tar Basic Syntax
 
@@ -56,7 +56,7 @@ Before diving in, it helps to understand two distinct concepts that often get bu
 tar [OPTIONS] [ARCHIVE_NAME] [FILES/DIRECTORIES]
 ```
 
-The first argument after `tar` is always one of the **main operation flags**:
+Every `tar` command needs exactly one of the **main operation flags**, usually written first:
 
 | Flag | Long form | Meaning |
 |------|-----------|---------|
@@ -71,7 +71,7 @@ These are always combined with `-f`, which tells tar the name of the archive fil
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Creating tar Archives
 
@@ -94,7 +94,7 @@ The `-v` flag prints each filename as it's processed — useful for confirming t
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Extracting tar Archives
 
@@ -123,7 +123,7 @@ You need to specify the exact path as it appears inside the archive (check with 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Listing tar Contents
 
@@ -142,7 +142,7 @@ tar -tvf archive.tar
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Compression with tar
 
@@ -185,7 +185,7 @@ You can also pass the compression flag explicitly (`-xzf`, `-xjf`, `-xJf`), but 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Common tar Examples
 
@@ -198,8 +198,10 @@ tar -czf home_backup.tar.gz ~/
 **Archive a project directory, excluding a folder:**
 
 ```bash
-tar -czf project.tar.gz my_project/ --exclude='my_project/node_modules'
+tar -czf project.tar.gz --exclude='my_project/node_modules' my_project/
 ```
+
+Put `--exclude` **before** the files and directories to archive. In GNU tar 1.35 (Fedora/RHEL), `--exclude` only applies to the names that follow it; if you put it at the end, tar warns `--exclude ... has no effect`, archives the excluded folder anyway, and exits with status 2.
 
 **Extract and strip the top-level directory:**
 
@@ -228,7 +230,7 @@ Using `-f -` sends output to stdout instead of a file.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### tar Flags Cheat Sheet
 
@@ -244,21 +246,21 @@ Using `-f -` sends output to stdout instead of a file.
 | `-J` | Use xz compression |
 | `-C DIR` | Extract to DIR |
 | `-r` | Append files to archive |
-| `--exclude=PATTERN` | Exclude matching files |
+| `--exclude=PATTERN` | Exclude matching files (put it before the file names) |
 | `--strip-components=N` | Strip N leading path components on extract |
-| `-p` | Preserve file permissions |
+| `-p` | Preserve file permissions on extract (the default when running as root) |
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## zip
 
 `zip` is the format most commonly associated with Windows, but it works on all platforms. Unlike `tar`, zip compresses each file individually before bundling, which means you can extract a single file from a zip without decompressing the whole thing. It's also natively supported by every major operating system with no extra software needed.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### zip Basic Syntax
 
@@ -275,7 +277,7 @@ unzip [OPTIONS] ARCHIVE_NAME
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Creating zip Archives
 
@@ -323,7 +325,7 @@ zip -r archive.zip folder/ --exclude "*.log"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Extracting zip Archives
 
@@ -367,7 +369,7 @@ unzip -P mypassword archive.zip
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Listing zip Contents
 
@@ -392,7 +394,7 @@ unzip -t archive.zip
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Common zip Examples
 
@@ -423,7 +425,7 @@ zip -r -s 100m archive.zip large_folder/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### zip Flags Cheat Sheet
 
@@ -438,6 +440,7 @@ zip -r -s 100m archive.zip large_folder/
 | `-s SIZE` | Split archive into parts |
 | `--exclude PATTERN` | Exclude files matching pattern |
 | `-j` | Junk (strip) directory paths |
+| `-y` | Store symbolic links as links (by default zip follows them and stores the target file) |
 | `-q` | Quiet mode |
 
 **For `unzip`:**
@@ -456,7 +459,7 @@ zip -r -s 100m archive.zip large_folder/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## tar vs. zip
 
@@ -465,7 +468,7 @@ zip -r -s 100m archive.zip large_folder/
 | Platform | Linux/macOS native | Universal |
 | Compression | External (gzip, bzip2, xz) | Built-in |
 | Preserves permissions | Yes | Limited |
-| Preserves symlinks | Yes | No |
+| Preserves symlinks | Yes | Only with `-y` (default follows them) |
 | Single-file extraction | Harder | Easy |
 | Streaming support | Yes | No |
 | Password protection | No (use GPG) | Yes (weak) |
@@ -478,7 +481,7 @@ zip -r -s 100m archive.zip large_folder/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips, Tricks, and Gotchas
 
@@ -492,7 +495,14 @@ mkdir output && tar -xf archive.tar -C output/
 
 **Compression choice matters for time vs. space.** For most purposes, gzip (`.tar.gz`) is the sweet spot. Only choose bzip2 or xz if file size is critical and you have time to wait.
 
-**tar requires `-f` before the archive name.** Forgetting it is a very common mistake — tar will try to read from a tape device and hang.
+**tar requires `-f` before the archive name.** Forgetting it is a very common mistake. Without `-f`, tar uses the archive named in the `TAPE` environment variable, or else its built-in default. On Fedora/RHEL and Debian/Ubuntu, GNU tar's default is `-f-` (check with `tar --show-defaults`), which means standard input/output:
+
+- `tar -x archive.tar` reads the archive from standard input, so it seems to hang waiting for input (press `Ctrl+C`), and `archive.tar` is treated as a file name to extract.
+- `tar -c folder/` writes the archive to standard output; on a terminal GNU tar refuses with `Refusing to write archive contents to terminal`.
+
+Some other builds (older Unix tar, or GNU tar built with a different default) use a tape device such as `/dev/st0` or `/dev/rmt0` instead. Always pass `-f FILE`.
+
+**Zip and symbolic links.** By default `zip` follows symlinks and stores a copy of the file they point to. Use `zip -ry archive.zip folder/` to store the links themselves.
 
 **Dot files and hidden files.** Both tar and zip include hidden files (starting with `.`) by default. Keep this in mind when archiving home directories.
 
@@ -515,7 +525,7 @@ tar -czf - large_folder/ | pv > archive.tar.gz
 
 *Happy archiving!*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

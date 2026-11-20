@@ -14,12 +14,12 @@ Cron is a time-based job scheduler built into Unix-like operating systems (Linux
 - [Cron Syntax Explained](#cron-syntax-explained)
   - [Field Ranges at a Glance](#field-ranges-at-a-glance)
 - [Special Characters](#special-characters)
-  - [Asterisk `*` — Wildcard](#asterisk-wildcard)
-  - [Comma `,` — List](#comma-list)
-  - [Hyphen `-` — Range](#hyphen-range)
-  - [Slash `/` — Step](#slash-step)
-  - [Question Mark `?` — No Specific Value](#question-mark-no-specific-value)
-  - [Hash `#` — Comments](#hash-comments)
+  - [Asterisk (Wildcard)](#asterisk-wildcard)
+  - [Comma (List)](#comma-list)
+  - [Hyphen (Range)](#hyphen-range)
+  - [Slash (Step)](#slash-step)
+  - [Question Mark (No Specific Value)](#question-mark-no-specific-value)
+  - [Hash (Comments)](#hash-comments)
 - [Practical Examples](#practical-examples)
   - [Every Minute](#every-minute)
   - [Every 5 Minutes](#every-5-minutes)
@@ -68,7 +68,7 @@ Cron is a time-based job scheduler built into Unix-like operating systems (Linux
 ---
 ## What is Cron?
 
-The word **cron** comes from the Greek word *chronos* (χρόνος), meaning time. The cron daemon (`crond`) is a background process that wakes up every minute, checks if any scheduled jobs need to run, and executes them.
+The word **cron** comes from the Greek word *chronos* (χρόνος), meaning time. The cron daemon is a background process (on Fedora/RHEL it is cronie's `crond`, systemd service `crond.service`; on Debian/Ubuntu the service is `cron.service`) that wakes up every minute, checks if any scheduled jobs need to run, and executes them.
 
 Cron is ideal for tasks like:
 
@@ -82,7 +82,7 @@ Cron is ideal for tasks like:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## How Cron Works
 
@@ -90,18 +90,21 @@ When your system boots, the cron daemon starts automatically. Every minute it re
 
 The flow looks like this:
 
-```
-System Boot → crond starts → reads crontabs every minute
-                                       ↓
-                           Does any job match current time?
-                             YES → execute the job
-                             NO  → wait until next minute
+```mermaid
+flowchart LR
+    A[System boot] --> B[crond starts]
+    B --> C[Check crontabs every minute]
+    C --> D{Does any job match the current time?}
+    D -- Yes --> E[Execute the job]
+    D -- No --> F[Wait until the next minute]
+    E --> F
+    F --> C
 ```
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## The Crontab File
 
@@ -114,21 +117,26 @@ A crontab is a plain text file where each line defines one scheduled job. There 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Cron Syntax Explained
 
 Every cron job entry follows this structure:
 
 ```
-┌───────────── minute        (0–59)
-│ ┌─────────── hour          (0–23)
-│ │ ┌───────── day of month  (1–31)
-│ │ │ ┌─────── month         (1–12 or JAN–DEC)
-│ │ │ │ ┌───── day of week   (0–7 or SUN–SAT, 0 and 7 are both Sunday)
-│ │ │ │ │
 * * * * *  command to execute
 ```
+
+The five time fields come first, in this order, followed by the command:
+
+| Position | Field | Allowed values |
+|----------|-------|----------------|
+| 1 | Minute | 0–59 |
+| 2 | Hour | 0–23 |
+| 3 | Day of month | 1–31 |
+| 4 | Month | 1–12 or JAN–DEC |
+| 5 | Day of week | 0–7 or SUN–SAT (0 and 7 are both Sunday) |
+| 6+ | Command | The rest of the line, run by `/bin/sh` (or `SHELL`) |
 
 Each field can contain:
 
@@ -142,7 +150,7 @@ Each field can contain:
 | `1-5/2` | Every 2nd value within a range |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Field Ranges at a Glance
 
@@ -159,27 +167,27 @@ Each field can contain:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Special Characters
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Asterisk `*` — Wildcard
+### Asterisk (Wildcard)
 
-Matches every possible value in that field.
+The asterisk `*` matches every possible value in that field.
 
 ```
 * * * * * echo "runs every minute"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Comma `,` — List
+### Comma (List)
 
-Specifies multiple discrete values.
+The comma `,` specifies multiple discrete values.
 
 ```
 0 9,12,17 * * * /scripts/check.sh
@@ -187,11 +195,11 @@ Specifies multiple discrete values.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Hyphen `-` — Range
+### Hyphen (Range)
 
-Specifies a continuous range of values.
+The hyphen `-` specifies a continuous range of values.
 
 ```
 0 9-17 * * 1-5 /scripts/work_hours.sh
@@ -199,11 +207,11 @@ Specifies a continuous range of values.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Slash `/` — Step
+### Slash (Step)
 
-Specifies intervals. `*/n` means "every n units."
+The slash `/` specifies intervals. `*/n` means "every n units."
 
 ```
 */15 * * * * /scripts/heartbeat.sh
@@ -214,16 +222,16 @@ Specifies intervals. `*/n` means "every n units."
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Question Mark `?` — No Specific Value
+### Question Mark (No Specific Value)
 
-Used in some cron implementations (like Quartz) but **not** standard POSIX cron. Avoid it unless you know your cron supports it.
+The question mark `?` is used in some cron implementations (like Quartz) but **not** standard POSIX cron. Avoid it unless you know your cron supports it.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Hash `#` — Comments
+### Hash (Comments)
 
 Any line starting with `#` is a comment and is ignored.
 
@@ -235,12 +243,12 @@ Any line starting with `#` is a comment and is ignored.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Practical Examples
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Minute
 ```
@@ -248,7 +256,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every 5 Minutes
 ```
@@ -256,7 +264,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Hour (at :00)
 ```
@@ -264,7 +272,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Day at Midnight
 ```
@@ -272,7 +280,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Day at 2:30 AM
 ```
@@ -280,7 +288,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Monday at 8:00 AM
 ```
@@ -288,7 +296,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Weekday (Mon–Fri) at 9:00 AM
 ```
@@ -296,7 +304,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### First Day of Every Month at Midnight
 ```
@@ -304,7 +312,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every 3 Hours
 ```
@@ -312,7 +320,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Twice a Day (Noon and Midnight)
 ```
@@ -320,7 +328,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every Sunday at 4:00 AM
 ```
@@ -328,7 +336,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### On January 1st at Midnight (Happy New Year!)
 ```
@@ -336,7 +344,7 @@ Any line starting with `#` is a comment and is ignored.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Every 30 Minutes During Business Hours on Weekdays
 ```
@@ -346,7 +354,7 @@ Any line starting with `#` is a comment and is ignored.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Cron Shortcuts
 
@@ -374,12 +382,12 @@ Usage examples:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Managing Your Crontab
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Open Your Crontab for Editing
 
@@ -390,7 +398,7 @@ crontab -e
 This opens your personal crontab in your default editor (usually `nano` or `vi`). Save and exit to install it.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### View Your Current Crontab
 
@@ -399,7 +407,7 @@ crontab -l
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Remove Your Crontab
 
@@ -407,10 +415,10 @@ crontab -l
 crontab -r
 ```
 
-> **Warning:** `crontab -r` deletes your entire crontab without confirmation. Some systems support `crontab -i` for an interactive (prompted) removal.
+> **Warning:** `crontab -r` deletes your entire crontab without confirmation. On Fedora/RHEL (cronie) and Debian/Ubuntu, add `-i` to be asked for a `y/Y` confirmation first: `crontab -ri`. The `-i` option only affects `-r`; it does nothing on its own.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Edit Another User's Crontab (as root)
 
@@ -419,7 +427,7 @@ sudo crontab -u username -e
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### List Another User's Crontab (as root)
 
@@ -428,7 +436,7 @@ sudo crontab -u username -l
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Choosing Your Editor
 
@@ -442,14 +450,14 @@ crontab -e
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Environment Variables in Cron
 
 Cron runs in a **very minimal environment** — it doesn't load your shell profile (`.bashrc`, `.zshrc`, etc.), so environment variables you rely on in your terminal may not be available.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Setting Variables in Your Crontab
 
@@ -464,7 +472,7 @@ MAILTO=admin@example.com
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Key Variables to Know
 
@@ -485,7 +493,7 @@ MAILTO=admin@example.com
 **`HOME`** — Sets the home directory for the job.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Sourcing Your Profile
 
@@ -506,14 +514,14 @@ source /home/user/.bashrc
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Logging and Debugging
 
 Debugging cron jobs can be tricky since they run silently in the background. Here are practical strategies.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Redirect Output to a Log File
 
@@ -527,7 +535,7 @@ Debugging cron jobs can be tricky since they run silently in the background. Her
 Use `>` instead of `>>` to overwrite the log each time rather than appending.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Separate stdout and stderr
 
@@ -536,26 +544,26 @@ Use `>` instead of `>>` to overwrite the log each time rather than appending.
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Check the System Cron Log
 
-On most Linux systems, cron activity is logged to syslog:
+Cron activity is logged to the systemd journal, and to a text log file when rsyslog is installed. The service is called `crond` on Fedora/RHEL and `cron` on Debian/Ubuntu:
 
 ```bash
-# Debian/Ubuntu
-grep CRON /var/log/syslog
-
-# RHEL/CentOS
-grep CRON /var/log/cron
-
-# Using journalctl (systemd systems)
-journalctl -u cron
+# Fedora/RHEL (cronie): journal, and /var/log/cron if rsyslog is installed (default on RHEL)
 journalctl -u crond
+sudo grep -i cron /var/log/cron
+
+# Debian/Ubuntu
+journalctl -u cron
+grep CRON /var/log/syslog
 ```
 
+Check that the daemon is running with `systemctl status crond` (Debian/Ubuntu: `systemctl status cron`).
 
-[↑ Goto TOC](#table-of-contents)
+
+[↑ Back to TOC](#table-of-contents)
 
 ### Test Your Script Manually First
 
@@ -566,7 +574,7 @@ bash /path/to/your/script.sh
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Simulate the Cron Environment
 
@@ -577,17 +585,19 @@ env -i HOME=/home/user SHELL=/bin/bash PATH=/usr/bin:/bin /path/to/script.sh
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Add Timestamps to Log Output
 
 Prepend a timestamp to every log entry so you know exactly when each run occurred:
 
 ```
-0 2 * * * echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting backup" >> /var/log/backup.log && /scripts/backup.sh >> /var/log/backup.log 2>&1
+0 2 * * * echo "[$(date '+\%Y-\%m-\%d \%H:\%M:\%S')] Starting backup" >> /var/log/backup.log && /scripts/backup.sh >> /var/log/backup.log 2>&1
 ```
 
-Or handle this inside your script:
+> **Important:** In a crontab, an unescaped `%` is special: cron turns it into a newline and sends everything after the first `%` to the command as standard input. That cuts the command short, so every `%` in a crontab line must be written as `\%` (as above). Inside a script file, `%` needs no escaping.
+
+Or handle this inside your script (the easier option):
 
 ```bash
 #!/bin/bash
@@ -599,14 +609,14 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting backup..."
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## System-Wide Cron Jobs
 
 Beyond user crontabs, Linux systems have several system-level cron locations.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `/etc/crontab`
 
@@ -624,14 +634,14 @@ The main system crontab. It has an extra field for the **username** to run the c
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `/etc/cron.d/`
 
 Drop-in files with the same format as `/etc/crontab` (including the user field). These are used by system packages to install their own cron jobs without modifying `/etc/crontab` directly.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### The `cron.*` Directories
 
@@ -651,12 +661,14 @@ sudo cp my_backup.sh /etc/cron.daily/my_backup
 sudo chmod +x /etc/cron.daily/my_backup
 ```
 
-> **Note:** Script files in these directories should **not** have a file extension (no `.sh`) on many systems, as the `run-parts` command may skip files with extensions.
+> **Note:** On Debian/Ubuntu, `run-parts` skips any file whose name contains a dot, so `my_backup.sh` would never run. Fedora/RHEL's `run-parts` only skips backup-style names (ending in `~` or `,`, or `.rpmsave`, `.rpmnew`, `.swp` and similar), but leaving off the extension works everywhere.
+>
+> On Fedora/RHEL, `/etc/cron.hourly/` is run by `/etc/cron.d/0hourly`, and the daily, weekly and monthly directories are run by `anacron` (see `/etc/anacrontab`), with a random delay, so the exact start time varies.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common Pitfalls
 
@@ -680,12 +692,14 @@ sudo chmod +x /etc/cron.daily/my_backup
 */5 * * * * flock -n /tmp/myjob.lock /scripts/myjob.sh
 ```
 
-**Editing the crontab directly.** Never edit `/var/spool/cron/crontabs/username` directly. Always use `crontab -e`, which validates the file before installing it.
+**Unescaped `%` signs.** A `%` in the command part of a crontab line becomes a newline. Write `date +\%F` instead of `date +%F`, or move the command into a script.
+
+**Editing the crontab directly.** Never edit the spool file directly (`/var/spool/cron/username` on Fedora/RHEL, `/var/spool/cron/crontabs/username` on Debian/Ubuntu). Always use `crontab -e`, which validates the file before installing it.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Security Considerations
 
@@ -713,27 +727,29 @@ done
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Syntax Template
 
 ```
 MIN HOUR DOM MON DOW command
- │    │    │   │   │
- │    │    │   │   └── Day of Week  (0–7, Sun=0 or 7)
- │    │    │   └────── Month        (1–12)
- │    │    └────────── Day of Month (1–31)
- │    └─────────────── Hour         (0–23)
- └──────────────────── Minute       (0–59)
 ```
 
+| Field | Name | Allowed values |
+|-------|------|----------------|
+| `MIN` | Minute | 0–59 |
+| `HOUR` | Hour | 0–23 |
+| `DOM` | Day of month | 1–31 |
+| `MON` | Month | 1–12 or JAN–DEC |
+| `DOW` | Day of week | 0–7 or SUN–SAT (Sunday = 0 or 7) |
 
-[↑ Goto TOC](#table-of-contents)
+
+[↑ Back to TOC](#table-of-contents)
 
 ### Special Characters Summary
 
@@ -745,7 +761,7 @@ MIN HOUR DOM MON DOW command
 | `/` | Step | `*/10` — every 10 units |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Crontab Commands
 
@@ -757,7 +773,7 @@ MIN HOUR DOM MON DOW command
 | `crontab -u user -e` | Edit another user's crontab (root only) |
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Useful Online Tools
 
@@ -769,7 +785,7 @@ MIN HOUR DOM MON DOW command
 
 *Happy scheduling! Cron is simple on the surface but incredibly powerful once you get comfortable with the syntax. When in doubt, use [crontab.guru](https://crontab.guru) to verify your expressions before deploying them.*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

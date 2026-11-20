@@ -13,11 +13,11 @@
   - [Copy a single file locally](#copy-a-single-file-locally)
   - [Copy a directory locally](#copy-a-directory-locally)
 - [Essential Flags](#essential-flags)
-- [The Archive Flag (`-a`)](#the-archive-flag-a)
+- [The Archive Flag](#the-archive-flag)
 - [Dry Run (Always Recommended First)](#dry-run-always-recommended-first)
 - [Syncing Over SSH (Remote Transfers)](#syncing-over-ssh-remote-transfers)
-  - [Local → Remote](#local-remote)
-  - [Remote → Local](#remote-local)
+  - [Local to Remote](#local-to-remote)
+  - [Remote to Local](#remote-to-local)
   - [Using a non-standard SSH port](#using-a-non-standard-ssh-port)
   - [Using an SSH key file](#using-an-ssh-key-file)
 - [Showing Progress](#showing-progress)
@@ -26,7 +26,7 @@
   - [Exclude a directory](#exclude-a-directory)
   - [Exclude multiple patterns](#exclude-multiple-patterns)
   - [Use an exclude file](#use-an-exclude-file)
-- [Keeping Destination in Sync with `--delete`](#keeping-destination-in-sync-with-delete)
+- [Keeping Destination in Sync with Delete](#keeping-destination-in-sync-with-delete)
 - [Bandwidth Limiting](#bandwidth-limiting)
 - [Practical Recipes](#practical-recipes)
   - [Full local backup](#full-local-backup)
@@ -56,7 +56,7 @@
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Installation
 
@@ -85,7 +85,7 @@ sudo pacman -S rsync
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Basic Syntax
 
@@ -101,12 +101,12 @@ Both source and destination can be local paths or remote paths (using `user@host
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Your First rsync Commands
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Copy a single file locally
 
@@ -115,7 +115,7 @@ rsync file.txt /backup/file.txt
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Copy a directory locally
 
@@ -134,7 +134,7 @@ The `-r` flag means **recursive** — it copies the directory and everything ins
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Essential Flags
 
@@ -157,11 +157,11 @@ These are the options you'll use most often:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## The Archive Flag (`-a`)
+## The Archive Flag
 
-`-a` is the workhorse of rsync. It's equivalent to `-rlptgoD` and ensures files are copied faithfully:
+`-a` (`--archive`) is the workhorse of rsync. It's equivalent to `-rlptgoD` and ensures files are copied faithfully:
 
 - `-r` Recursive
 - `-l` Copy symlinks as symlinks
@@ -177,10 +177,18 @@ These are the options you'll use most often:
 rsync -av /home/alice/ /backup/alice/
 ```
 
+**What `-a` does *not* keep:** hard links, ACLs and extended attributes. On Fedora/RHEL, SELinux labels are stored as extended attributes, so for a faithful system or home-directory backup add `-H` (hard links), `-A` (ACLs, implies `-p`) and `-X` (xattrs):
+
+```bash
+sudo rsync -aHAX /home/alice/ /backup/alice/
+```
+
+Both sides need ACL/xattr support (most Linux filesystems have it; FAT/exFAT do not), and copying SELinux labels (`security.*` xattrs) needs root on the receiving side. `-H` uses extra memory on very large trees.
+
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Dry Run (Always Recommended First)
 
@@ -195,32 +203,32 @@ The `-n` flag means nothing is actually changed. Review the output, then re-run 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Syncing Over SSH (Remote Transfers)
 
 rsync uses SSH by default for remote transfers, which means it's encrypted and secure.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Local → Remote
+### Local to Remote
 
 ```bash
 rsync -avz /home/alice/documents/ user@192.168.1.10:/backup/documents/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Remote → Local
+### Remote to Local
 
 ```bash
 rsync -avz user@192.168.1.10:/var/www/html/ /local/backup/html/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Using a non-standard SSH port
 
@@ -229,7 +237,7 @@ rsync -avz -e "ssh -p 2222" /home/alice/ user@server.com:/backup/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Using an SSH key file
 
@@ -240,7 +248,7 @@ rsync -avz -e "ssh -i ~/.ssh/mykey.pem" /home/alice/ user@server.com:/backup/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Showing Progress
 
@@ -260,14 +268,14 @@ documents/report.pdf
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Excluding Files and Directories
 
 Use `--exclude` to skip certain files or patterns during a sync.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Exclude a specific file
 
@@ -276,7 +284,7 @@ rsync -av --exclude='secret.txt' /home/alice/ /backup/alice/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Exclude a directory
 
@@ -285,7 +293,7 @@ rsync -av --exclude='node_modules/' /home/alice/project/ /backup/project/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Exclude multiple patterns
 
@@ -298,7 +306,7 @@ rsync -av \
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Use an exclude file
 
@@ -322,9 +330,9 @@ rsync -av --exclude-from='exclude.txt' /home/alice/project/ /backup/project/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## Keeping Destination in Sync with `--delete`
+## Keeping Destination in Sync with Delete
 
 By default, rsync only adds or updates files — it never removes anything from the destination. If you want the destination to be a true mirror of the source (deleting files that no longer exist in the source), use `--delete`:
 
@@ -334,12 +342,16 @@ rsync -av --delete /home/alice/ /backup/alice/
 
 > ⚠️ **Use `--delete` carefully.** Always do a dry run first (`-n`) so you don't accidentally wipe files you wanted to keep.
 
-You can also use `--delete-dry-run` to see what would be deleted without actually doing it.
+There is no separate "delete dry run" option: combine `--delete` with `--dry-run` (`-n`) to see what would be deleted without actually doing it. Deletions show up as `deleting` lines:
+
+```bash
+rsync -avn --delete /home/alice/ /backup/alice/
+```
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Bandwidth Limiting
 
@@ -350,17 +362,17 @@ Throttle rsync so it doesn't saturate your network connection during large trans
 rsync -avz --bwlimit=1000 /home/alice/ user@server.com:/backup/
 ```
 
-The value is in kilobytes per second.
+Without a suffix, the value is in units of 1024 bytes per second (KiB/s). You can also add a suffix, e.g. `--bwlimit=1m` or `--bwlimit=500k`.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Practical Recipes
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Full local backup
 
@@ -369,7 +381,7 @@ rsync -avhP --delete /home/alice/ /mnt/external-drive/backup/alice/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Backup to a remote server over SSH
 
@@ -378,7 +390,7 @@ rsync -avhzP --delete /var/www/html/ deploy@myserver.com:/var/www/html/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Sync two directories, excluding hidden files
 
@@ -387,7 +399,7 @@ rsync -avh --exclude='.*' /home/alice/docs/ /backup/docs/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Download a directory from a server
 
@@ -396,7 +408,7 @@ rsync -avhzP user@server.com:/home/alice/photos/ /local/photos/
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Copy only files newer than those in destination
 
@@ -407,7 +419,7 @@ rsync -avhu /home/alice/ /backup/alice/
 The `-u` (`--update`) flag skips files that are newer in the destination.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Mirror a website for offline viewing
 
@@ -418,27 +430,28 @@ rsync -avhz --delete user@mysite.com:/var/www/html/ ./site-mirror/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Understanding rsync Output
 
 When you run `rsync -av`, each transferred file is shown with a change summary. With `-i` (`--itemize-changes`), you get a detailed code like:
 
 ```
->f+++++++++ newfile.txt
-.f..t...... updated.txt
 *deleting   oldfile.txt
+>f+++++++++ newfile.txt
+>f..t...... updated.txt
+.f...p..... script.sh
 ```
 
 The format is `YXcstpoguax` where:
-- `Y` — update type (`>` = file sent, `<` = file received, `*` = message, `.` = no update)
-- `X` — file type (`f` = file, `d` = directory, `L` = symlink)
+- `Y` — update type (`<` = file is being sent to the remote host, `>` = file is being received by the local host (also used for all local copies), `c` = local change or creation (e.g. a directory or symlink), `h` = hard link, `.` = not transferred, only attributes may change, `*` = message such as `deleting`)
+- `X` — file type (`f` = file, `d` = directory, `L` = symlink, `D` = device, `S` = special file)
 - The remaining letters indicate what attributes changed (checksum, size, timestamp, permissions, owner, group, etc.)
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common Mistakes to Avoid
 
@@ -455,12 +468,12 @@ Compression (`-z`) can dramatically speed up transfers over the internet, but ma
 Running rsync as root can overwrite file ownership in unintended ways. Use the minimum required privileges.
 
 **5. Confusing rsync with a backup tool**
-rsync mirrors — it doesn't version files. If you accidentally delete a file in the source and run `rsync --delete`, it's gone from the destination too. For versioned backups, consider tools like `restic`, `borgbackup`, or `timeshift` built on top of rsync.
+rsync mirrors — it doesn't version files. If you accidentally delete a file in the source and run `rsync --delete`, it's gone from the destination too. For versioned backups, consider dedicated tools like `restic` or `borgbackup`, or rsync-based snapshot tools such as `rsnapshot` or `timeshift` (rsync mode).
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Cheat Sheet
 
@@ -493,7 +506,7 @@ rsync -avhz -e "ssh -i ~/.ssh/key.pem -p 2222" source/ user@host:/dest/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Further Reading
 
@@ -505,7 +518,7 @@ rsync -avhz -e "ssh -i ~/.ssh/key.pem -p 2222" source/ user@host:/dest/
 
 *Happy syncing!*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

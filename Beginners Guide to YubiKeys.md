@@ -2,13 +2,12 @@
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-
+*A practical, ground-up introduction to hardware security keys*
 
 ## Table of Contents
 
-- [Beginner’s Guide to YubiKeys](#beginners-guide-to-yubikeys)
 - [What is a YubiKey?](#what-is-a-yubikey)
-- [Why use a hardware key instead of SMS / app codes?](#why-use-a-hardware-key-instead-of-sms-app-codes)
+- [Why Use a Hardware Key Instead of SMS or App Codes?](#why-use-a-hardware-key-instead-of-sms-or-app-codes)
 - [What does a YubiKey actually do?](#what-does-a-yubikey-actually-do)
 - [Common YubiKey Types](#common-yubikey-types)
 - [Key Concepts (Critical for Beginners)](#key-concepts-critical-for-beginners)
@@ -18,9 +17,9 @@
 - [Where can you use a YubiKey?](#where-can-you-use-a-yubikey)
 - [How Authentication Works (Simplified)](#how-authentication-works-simplified)
 - [First-Time Setup Strategy](#first-time-setup-strategy)
-  - [Step 1 – Identify critical accounts](#step-1-identify-critical-accounts)
-  - [Step 2 – Register keys](#step-2-register-keys)
-  - [Step 3 – Test recovery paths](#step-3-test-recovery-paths)
+  - [Step 1: Identify Critical Accounts](#step-1-identify-critical-accounts)
+  - [Step 2: Register Keys](#step-2-register-keys)
+  - [Step 3: Test Recovery Paths](#step-3-test-recovery-paths)
 - [Using YubiKeys on Linux (RHEL-Style)](#using-yubikeys-on-linux-rhel-style)
   - [Detecting the key](#detecting-the-key)
   - [Required packages](#required-packages)
@@ -28,21 +27,14 @@
   - [Common Pitfall (Linux)](#common-pitfall-linux)
 - [OTP vs FIDO2 vs Passkeys (Beginner Confusion)](#otp-vs-fido2-vs-passkeys-beginner-confusion)
 - [Practical Security Habits](#practical-security-habits)
+  - [Firmware Cannot Be Updated (EUCLEAK)](#firmware-cannot-be-updated-eucleak)
 - [Threats YubiKeys Help Mitigate](#threats-yubikeys-help-mitigate)
 - [When a YubiKey is Overkill](#when-a-yubikey-is-overkill)
-- [Loss & Disaster Recovery](#loss-disaster-recovery)
+- [Loss and Disaster Recovery](#loss-and-disaster-recovery)
 - [Frequently Overlooked Beginner Mistakes](#frequently-overlooked-beginner-mistakes)
 - [Mental Model for Beginners](#mental-model-for-beginners)
 
 ---
-## Beginner’s Guide to YubiKeys
-
-*A practical, ground-up introduction to hardware security keys*
-
----
-
-
-[↑ Goto TOC](#table-of-contents)
 
 ## What is a YubiKey?
 
@@ -58,9 +50,9 @@ Combining both dramatically reduces account takeover risk.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## Why use a hardware key instead of SMS / app codes?
+## Why Use a Hardware Key Instead of SMS or App Codes?
 
 Traditional 2FA methods (SMS, authenticator apps) improve security, but have weaknesses:
 
@@ -79,7 +71,7 @@ A YubiKey mitigates these by:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## What does a YubiKey actually do?
 
@@ -97,7 +89,7 @@ One physical key, multiple functions.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Common YubiKey Types
 
@@ -124,12 +116,12 @@ Typical variants:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Key Concepts (Critical for Beginners)
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 1. The YubiKey does **not** store your password
 
@@ -138,7 +130,7 @@ It stores cryptographic keys. Your password still exists unless you move to pass
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 2. Registering vs Using
 
@@ -150,7 +142,7 @@ Every service requires initial registration.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### 3. Always own a backup key
 
@@ -170,7 +162,7 @@ Failure to do this is the most common mistake.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Where can you use a YubiKey?
 
@@ -194,7 +186,7 @@ Support usually appears as:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## How Authentication Works (Simplified)
 
@@ -218,14 +210,14 @@ No shared secrets → phishing resistance.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## First-Time Setup Strategy
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Step 1 – Identify critical accounts
+### Step 1: Identify Critical Accounts
 
 Prioritize:
 
@@ -237,9 +229,9 @@ Prioritize:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Step 2 – Register keys
+### Step 2: Register Keys
 
 For each account:
 
@@ -254,9 +246,9 @@ Repeat for backup key.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Step 3 – Test recovery paths
+### Step 3: Test Recovery Paths
 
 Verify:
 
@@ -267,7 +259,7 @@ Verify:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Using YubiKeys on Linux (RHEL-Style)
 
@@ -276,7 +268,7 @@ YubiKeys integrate cleanly with Linux systems.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Detecting the key
 
@@ -293,7 +285,7 @@ Bus XXX Device XXX: Yubico.com YubiKey
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Required packages
 
@@ -307,7 +299,7 @@ sudo systemctl enable --now pcscd
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Checking key status
 
@@ -320,7 +312,7 @@ Shows supported applications and firmware.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Common Pitfall (Linux)
 
@@ -338,7 +330,7 @@ Most FIDO2 usage works without extra drivers.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## OTP vs FIDO2 vs Passkeys (Beginner Confusion)
 
@@ -356,7 +348,7 @@ Avoid building new systems around OTP unless required.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Practical Security Habits
 
@@ -366,12 +358,31 @@ Good practices:
 * Store backup key separately
 * Protect accounts with recovery codes
 * Avoid sharing keys
-* Keep firmware reasonably current
+* Know your key's firmware version (`ykman info`) and replace keys affected by known flaws
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
+
+### Firmware Cannot Be Updated (EUCLEAK)
+
+YubiKey firmware is **not upgradeable**. Yubico deliberately blocks firmware updates so the firmware cannot be tampered with. The version a key ships with is the version it keeps, and the only way to get a fix is to buy a new key.
+
+Example: **EUCLEAK** (disclosed September 2024) is a side-channel flaw in the Infineon cryptographic library used for ECDSA. It affects YubiKey 5 Series and Security Key Series with firmware **below 5.7.0**, YubiKey Bio Series below 5.7.2, YubiKey 5 FIPS and CSPN Series below 5.7.4, and YubiHSM 2 below 2.4.0 (Yubico advisory YSA-2024-03). An attacker needs physical possession of the key, specialised equipment and the account details, so the practical risk is low for most users. Keys at or above those versions are not affected.
+
+Check your version:
+
+```bash
+ykman info   # look for "Firmware version"
+```
+
+If your key is affected and you face targeted threats, replace it and remove the old key from your accounts.
+
+---
+
+
+[↑ Back to TOC](#table-of-contents)
 
 ## Threats YubiKeys Help Mitigate
 
@@ -393,7 +404,7 @@ Hardware keys improve authentication, not overall device hygiene.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## When a YubiKey is Overkill
 
@@ -408,9 +419,9 @@ Focus on high-impact accounts first.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-## Loss & Disaster Recovery
+## Loss and Disaster Recovery
 
 If a key is lost:
 
@@ -424,7 +435,7 @@ Treat keys like house keys.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Frequently Overlooked Beginner Mistakes
 
@@ -437,7 +448,7 @@ Treat keys like house keys.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Mental Model for Beginners
 
@@ -449,7 +460,7 @@ It proves who you are; it does not hold your data.
 
 ---
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

@@ -16,11 +16,11 @@
   - [Object Fields](#object-fields)
   - [Nested Fields](#nested-fields)
   - [Optional Operator](#optional-operator)
-  - [Recursive Descent (`..`)](#recursive-descent)
+  - [Recursive Descent](#recursive-descent)
 - [Working with Arrays](#working-with-arrays)
   - [Sample Data](#sample-data)
   - [Array Indexing](#array-indexing)
-  - [Iterating with `.[]`](#iterating-with)
+  - [Iterating Over Arrays](#iterating-over-arrays)
   - [`map()`](#map)
   - [`select()`](#select)
   - [`length`](#length)
@@ -34,25 +34,25 @@
 - [Transforming Data](#transforming-data)
   - [Building New Objects](#building-new-objects)
   - [Shorthand for Same-Name Keys](#shorthand-for-same-name-keys)
-  - [Adding / Updating Fields](#adding-updating-fields)
+  - [Adding and Updating Fields](#adding-and-updating-fields)
   - [Deleting Fields](#deleting-fields)
   - [String Interpolation](#string-interpolation)
 - [Conditionals and Logic](#conditionals-and-logic)
   - [`if-then-else`](#if-then-else)
   - [Comparison Operators](#comparison-operators)
   - [Boolean Operators](#boolean-operators)
-  - [Alternative Operator `//`](#alternative-operator)
+  - [Alternative Operator](#alternative-operator)
 - [Advanced Features](#advanced-features)
   - [Reduce](#reduce)
   - [Variables](#variables)
   - [`any` and `all`](#any-and-all)
-  - [`env` — Reading Environment Variables](#env-reading-environment-variables)
+  - [Reading Environment Variables](#reading-environment-variables)
   - [`@base64` and `@uri`](#base64-and-uri)
   - [`@csv` and `@tsv`](#csv-and-tsv)
-  - [`@json` — Embed JSON as a String](#json-embed-json-as-a-string)
+  - [Embedding JSON as a String](#embedding-json-as-a-string)
   - [`limit`](#limit)
   - [`path()`](#path)
-  - [`getpath` / `setpath` / `delpaths`](#getpath-setpath-delpaths)
+  - [getpath, setpath and delpaths](#getpath-setpath-and-delpaths)
 - [Real-World Examples](#real-world-examples)
   - [Parse API Responses](#parse-api-responses)
   - [Process Log Files (JSON Logs)](#process-log-files-json-logs)
@@ -95,13 +95,13 @@ winget install jqlang.jq
 Verify your installation:
 ```bash
 jq --version
-# jq-1.7.1
+# jq-1.8.2   (Fedora 45; older releases may ship jq 1.6 or 1.7.x)
 ```
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Basic Usage
 
@@ -128,7 +128,7 @@ Output:
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Useful Flags
 
@@ -137,8 +137,8 @@ Output:
 | `-r` | Raw output (strips quotes from strings) |
 | `-c` | Compact output (single line) |
 | `-n` | Null input (don't read input, useful with `now` or constructing data) |
-| `-e` | Exit with a non-zero status if the last output is `false` or `null` |
-| `-s` | Slurp all input lines into a single array |
+| `-e` | Exit with status `1` if the last output is `false` or `null` (and `4` if there was no output) |
+| `-s` | Slurp: read all JSON input values (not lines) into a single array |
 | `--arg name val` | Pass a shell variable into jq as a string |
 | `--argjson name val` | Pass a shell variable into jq as a JSON value |
 | `-f file` | Read filter from a file |
@@ -146,7 +146,7 @@ Output:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Understanding Filters
 
@@ -169,12 +169,12 @@ echo '{"name":"Alice","age":30}' | jq '.name, .age'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Accessing Data
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Object Fields
 
@@ -193,7 +193,7 @@ echo '{"first-name":"Alice"}' | jq '.["first-name"]'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Nested Fields
 
@@ -205,21 +205,31 @@ echo '{"user":{"address":{"city":"London"}}}' | jq '.user.address.city'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Optional Operator
 
-Append `?` to suppress errors if a field doesn't exist:
+A missing key on an object is not an error in jq: it simply gives `null`, with or without `?`:
 
 ```bash
 echo '{"name":"Alice"}' | jq '.age?'
+# null
+```
+
+Append `?` to suppress the **error** you get when the input is not an object (for example a string, number or array):
+
+```bash
+echo '"text"' | jq '.age'
+# jq: error (at <stdin>:1): Cannot index string with string ("age")
+
+echo '"text"' | jq '.age?'
 # (no output, no error)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Recursive Descent (`..`)
+### Recursive Descent
 
 `..` recursively descends into all values. Useful for searching nested structures:
 
@@ -231,12 +241,12 @@ echo '{"a":{"b":{"c":42}}}' | jq '.. | numbers'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Working with Arrays
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Sample Data
 
@@ -253,7 +263,7 @@ Let's use this JSON for array examples:
 Save it as `people.json`.
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Array Indexing
 
@@ -269,9 +279,9 @@ jq '.[0:2]' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Iterating with `.[]`
+### Iterating Over Arrays
 
 `.[]` explodes an array into individual elements:
 
@@ -290,7 +300,7 @@ jq '.[].name' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `map()`
 
@@ -302,7 +312,7 @@ jq 'map(.name)' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `select()`
 
@@ -319,7 +329,7 @@ jq 'map(select(.age > 28))' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `length`
 
@@ -329,7 +339,7 @@ jq '.[0].name | length' people.json  # 5 (string length)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `first` and `last`
 
@@ -341,17 +351,19 @@ jq 'last' people.json
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Built-in Functions
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### String Functions
 
 ```bash
-echo '"  hello world  "' | jq 'ltrimstr(" ") | rtrimstr(" ")'
+echo '"Mr. Smith"' | jq 'ltrimstr("Mr. ")'  # "Smith" (removes the prefix only if it is there)
+echo '"report.txt"' | jq 'rtrimstr(".txt")' # "report" (removes the suffix only if it is there)
+echo '"  hello world  "' | jq 'trim'        # "hello world" (whitespace; also ltrim/rtrim, jq 1.7.1+)
 echo '"hello"' | jq 'ascii_upcase'          # "HELLO"
 echo '"HELLO"' | jq 'ascii_downcase'         # "hello"
 echo '"hello world"' | jq 'split(" ")'       # ["hello","world"]
@@ -362,7 +374,7 @@ echo '"hello world"' | jq 'test("world")'    # true (regex match)
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Number Functions
 
@@ -375,7 +387,7 @@ echo '2'   | jq 'sqrt'     # 1.4142...
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Array Functions
 
@@ -394,13 +406,13 @@ jq 'group_by(.city)' people.json       # group into arrays by field
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Object Functions
 
 ```bash
 echo '{"a":1,"b":2}' | jq 'keys'       # ["a","b"]
-echo '{"a":1,"b":2}' | jq 'values'     # [1,2]
+echo '{"a":1,"b":2}' | jq '[.[]]'      # [1,2] (all values as an array)
 echo '{"a":1,"b":2}' | jq 'has("a")'   # true
 echo '{"a":1,"b":2}' | jq 'to_entries' 
 # [{"key":"a","value":1},{"key":"b","value":2}]
@@ -410,8 +422,10 @@ echo '{"a":1,"b":2}' | jq 'with_entries(.value += 10)'
 # {"a":11,"b":12}
 ```
 
+> **Note:** jq has no "get all values of an object" function; use `[.[]]` (or `map_values(f)` to change every value). The built-in `values` is something else: it is a type filter like `numbers` or `strings` that drops `null`, equivalent to `select(. != null)`. For example `echo '[1,null,2]' | jq -c '[.[] | values]'` gives `[1,2]`.
 
-[↑ Goto TOC](#table-of-contents)
+
+[↑ Back to TOC](#table-of-contents)
 
 ### Type Functions
 
@@ -430,12 +444,12 @@ echo '42' | jq 'tostring'      # "42"
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Transforming Data
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Building New Objects
 
@@ -455,22 +469,24 @@ jq '[.[] | {person: .name, location: .city}]' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Shorthand for Same-Name Keys
 
 If the key and field name are the same, you can use shorthand:
 
 ```bash
-# These are equivalent:
-jq '{name: .name, age: .age}' people.json
-jq '{name, age}' people.json
+# These are equivalent (people.json is an array, so iterate with .[] first):
+jq '.[] | {name: .name, age: .age}' people.json
+jq '.[] | {name, age}' people.json
+# {"name":"Alice","age":30}
+# ...
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Adding / Updating Fields
+### Adding and Updating Fields
 
 Use `+` to merge objects:
 
@@ -489,7 +505,7 @@ jq '[.[] | .age |= . + 1]' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Deleting Fields
 
@@ -498,7 +514,7 @@ jq 'map(del(.city))' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### String Interpolation
 
@@ -514,12 +530,12 @@ jq '.[] | "\(.name) lives in \(.city)"' people.json
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Conditionals and Logic
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `if-then-else`
 
@@ -528,7 +544,7 @@ jq '.[] | if .age >= 30 then "\(.name) is senior" else "\(.name) is junior" end'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Comparison Operators
 
@@ -537,7 +553,7 @@ jq '.[] | if .age >= 30 then "\(.name) is senior" else "\(.name) is junior" end'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Boolean Operators
 
@@ -550,9 +566,9 @@ jq '.[] | select(.age > 25 and .city == "London")' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### Alternative Operator `//`
+### Alternative Operator
 
 The `//` operator returns the right side if the left side is `false` or `null`:
 
@@ -567,12 +583,12 @@ echo '{}' | jq '.missing // "default"'
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Advanced Features
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Reduce
 
@@ -589,7 +605,7 @@ jq 'reduce .[] as $p ({}; . + {($p.name): $p.age})' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Variables
 
@@ -600,7 +616,7 @@ jq '.[] | .name as $n | .age as $a | "\($n) is \($a)"' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `any` and `all`
 
@@ -610,9 +626,9 @@ jq 'all(.[]; .age > 20)' people.json   # true
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### `env` — Reading Environment Variables
+### Reading Environment Variables
 
 ```bash
 export CITY=London
@@ -626,7 +642,7 @@ jq '[.[] | select(.city == $ENV.CITY)]' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `@base64` and `@uri`
 
@@ -637,7 +653,7 @@ echo '"aGVsbG8="' | jq '@base64d'     # "hello"
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `@csv` and `@tsv`
 
@@ -651,9 +667,9 @@ jq -r '.[] | [.name, .age, .city] | @tsv' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### `@json` — Embed JSON as a String
+### Embedding JSON as a String
 
 ```bash
 echo '{"a":1}' | jq '@json'
@@ -661,7 +677,7 @@ echo '{"a":1}' | jq '@json'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `limit`
 
@@ -671,7 +687,7 @@ jq '[limit(2; .[])]' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### `path()`
 
@@ -683,9 +699,9 @@ echo '{"a":{"b":1}}' | jq 'path(.a.b)'
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
-### `getpath` / `setpath` / `delpaths`
+### getpath, setpath and delpaths
 
 ```bash
 echo '{"a":{"b":1}}' | jq 'getpath(["a","b"])'  # 1
@@ -695,12 +711,12 @@ echo '{"a":{"b":1}}' | jq 'setpath(["a","b"]; 99)'  # {"a":{"b":99}}
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Real-World Examples
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Parse API Responses
 
@@ -714,7 +730,7 @@ curl -s https://api.github.com/users/octocat/repos \
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Process Log Files (JSON Logs)
 
@@ -727,7 +743,7 @@ cat app.log | jq -s 'group_by(.service) | map({service: .[0].service, count: len
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Transform CSV-like Data
 
@@ -737,7 +753,7 @@ jq -r '["name","age","city"], (.[] | [.name, .age, .city]) | @csv' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Merge Two JSON Files
 
@@ -746,7 +762,7 @@ jq -s '.[0] * .[1]' file1.json file2.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Extract and Format Config Values
 
@@ -756,7 +772,7 @@ jq '[.features[] | select(.enabled == true) | .name]' config.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Count Occurrences
 
@@ -766,7 +782,7 @@ jq 'group_by(.city) | map({city: .[0].city, count: length})' people.json
 ```
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Flatten Nested API Data
 
@@ -778,7 +794,7 @@ jq '[.results[].items[] | {id, title}]' response.json
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Quick Reference Cheat Sheet
 
@@ -816,8 +832,9 @@ OPERATORS
 
 STRINGS
 "\(.foo)"           String interpolation
-ltrimstr(s)         Remove prefix
-rtrimstr(s)         Remove suffix
+ltrimstr(s)         Remove prefix s (if present)
+rtrimstr(s)         Remove suffix s (if present)
+trim, ltrim, rtrim  Remove whitespace (jq 1.7.1+)
 split(s)            Split string
 join(s)             Join array into string
 test(regex)         Regex match (bool)
@@ -842,8 +859,9 @@ add                 Sum/merge all elements
 indices(s)          Find positions
 
 OBJECTS
-keys                Array of keys
-values              Array of values
+keys                Array of keys (sorted)
+[.[]]               Array of values
+values              Select non-null values
 has("key")          Check key exists
 in(obj)             Check if key in object
 to_entries          [{key,value}] pairs
@@ -884,7 +902,7 @@ inputs              All remaining inputs
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## Tips for Learning jq
 
@@ -904,7 +922,7 @@ inputs              All remaining inputs
 
 *Happy filtering! Once you get comfortable with `jq`, you'll wonder how you ever worked with JSON without it.*
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 

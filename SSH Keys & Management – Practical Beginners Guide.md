@@ -67,7 +67,7 @@ SSH authentication uses **asymmetric cryptography**:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 2. Default SSH Key Locations (Linux)
 
@@ -87,17 +87,29 @@ Common files:
 | `config`          | Client configuration     |
 | `known_hosts`     | Host verification cache  |
 
-Correct permissions are critical:
+Correct permissions are critical. Set them per file type, not with a blanket `chmod 600 ~/.ssh/*` (that would also hit public keys and any sub-directories, such as a `~/.ssh/sockets/` folder for multiplexing, which then become unusable):
+
+| Path                                 | Mode  | Why                                     |
+| ------------------------------------ | ----- | --------------------------------------- |
+| `~/.ssh/`                            | `700` | Only you may list or enter it           |
+| Private keys (`id_ed25519`, ...)     | `600` | Secret; SSH refuses keys others can read |
+| `authorized_keys`                    | `600` | sshd ignores it if others can write it  |
+| `config`                             | `600` | ssh refuses a config others can write   |
+| Public keys (`*.pub`)                | `644` | Not secret; readable is fine            |
+| `known_hosts`                        | `644` | Not secret (`600` also works)           |
 
 ```bash
 chmod 700 ~/.ssh
-chmod 600 ~/.ssh/*
+chmod 600 ~/.ssh/id_ed25519 ~/.ssh/config ~/.ssh/authorized_keys
+chmod 644 ~/.ssh/*.pub
 ```
+
+Only run `chmod` on files that exist; skip any that are missing on your machine.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 3. Recommended Key Type (Modern Standard)
 
@@ -110,12 +122,18 @@ Advantages:
 * Strong security
 * Widely supported
 
-Avoid generating new RSA keys unless required.
+Avoid generating new RSA keys unless required. If you must use RSA (for example, for an old system that doesn't support Ed25519), use **at least 3072 bits**; 4096 is a common choice:
+
+```bash
+ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa_legacy -C "legacy-system"
+```
+
+Never create new RSA keys smaller than 3072 bits. RHEL/Fedora crypto-policies already reject RSA keys under 2048 bits.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 4. Generating Your First Key (Correctly)
 
@@ -143,7 +161,7 @@ Why passphrases matter:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 5. Understanding Generated Files
 
@@ -169,12 +187,12 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB... work-laptop
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 6. Installing Your Public Key on a Server
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Option A – Easiest (If Password Login Works)
 
@@ -185,7 +203,7 @@ ssh-copy-id -i ~/.ssh/id_ed25519_work user@server
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### Option B – Manual Method
 
@@ -212,7 +230,7 @@ chmod 600 ~/.ssh/authorized_keys
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 7. Connecting Using a Specific Key
 
@@ -225,7 +243,7 @@ Without specifying, SSH tries defaults.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 8. Managing Multiple Keys (Very Common)
 
@@ -259,7 +277,7 @@ ssh github
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 9. SSH Agent (Avoid Re-typing Passphrases)
 
@@ -284,15 +302,24 @@ ssh-add -l
 **Gotcha:**
 Agent resets on reboot unless integrated into session manager.
 
+**GNOME desktops (Fedora Workstation, RHEL with GNOME):** an agent is usually already running for you, provided by gnome-keyring / `gcr-ssh-agent`. Check before starting another one:
+
+```bash
+echo "$SSH_AUTH_SOCK"   # e.g. /run/user/1000/gcr/ssh → GNOME's agent is in use
+ssh-add -l              # lists keys, or "The agent has no identities."
+```
+
+If `SSH_AUTH_SOCK` is already set, just run `ssh-add`; don't start a second agent with `eval "$(ssh-agent -s)"`, or you'll end up with two agents and keys loaded in the "wrong" one. On macOS, the system agent is started by launchd, and `ssh-add --apple-use-keychain` stores the passphrase in Keychain.
+
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 10. Key Security Best Practices
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ✔ Always Use Passphrases
 
@@ -301,7 +328,7 @@ Unprotected keys = high risk.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ✔ Never Reuse Keys Across Roles
 
@@ -324,7 +351,7 @@ id_ed25519_servers
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ✔ Protect Permissions
 
@@ -333,36 +360,45 @@ SSH refuses insecure keys.
 Correct:
 
 ```bash
-chmod 600 ~/.ssh/id_ed25519*
+chmod 600 ~/.ssh/id_ed25519        # private key
+chmod 644 ~/.ssh/id_ed25519.pub    # public key
 ```
+
+See the permissions table in [section 2](#2-default-ssh-key-locations-linux) for the other files.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ✔ Disable Password Authentication (Servers)
 
-In `/etc/ssh/sshd_config`:
+Use a drop-in file instead of editing `/etc/ssh/sshd_config` directly. On RHEL/Fedora the main file includes `/etc/ssh/sshd_config.d/*.conf` first, in alphabetical order, and **the first value sshd finds for an option wins**. The distro ships `50-redhat.conf` there, so name your file with a lower number:
+
+```bash
+sudo vi /etc/ssh/sshd_config.d/10-custom.conf
+```
 
 ```ini
 PasswordAuthentication no
 PubkeyAuthentication yes
 ```
 
-Reload:
+Check the syntax, confirm the effective values, then reload:
 
 ```bash
+sudo sshd -t     # prints nothing if the config is valid
+sudo sshd -T | grep -iE '^(passwordauthentication|pubkeyauthentication) '
 sudo systemctl reload sshd
 ```
 
 **Warning:**
-Ensure keys work before disabling passwords.
+Ensure keys work before disabling passwords. Keep your current session open and test the login from a second terminal before you log out.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 11. Revoking / Removing Access
 
@@ -377,7 +413,7 @@ No restart required.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 12. Verifying Which Key Is Used
 
@@ -396,14 +432,14 @@ Offering public key: ~/.ssh/id_ed25519_work
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 13. Common Problems & Fixes
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ❌ Permission Denied (Publickey)
 
@@ -422,7 +458,7 @@ Must be:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ❌ Wrong Key Used
 
@@ -437,26 +473,28 @@ Or fix config.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ❌ Server Ignores Key
 
 On server:
 
 ```bash
-sudo grep PubkeyAuthentication /etc/ssh/sshd_config
+sudo sshd -T | grep -i '^pubkeyauthentication'
 ```
 
 Must be:
 
 ```
-PubkeyAuthentication yes
+pubkeyauthentication yes
 ```
+
+`sshd -T` prints the **effective** settings after the main file and every drop-in in `/etc/ssh/sshd_config.d/` are combined. Grepping `/etc/ssh/sshd_config` alone can mislead you: the line there may be commented out or overridden by a drop-in.
 
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ### ❌ SELinux Issues (RHEL Specific)
 
@@ -471,7 +509,7 @@ Very common on RHEL systems.
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 14. Backing Up SSH Keys (Important)
 
@@ -492,7 +530,7 @@ cp -a ~/.ssh /secure/location/
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 15. When To Generate New Keys
 
@@ -506,7 +544,7 @@ Generate new keys if:
 ---
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ## 16. Good Operational Habits
 
@@ -518,7 +556,7 @@ Generate new keys if:
 
 
 
-[↑ Goto TOC](#table-of-contents)
+[↑ Back to TOC](#table-of-contents)
 
 ---
 
