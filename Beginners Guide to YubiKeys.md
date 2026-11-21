@@ -81,7 +81,7 @@ A YubiKey can perform multiple roles depending on protocol:
 * **U2F** → Older FIDO standard (still widely supported)
 * **OTP (One-Time Password)** → Legacy compatibility
 * **Smart card (PIV)** → Certificates, enterprise auth
-* **OpenPGP** → SSH / email / code signing keys
+* **OpenPGP** → SSH / email / code signing keys (see the [OpenPGP User Guide](openpgp-user-guide.md))
 * **Challenge-Response** → Advanced custom flows
 
 One physical key, multiple functions.
