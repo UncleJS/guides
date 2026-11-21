@@ -55,7 +55,7 @@ Secrets are **not encrypted by default**. The default `file` driver keeps them i
 
 - **Drivers:** Set with `podman secret create --driver` (or `[secrets] driver=` in `containers.conf`):
   - `file` (default): the secret resides in a read-protected file. Data is stored unencrypted (base64-encoded in JSON), protected only by file permissions
-  - `pass`: the secret resides in a GPG-encrypted file managed by `pass`
+  - `pass`: the secret resides in a GPG-encrypted file managed by `pass`, see the [OpenPGP User Guide](openpgp-user-guide.md#the-pass-password-manager)
   - `shell`: custom `list`/`lookup`/`store`/`delete` scripts, for example wrapping an external vault
 - **Storage location (file driver):** under the Podman graph root, `~/.local/share/containers/storage/secrets/filedriver/` (rootless) or `/var/lib/containers/storage/secrets/filedriver/` (rootful). Metadata is kept in `secrets.json` next to it
 - **Mount:** When the container is created, the secret is copied into the container's runtime directory (on tmpfs under `/run`) and mounted at `/run/secrets/<name>` inside the container

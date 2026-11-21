@@ -24,6 +24,7 @@ A collection of practical, beginner-friendly guides covering Linux tools, comman
 | [jq Beginner's Guide](jq-beginners-guide.md) | Parsing and transforming JSON on the CLI |
 | [Netcat Beginner's Guide](netcat-beginners-guide.md) | Networking with the Swiss Army knife |
 | [Netstat Beginner's Guide](netstat-beginners-guide.md) | Inspecting network connections with `netstat` |
+| [OpenPGP User Guide](openpgp-user-guide.md) | Encryption, signing and key management with GnuPG |
 | [Podman Secrets Guide](podman_secrets_guide.md) | Managing secrets in Podman containers |
 | [Regex Beginner's Guide](regex-beginners-guide.md) | Regular expressions from scratch |
 | [rsync Beginner's Guide](rsync-beginners-guide.md) | Efficient file synchronisation with `rsync` |
